@@ -771,7 +771,34 @@ try {
       await expect(alert).toBeVisible();
       await expect(alert).toContainText("확인하거나");
       assert.ok(!(await alert.innerText()).includes("does-not-exist"));
-      await field.fill(typedProject);
+      // Native confirm: decline first (nothing registers), then accept; the
+      // dialog must show the canonical resolved path.
+      await application.evaluate(({ dialog: d }) => {
+        globalThis.__importPrompts = [];
+        globalThis.__importAnswer = 0;
+        d.showMessageBox = async (...args) => {
+          const options = args.at(-1);
+          globalThis.__importPrompts.push(options.detail);
+          return {
+            response: globalThis.__importAnswer,
+            checkboxChecked: false,
+          };
+        };
+      });
+      const viaDotDot = `${typedProject}/../typed-project`;
+      await field.fill(viaDotDot);
+      await page.getByRole("button", { name: "경로로 가져오기" }).click();
+      await expect
+        .poll(() => application.evaluate(() => globalThis.__importPrompts))
+        .toEqual([typedProject]);
+      const declined = await bridge({ type: "snapshot" });
+      assert.ok(
+        !declined.value?.workspaces.some((w) => w.path === typedProject),
+        "declined import registered nothing",
+      );
+      await application.evaluate(() => {
+        globalThis.__importAnswer = 1;
+      });
       await page.getByRole("button", { name: "경로로 가져오기" }).click();
       await expect(field).toBeHidden();
       const after = await bridge({ type: "snapshot" });

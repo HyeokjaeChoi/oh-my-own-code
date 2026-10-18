@@ -68,7 +68,7 @@ import {
 } from "./host/workbench-admission.mjs";
 import { performance } from "node:perf_hooks";
 import { homedir } from "node:os";
-import { basename, isAbsolute, normalize } from "node:path";
+import { basename, isAbsolute } from "node:path";
 import { isDeepStrictEqual } from "node:util";
 import { redactReceipt } from "./host/workbench-receipts.mjs";
 import { isPlaceholderTitle, nativeSessionTitle } from "./session-title.mjs";
@@ -355,6 +355,7 @@ export function createWorkbenchService({
   pickDirectory,
   probeWorkspace,
   confirmTrust,
+  confirmImport = async () => false,
   confirmSessionRemoval = async () => false,
   confirmSessionRevert = async () => false,
   checkpoints, // app-owned file checkpoint store (host/workspace-checkpoint.mjs)
@@ -5736,7 +5737,8 @@ export function createWorkbenchService({
         return base(created);
       }
       if (!registry) await markEffect();
-      // A typed path takes the same canonicalization, limit and native trust path as a picked one.
+      // A typed path takes the same canonicalization and limit as a picked one, but skips the
+      // native picker, so the resolved folder gets an explicit native confirmation below.
       // Only "~" and "~/..." expand (to this user's home); "~name" and relative paths are rejected.
       const typed =
         request.path === "~" || request.path?.startsWith("~/")
@@ -5744,13 +5746,10 @@ export function createWorkbenchService({
           : request.path;
       if (
         typed !== undefined &&
-        (request.type !== "workspace.import" ||
-          !isAbsolute(typed) ||
-          typed.length === 0)
+        (request.type !== "workspace.import" || !isAbsolute(typed))
       )
         fail("INVALID_REQUEST");
-      const picked =
-        typed === undefined ? await pickDirectory() : normalize(typed);
+      const picked = typed === undefined ? await pickDirectory() : typed;
       checkLive();
       if (!picked) fail("CANCELLED");
       if (!registry) await markEffect();
@@ -5772,6 +5771,11 @@ export function createWorkbenchService({
         )
       )
         fail("LIMIT_REACHED");
+      if (typed !== undefined) {
+        const confirmed = await confirmImport(path);
+        checkLive();
+        if (!confirmed) fail("CANCELLED");
+      }
       // Both ordinary new directories and imports require native trust before SDK activation.
       const reservation = registry
         ? await reserveSession(undefined, "imported", path)

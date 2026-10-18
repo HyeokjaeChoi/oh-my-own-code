@@ -6,15 +6,15 @@ Status: `done` = implemented end to end; `partial` = some of the clause exists; 
 
 ## F-01 Import
 
-| Clause                                          | Status  | Evidence                                                                          |
-| ----------------------------------------------- | ------- | --------------------------------------------------------------------------------- |
-| Register folder via picker                      | done    | `workbench-service.mjs:4468` (`workspace.import`, `pickDirectory`)                |
-| Register by typed path                          | done    | 2026-10-18: `workspace.import` `path` (menu "경로로 열기…"); `~`, `..`, symlinks  |
-| Git repo / existing worktree recognized         | partial | no worktree-specific code; git metadata only in `host/git-metadata-kernel.mjs`    |
-| Show origin, branch, absolute path, writable    | partial | trusted + path only, `renderer/pages/workbench/index.tsx:682`; no branch/writable |
-| Duplicate path = one target                     | done    | `workbench-service.mjs:4490` existing.path match (B01 fixed)                      |
-| Missing/broken/denied path: reason + recovery   | partial | 2026-10-18: typed path shows reason + recovery text (picker/worktree not covered) |
-| Import never moves files/inits git/runs scripts | done    | `canonicalDirectory` only, `workbench-service.mjs:4485`                           |
+| Clause                                          | Status  | Evidence                                                                                                                                  |
+| ----------------------------------------------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| Register folder via picker                      | done    | `workbench-service.mjs:4468` (`workspace.import`, `pickDirectory`)                                                                        |
+| Register by typed path                          | done    | 2026-10-18: typed `path` ("경로로 열기…"); native confirm of resolved path; no containment root (as picker); missing vs denied indistinct |
+| Git repo / existing worktree recognized         | partial | no worktree-specific code; git metadata only in `host/git-metadata-kernel.mjs`                                                            |
+| Show origin, branch, absolute path, writable    | partial | trusted + path only, `renderer/pages/workbench/index.tsx:682`; no branch/writable                                                         |
+| Duplicate path = one target                     | done    | `workbench-service.mjs:4490` existing.path match (B01 fixed)                                                                              |
+| Missing/broken/denied path: reason + recovery   | partial | 2026-10-18: typed path shows reason + recovery text (picker/worktree not covered)                                                         |
+| Import never moves files/inits git/runs scripts | done    | `canonicalDirectory` only, `workbench-service.mjs:4485`                                                                                   |
 
 ## F-02 Create
 
