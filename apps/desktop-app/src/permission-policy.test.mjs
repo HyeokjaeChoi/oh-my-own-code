@@ -1,4 +1,6 @@
 import test from "node:test";
+import { classifyPreset } from "./renderer/shared/configuration-draft/permission-preset.mjs";
+import { compileModeRules, legacyModeRules } from "./permission-mode.mjs";
 import assert from "node:assert/strict";
 import { BASELINE_POLICY } from "./workbench-contract.mjs";
 import { validateEnvelope } from "./workbench-contract.mjs";
@@ -179,8 +181,6 @@ test("policy uses original v2 read envelope and refuses mutation/outer requestId
   );
 });
 
-import { classifyPreset } from "./renderer/shared/configuration-draft/permission-preset.mjs";
-import { compileModeRules, legacyModeRules } from "./permission-mode.mjs";
 test("classifyPreset matches every compiled mode (and legacy), else custom", () => {
   for (const mode of ["ask", "scoped_edit", "read_plan"]) {
     assert.equal(classifyPreset(compileModeRules(mode)), mode);
@@ -201,4 +201,7 @@ test("classifyPreset matches every compiled mode (and legacy), else custom", () 
 test("classifyPreset treats empty and malformed input as custom", () => {
   for (const bad of [[], undefined, null, "ask", {}, [null], [1], [{}]])
     assert.equal(classifyPreset(bad), "custom");
+});
+test("classifyPreset: absent field projects to [] which is custom, never a preset", () => {
+  assert.equal(classifyPreset([]), "custom");
 });

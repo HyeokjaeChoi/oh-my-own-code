@@ -373,28 +373,49 @@ try {
     async () => {
       await selectFixture();
       const panel = await openComposerPopover(page, "permission");
+      const mode = (label) =>
+        panel.getByRole("radio", { name: new RegExp(`^${label}`) });
       const policy = panel.locator("[data-permission-policy-status]");
+      const list = policy.locator("[data-permission-presets]");
+      const observe = async () => {
+        await policy
+          .locator('[data-permission-policy-action="observe"]')
+          .click();
+        await expect(policy).toHaveAttribute(
+          "data-permission-policy-status",
+          "observed",
+          { timeout: 30000 },
+        );
+      };
+      await mode("범위 내 편집 허용").click();
+      await expect(mode("범위 내 편집 허용")).toBeChecked({ timeout: 15000 });
       await policy.locator("summary").click();
-      await policy.locator('[data-permission-policy-action="observe"]').click();
-      await expect(policy).toHaveAttribute(
-        "data-permission-policy-status",
-        "observed",
-        { timeout: 30000 },
-      );
-      const list = policy.getByRole("list").first();
-      const items = policy.locator("[data-permission-preset]");
-      await expect(items).toHaveCount(4);
-      await expect(policy.locator('[data-current="true"]')).toHaveCount(1);
+      await observe();
+      await expect(list.locator("[data-permission-preset]")).toHaveCount(4);
+      await expect(list.locator('[data-current="true"]')).toHaveCount(1);
       await expect(
-        policy.locator('[data-permission-preset="scoped_edit"]'),
+        list.locator('[data-permission-preset="scoped_edit"]'),
       ).toHaveAttribute("data-current", "true");
-      await expect(
-        policy.locator("[data-permission-preset][aria-current]"),
-      ).toContainText("범위 내 편집 허용");
+      await expect(list.locator("[aria-current]")).toContainText(
+        "범위 내 편집 허용",
+      );
       await expect(policy).toContainText("external_directory");
       await expect(list).toBeVisible();
       const found = await auditDom(page, "[data-permission-presets]");
       assert.equal(found.length, 0, `presets dom: ${found.join("; ")}`);
+      // Changing the mode makes the earlier observation stale: no current.
+      await mode("읽기/계획").click();
+      await expect(mode("읽기/계획")).toBeChecked({ timeout: 15000 });
+      await expect(policy).toHaveAttribute(
+        "data-permission-policy-status",
+        "stale",
+        { timeout: 15000 },
+      );
+      await expect(list.locator('[data-current="true"]')).toHaveCount(0);
+      await observe();
+      await expect(
+        list.locator('[data-permission-preset="read_plan"]'),
+      ).toHaveAttribute("data-current", "true");
     },
     { needs: "runtime" },
   );

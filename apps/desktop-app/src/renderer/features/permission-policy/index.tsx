@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useId, useRef } from "react";
 import { Button } from "@workbench/ui";
 import {
   selectors,
@@ -12,6 +12,10 @@ import {
 } from "../../shared/configuration-draft/index.js";
 import styles from "./policy.module.css";
 
+type Available = Extract<
+  WorkbenchPermissionPolicyObservation,
+  { status: "available" }
+>;
 const PRESETS: readonly {
   id: PermissionPresetId;
   label: string;
@@ -20,36 +24,47 @@ const PRESETS: readonly {
   {
     id: "ask",
     label: "요청마다 확인",
-    detail: "기본값. 읽기·편집·명령 실행 등 모든 도구 사용을 매번 묻습니다.",
+    detail:
+      "기본값. external_directory(작업 공간 밖 접근)를 제외한 모든 도구 사용을 매번 묻습니다.",
   },
   {
     id: "scoped_edit",
     label: "범위 내 편집 허용",
     detail:
-      "작업 공간 안 파일 편집은 묻지 않습니다(.git/.hg 메타데이터 제외). 읽기·검색은 허용하고 .env 읽기는 묻습니다. 셸 명령과 웹 접근은 거부합니다.",
+      "작업 공간 안 파일 편집(.git/.hg 메타데이터 제외), 읽기·검색, 하위 에이전트 위임은 묻지 않습니다. .env 읽기는 묻고, 셸 명령과 웹 접근은 거부합니다. 그 밖의 도구(MCP 등)는 묻습니다.",
   },
   {
     id: "read_plan",
     label: "읽기/계획",
     detail:
-      "읽기·검색만 허용하고(.env 읽기는 묻습니다) 편집·셸 명령·웹 접근은 거부합니다.",
+      "읽기·검색과 하위 에이전트 위임은 묻지 않습니다. .env 읽기는 묻고, 편집·셸 명령·웹 접근은 거부합니다. 그 밖의 도구(MCP 등)는 묻습니다.",
   },
   {
     id: "custom",
     label: "사용자 정의",
-    detail: "위 세 프리셋의 규칙과 정확히 일치하지 않는 규칙입니다.",
+    detail:
+      "세 프리셋과 일치하지 않는 규칙입니다. 다음 전송 전에 선택한 모드의 규칙으로 다시 적용됩니다.",
   },
 ];
 
-function Presets({ rules }: { rules: Available["sessionRules"] | undefined }) {
+function Presets({
+  rules,
+  absent,
+}: {
+  rules: Available["sessionRules"] | undefined;
+  absent: boolean;
+}) {
+  const titleId = useId();
   const current = rules ? classifyPreset(rules) : undefined;
   return (
-    <section aria-labelledby="permission-presets-title">
-      <h4 id="permission-presets-title">권한 프리셋</h4>
+    <section aria-labelledby={titleId}>
+      <h4 id={titleId}>권한 프리셋</h4>
       <p>
         {current
           ? "현재 세션 규칙과 일치하는 프리셋에 표시합니다."
-          : "세션 권한 규칙을 확인하면 현재 프리셋이 표시됩니다."}{" "}
+          : absent
+            ? "세션에 규칙이 아직 설정되지 않았습니다."
+            : "세션 권한 규칙을 확인하면 현재 프리셋이 표시됩니다."}{" "}
         이 목록은 보기 전용입니다. 모드는 작성창의 권한 메뉴에서 바꿉니다.
       </p>
       <ul className={styles.rules} data-permission-presets>
@@ -62,7 +77,7 @@ function Presets({ rules }: { rules: Available["sessionRules"] | undefined }) {
           >
             <strong>{preset.label}</strong>
             {preset.id === current && (
-              <span className={styles.mismatch}> · 현재</span>
+              <span className={styles.current}> · 현재</span>
             )}
             <br />
             {preset.detail}
@@ -70,17 +85,14 @@ function Presets({ rules }: { rules: Available["sessionRules"] | undefined }) {
         ))}
       </ul>
       <p data-permission-floor>
-        작업 공간 밖 접근(external_directory)은 모든 프리셋에서 항상 거부되며,
-        앱이 강제하는 하한선입니다.
+        세 프리셋은 항상 external_directory(작업 공간 밖 접근)를 거부합니다.
+        앱은 매 전송 전에 규칙을 다시 적용하고 확인합니다. 사용자 정의 규칙에는
+        이 보장이 없습니다.
       </p>
     </section>
   );
 }
 
-type Available = Extract<
-  WorkbenchPermissionPolicyObservation,
-  { status: "available" }
->;
 function Rules({
   source,
   rows,
@@ -142,6 +154,11 @@ export function PermissionPolicy({
             ? "error"
             : "not_observed";
   const available = current?.status === "available" ? current : undefined;
+  // A matched preset is a known-good rule set; only unknown rules are flagged.
+  const mismatch =
+    !!available &&
+    !available.baselineMatches &&
+    classifyPreset(available.sessionRules) === "custom";
   const cancel = () => {
     actions.cancelPermissionPolicyObservation();
     statusRef.current?.focus();
@@ -160,11 +177,7 @@ export function PermissionPolicy({
       data-runtime-task="permission"
       data-permission-policy-status={status}
       data-permission-policy-baseline={
-        available
-          ? available.baselineMatches
-            ? "matches"
-            : "mismatch"
-          : undefined
+        available ? (!mismatch ? "matches" : "mismatch") : undefined
       }
       onKeyDown={(event) => {
         if (
@@ -178,7 +191,7 @@ export function PermissionPolicy({
     >
       <summary>
         저장된 권한 규칙 관리
-        {available && !available.baselineMatches && (
+        {mismatch && (
           <span className={styles.mismatch}> · 앱 필수 규칙과 다름</span>
         )}
       </summary>
@@ -218,7 +231,14 @@ export function PermissionPolicy({
       {!canObserve && !entry.request && (
         <p>현재 선택의 연결·신뢰·복구 상태와 새 세션 상태 확인이 필요합니다.</p>
       )}
-      <Presets rules={available?.sessionRules} />
+      <Presets
+        rules={
+          available?.sessionRulesState === "present"
+            ? available.sessionRules
+            : undefined
+        }
+        absent={available?.sessionRulesState === "absent"}
+      />
       {available && (
         <>
           <h4>세션에 저장된 규칙</h4>
@@ -230,11 +250,13 @@ export function PermissionPolicy({
                 : "규칙 필드 있음 (present)"}
           </p>
           <Rules source="session" rows={available.sessionRules} />
-          <h4>앱 필수 규칙</h4>
+          <h4>기본(요청마다 확인) 규칙과 하한선</h4>
           <p>
             {available.baselineMatches
-              ? "세션 규칙이 앱 필수 규칙과 같습니다."
-              : "세션 규칙이 앱 필수 규칙과 다릅니다."}
+              ? "세션 규칙이 이 기본 규칙과 같습니다."
+              : mismatch
+                ? "세션 규칙이 이 기본 규칙과도, 위 프리셋과도 다릅니다."
+                : "세션 규칙은 이 기본 규칙과 다르지만 위 프리셋과 일치합니다."}
           </p>
           <Rules source="required" rows={available.requiredBaselineRules} />
         </>
