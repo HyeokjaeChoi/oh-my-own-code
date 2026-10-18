@@ -1,3 +1,4 @@
+import { loadLayout } from "../../../shared/preferences/index.js";
 import {
   validatePermissionPolicyObservation,
   type WorkbenchPermissionPolicyObservation,
@@ -9806,7 +9807,7 @@ export function createWorkbenchStore(wide = true) {
       wide,
       navigation: wide,
       panel: null,
-      panelWidth: 420,
+      panelWidth: loadLayout().panelWidth,
       navigationBeforePanel: false,
     },
   }));
