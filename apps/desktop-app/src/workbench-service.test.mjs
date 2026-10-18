@@ -52,6 +52,8 @@ async function fixture(
     models: true,
     pick: null,
     trust: true,
+    importOk: true,
+    importPrompts: [],
   };
   const method =
     (name, fn) =>
@@ -209,6 +211,10 @@ async function fixture(
       writable: path !== "x",
     }),
     confirmTrust: async () => state.trust,
+    confirmImport: async (path) => {
+      state.importPrompts.push(path);
+      return state.importOk;
+    },
     ...(confirmSessionRevert && { confirmSessionRevert }),
     ...(checkpoints && { checkpoints }),
   });
@@ -339,8 +345,6 @@ test("typed-path import rejects bad paths with one non-leaking code and imports 
   await symlink(dir, join(f.root, "alias"));
   await symlink(join(f.root, "file.txt"), join(f.root, "filelink"));
   await symlink(join(f.root, "gone"), join(f.root, "dangling"));
-  await mkdir(join(f.root, "locked", "inner"), { recursive: true });
-  await chmod(join(f.root, "locked"), 0o000);
   const imp = (path) => f.service.handle({ type: "workspace.import", path });
   for (const [path, code] of [
     ["relative/dir", "INVALID_REQUEST"],
@@ -351,16 +355,22 @@ test("typed-path import rejects bad paths with one non-leaking code and imports 
     [join(f.root, "filelink"), "FILE_DENIED"],
     [join(f.root, "dangling"), "FILE_DENIED"],
     [`${f.root}/real/../file.txt`, "FILE_DENIED"],
-    ...(process.getuid?.() === 0
-      ? []
-      : [[join(f.root, "locked", "inner"), "FILE_DENIED"]]),
   ]) {
     const r = await imp(path);
     assert.equal(r.ok, false, path);
     assert.equal(r.code, code, path);
     assert.ok(!JSON.stringify(r).includes(f.root), "no path leaked");
   }
-  await chmod(join(f.root, "locked"), 0o700);
+  await t.test("permission denied", async (st) => {
+    if (process.getuid?.() === 0) return st.skip("root ignores modes");
+    await mkdir(join(f.root, "locked", "inner"), { recursive: true });
+    await chmod(join(f.root, "locked"), 0o000);
+    // Subtest hook runs before the parent fixture's rm.
+    st.after(() => chmod(join(f.root, "locked"), 0o700));
+    const r = await imp(join(f.root, "locked", "inner"));
+    assert.equal(r.code, "FILE_DENIED");
+    assert.ok(!JSON.stringify(r).includes(f.root));
+  });
   const first = await imp(`${f.root}/real/../real/`);
   assert.equal(first.ok, true, JSON.stringify(first));
   const real = await realpath(dir);
@@ -381,6 +391,32 @@ test("typed-path import rejects bad paths with one non-leaking code and imports 
   const home = await imp("~");
   assert.equal(home.ok, true, JSON.stringify(home));
   assert.equal(home.value.workspaces.length, count);
+});
+test("typed-path import needs native confirmation of the canonical path before registering", async (t) => {
+  const f = await fixture(t);
+  f.state.pick = undefined;
+  const dir = join(f.root, "confirm-me");
+  await mkdir(dir);
+  await writeFile(join(dir, "note.txt"), "hello");
+  await symlink(dir, join(f.root, "confirm-alias"));
+  const imp = (path) => f.service.handle({ type: "workspace.import", path });
+  const before = (await f.service.handle({ type: "snapshot" })).value.workspaces
+    .length;
+  f.state.importOk = false;
+  const declined = await imp(join(f.root, "confirm-alias"));
+  assert.equal(declined.ok, false);
+  assert.equal(declined.code, "CANCELLED");
+  assert.deepEqual(f.state.importPrompts, [await realpath(dir)]);
+  const after = (await f.service.handle({ type: "snapshot" })).value;
+  assert.equal(after.workspaces.length, before);
+  assert.ok(!after.workspaces.some((w) => w.path.endsWith("confirm-me")));
+  f.state.importOk = true;
+  const ok = await imp(dir);
+  assert.equal(ok.ok, true, JSON.stringify(ok));
+  assert.equal(f.state.importPrompts.length, 2);
+  assert.ok(
+    ok.value.workspaces.some((w) => w.path === f.state.importPrompts[1]),
+  );
 });
 test("extension read discards a pending observation after a workspace mutation", async (t) => {
   const f = await fixture(t);

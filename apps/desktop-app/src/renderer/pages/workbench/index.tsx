@@ -174,7 +174,7 @@ export function Workbench() {
   const [deleteReasons, setDeleteReasons] = useState<string[] | null>(null);
   const [importOpen, setImportOpen] = useState(false);
   const [importPath, setImportPath] = useState("");
-  const [importError, setImportError] = useState(false);
+  const [importError, setImportError] = useState("");
   const navigationButton = useRef<HTMLButtonElement>(null);
   const panelButton = useRef<HTMLButtonElement>(null);
   const createInput = useRef<HTMLInputElement>(null);
@@ -579,7 +579,8 @@ export function Workbench() {
               { type: "workspace.import", path: importPath.trim() },
               true,
             ).then((ok) => {
-              setImportError(!ok);
+              // Path advice is shown only for path failures (see below).
+              setImportError(ok ? "" : store.getState().error);
               if (ok) {
                 setImportOpen(false);
                 setImportPath("");
@@ -594,14 +595,15 @@ export function Workbench() {
               maxLength={2048}
               onChange={(event) => {
                 setImportPath(event.target.value);
-                setImportError(false);
+                setImportError("");
               }}
               placeholder="/Users/me/project 또는 ~/project"
               ref={importInput}
             />
           </label>
           <p>선택기와 같은 신뢰 확인을 거칩니다.</p>
-          {importError && (
+          {(importError === "FILE_DENIED" ||
+            importError === "INVALID_REQUEST") && (
             <p role="alert">
               이 경로를 열 수 없습니다. 절대 경로로 존재하는 폴더인지 확인하거나
               &apos;폴더 열기…&apos; 선택 버튼을 사용하세요.
