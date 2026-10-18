@@ -200,7 +200,12 @@ function ToolDetail({
   const summary = toolSummary(view, toolName, ctx.workspaceRoot);
   const status = labels[state] ?? "상태 확인 불가";
   return (
-    <div className={`tool-detail ${styles.toolDetail}`} data-tool-state={state}>
+    <div
+      className={`tool-detail ${styles.toolDetail}`}
+      data-tool-state={state}
+      data-tool-name={toolName}
+      data-tool-kind={view.kind}
+    >
       <details
         className={styles.toolCall}
         // Anything that needs attention is never hidden behind a collapsed row.
@@ -242,7 +247,7 @@ function ToolDetail({
             )
           )}
         </summary>
-        {state !== "completed" && state !== "needs-permission" && (
+        {state !== "needs-permission" && (
           <div className={`tool-heading ${styles.toolHeading}`}>
             <strong>{toolName}</strong>
             <span>{status}</span>
@@ -257,6 +262,15 @@ function ToolDetail({
             <OutputPre>{subagent.text}</OutputPre>
           </div>
         ) : null}
+        {view.kind !== "generic" && (
+          <details className={styles.rawIo}>
+            <summary className={styles.muted}>원본 입력·결과</summary>
+            <OutputPre>
+              {typeof args.input === "string" ? args.input : ""}
+            </OutputPre>
+            <OutputPre>{output || "아직 출력이 없습니다."}</OutputPre>
+          </details>
+        )}
         {view.kind === "generic" && (
           <>
             <p className={styles.muted}>입력</p>
