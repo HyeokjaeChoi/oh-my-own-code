@@ -4,6 +4,7 @@ import {
   compositeOver,
   contrastRatio,
   flatten,
+  formatRatio,
   isLargeText,
   parseBoxShadow,
   parseColor,
@@ -58,8 +59,11 @@ test("alpha compositing and layer flattening", () => {
 
 test("thresholds: large text is 3:1, normal text 4.5:1", () => {
   assert.equal(isLargeText(24, 400), true);
-  assert.equal(isLargeText(18.66, 700), true);
-  assert.equal(isLargeText(18.66, 400), false);
+  assert.equal(isLargeText(56 / 3, 700), true);
+  assert.equal(isLargeText(18.66, 700), false); // just under 14pt
+  assert.equal(isLargeText(56 / 3, 400), false);
+  assert.equal(formatRatio(4.4999), "4.499");
+  assert.equal(formatRatio(21), "21.000");
   assert.equal(requiredTextRatio(14, 400), 4.5);
   assert.equal(requiredTextRatio(24, 400), 3);
 });

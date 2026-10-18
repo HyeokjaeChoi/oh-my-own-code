@@ -70,9 +70,13 @@ export function contrastRatio(a, b) {
   return (hi + 0.05) / (lo + 0.05);
 }
 
-/** WCAG "large text": >= 24px, or >= 18.66px (14pt) when bold. */
+/** WCAG "large text": >= 24px (18pt), or >= 14pt (56/3 px) when bold. */
 export const isLargeText = (fontSizePx, fontWeight) =>
-  fontSizePx >= 24 || (fontSizePx >= 18.66 && Number(fontWeight) >= 700);
+  fontSizePx >= 24 || (fontSizePx >= 56 / 3 && Number(fontWeight) >= 700);
+
+/** Ratio for messages, rounded down so a failing 4.4999 never prints "4.50". */
+export const formatRatio = (ratio) =>
+  (Math.floor(ratio * 1000) / 1000).toFixed(3);
 export const requiredTextRatio = (fontSizePx, fontWeight) =>
   isLargeText(fontSizePx, fontWeight) ? 3 : 4.5;
 

@@ -808,6 +808,13 @@ details[open] > .disclosure > .chevron {
   background: var(--omoc-semantic-color-fill-subtle);
   color: var(--omoc-semantic-color-danger-foreground);
 }
+/* The row hover fill is also fill-subtle: outline the pill so it stays visible. */
+.toolDetail[data-tool-state="error"]
+  .toolCall
+  > .disclosure:hover
+  .summaryState {
+  box-shadow: inset 0 0 0 1px var(--omoc-semantic-color-border-default);
+}
 
 .toolHeading {
   display: flex;
