@@ -86,6 +86,24 @@ test("trackSessions marks finished background runs unread and keeps recent opens
   assert.deepEqual(a.recent, ["a"]);
 });
 
+test("sidebar time leads with Native's updatedAt and falls back to observed activity", async () => {
+  const { sessionTime } = await import(
+    "./renderer/features/sessions/navigation.ts"
+  );
+  const s = (extra) => ({
+    id: "a",
+    workspaceId: "w",
+    title: "A",
+    status: "idle",
+    ...extra,
+  });
+  assert.equal(sessionTime(s({ updatedAt: 5 }), {}), 5);
+  assert.equal(sessionTime(s(), { a: 7 }), 7);
+  assert.equal(sessionTime(s({ updatedAt: 5 }), { a: 7 }), 7);
+  assert.equal(sessionTime(s({ updatedAt: 9 }), { a: 7 }), 9);
+  assert.equal(sessionTime(s(), {}), undefined);
+});
+
 test("last activity is stamped on observed status changes only; relativeTime is compact Korean", async () => {
   const { trackSessions, emptyActivity, relativeTime } = await import(
     "./renderer/features/sessions/navigation.ts"

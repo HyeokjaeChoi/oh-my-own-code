@@ -307,6 +307,23 @@ test("model picker groups: recents first, free first per provider, filters never
   assert.equal(defaultFreeOnly(entries, true), true);
 });
 
+test("the default model row and chip name the session's model the same way", async () => {
+  const { defaultModelText } = await import(
+    "./renderer/shared/runtime-options/index.mjs"
+  );
+  assert.deepEqual(defaultModelText("Free Models Router"), {
+    chip: "기본 · Free Models Router",
+    hint: "지금: Free Models Router",
+  });
+  // The same display name the picker rows use ("(free)" is the badge's job).
+  assert.equal(defaultModelText("Foo (free)").chip, "기본 · Foo");
+  assert.equal(defaultModelText("Foo (free)").hint, "지금: Foo");
+  assert.deepEqual(defaultModelText(undefined), {
+    chip: "기본 모델",
+    hint: "런타임이 정합니다",
+  });
+});
+
 test('reasoning levels read in Korean and "(free)" is not repeated beside the badge', async () => {
   const { variantLabel, modelDisplayName } = await import(
     "./renderer/shared/runtime-options/index.mjs"

@@ -69,3 +69,7 @@ export function groupModels<T extends PickerModel>(
 ): { key: string; label: string; items: T[] }[];
 export function variantLabel(id: string): string;
 export function modelDisplayName(name: string): string;
+export function defaultModelText(reportedName?: string): {
+  chip: string;
+  hint: string;
+};

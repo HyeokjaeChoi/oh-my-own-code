@@ -156,6 +156,38 @@ export function freeFailure(entries, model, status) {
   return free ? { kind, ...(entry ? { id: entry.id } : {}) } : undefined;
 }
 
+// Any failed turn, from its structured failure only ({status, kind}; never the
+// provider's message). Free-model cases first, then the auth and server causes.
+export function turnFailure(entries, model, failure) {
+  if (!failure) return undefined;
+  const free = freeFailure(entries, model, failure.status);
+  if (free) return free;
+  // Main derives "auth" from Native's auth error type or a 401; any other 403
+  // (for example a content filter) is a refusal that no key or plan change
+  // explains.
+  if (failure.kind === "auth") return { kind: "auth" };
+  if (failure.status === 401 || failure.status === 403)
+    return { kind: "refused" };
+  if (failure.kind === "network" || failure.status >= 500)
+    return { kind: "server" };
+  return undefined;
+}
+// The page banner yields only when it is the error the last failed turn itself
+// produces: main maps a 401/403 turn to AUTH_REQUIRED and any other failure to
+// RUNTIME_ERROR, so the turn's kind must agree with the banner's code (a
+// different runtime error, an unknown outcome or a read failure still shows).
+const TURN_ERROR_CODE = Object.freeze({
+  auth: "AUTH_REQUIRED",
+  refused: "AUTH_REQUIRED",
+  unavailable: "RUNTIME_ERROR",
+  limit: "RUNTIME_ERROR",
+  server: "RUNTIME_ERROR",
+});
+export const inlineExplained = (kind, errorCode) =>
+  Boolean(kind) && Object.hasOwn(TURN_ERROR_CODE, kind)
+    ? TURN_ERROR_CODE[kind] === errorCode
+    : false;
+
 // Models that answered "not available for free", remembered per profile in the
 // same renderer storage as the picker memory (catalog ids only). A mark expires
 // after a day (free availability comes and goes) and a successful turn clears it.

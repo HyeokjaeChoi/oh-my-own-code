@@ -249,3 +249,8 @@ Nothing here can be proven on macOS. Wire-level pieces are implemented and unit-
 - **Leased file reads** (`plainRead`) are guarded by `Permission.assert` first; the removal hold does not apply to them separately.
 - **Native per-run `outcome:failed` is not projected** into the subagent tree (F-07); model-initiated child permission inheritance is Native-internal.
 - **Remaining `partial`/`missing` F-xx clauses** (typed-path import, tool-ui cards and direct tool run, permission presets view, layout preference, accessibility audit evidence) are tracked in the tables above, not repeated here.
+
+## Polish review minors (open)
+
+- `inlineExplained` still hides a RUNTIME_ERROR banner from the read-failure path while the last assistant turn carries an old explained failure; main does not tag the error with its source turn.
+- `readSessionTimes` burns the 30s throttle after a failed list read (old values kept); acceptable, retry on the next window.

@@ -16,6 +16,8 @@ export {
   findFreeRouter,
   showFirstRun,
   freeFailure,
+  turnFailure,
+  inlineExplained,
   retryablePrompt,
   loadUnavailableModels,
   markModelUnavailable,

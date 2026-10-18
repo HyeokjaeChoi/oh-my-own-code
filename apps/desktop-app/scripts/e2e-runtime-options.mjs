@@ -371,6 +371,22 @@ async function exerciseRuntimeOptions() {
     functionSha256: createHash("sha256").update(legacyGeometry).digest("hex"),
     observations: geometryObservations,
   };
+  // No explicit model: the chip and the checked default row say the same
+  // thing, the model the session reports.
+  await expect(modelChip()).toContainText("기본 · ");
+  const reported = ((await modelChip().textContent()) ?? "")
+    .split("기본 · ")[1]
+    ?.trim();
+  assert.ok(reported, "chip names the session model");
+  await openComposerPopover(page, "model");
+  const defaultRow = page.locator('[role="option"][data-model-option=""]');
+  await expect(defaultRow).toContainText(`지금: ${reported}`);
+  await expect(defaultRow).toHaveAttribute("aria-selected", "true");
+  await closeComposerPopovers(page);
+  // The sidebar time comes from the session's own updatedAt, not observation.
+  await expect(
+    page.locator(".session-list li").filter({ hasText: "Runtime Session B" }),
+  ).toContainText("3시간");
   await choose(scope);
   await composer().fill("SYNTHETIC next-send request");
   await openComposerPopover(page, "model");
@@ -557,6 +573,54 @@ async function exerciseRuntimeOptions() {
   assert.equal(Object.hasOwn(requests.at(-1), "variant"), false);
   await expect(modelChip()).toHaveAttribute("title", /session\.variant/);
   await shot("omitted-request-preserves-observed-variant");
+
+  // A failed last turn is explained on the turn itself; the generic page
+  // banner stays hidden and no provider text is shown.
+  await scenario("supported");
+  await application.evaluate(() => {
+    const fixture = globalThis.__omocUiFixture;
+    const snapshot = fixture.snapshot;
+    const messages = [
+      { id: "fail-user", role: "user", text: "SYNTHETIC ask", tools: [] },
+      {
+        id: "fail-assistant",
+        role: "assistant",
+        text: "",
+        tools: [],
+        failure: { status: 403, kind: "auth" },
+      },
+    ];
+    snapshot.messages = messages;
+    fixture.sessionMessages.set("fixture-s", messages);
+
+    snapshot.error = {
+      code: "AUTH_REQUIRED",
+      message: "No verified model credentials are available.",
+    };
+  });
+  await page.reload();
+  const authNote = page.locator('[data-free-failure="auth"]');
+  await expect(authNote).toContainText(
+    "제공자가 요청을 거부했습니다. 키 또는 요금제를 확인하세요.",
+  );
+  await expect(
+    authNote.getByRole("button", { name: "설정 열기" }),
+  ).toBeVisible();
+  await expect(
+    page.getByText(
+      "요청을 완료하지 못했습니다. 연결과 현재 상태를 다시 확인하세요.",
+    ),
+  ).toHaveCount(0);
+  await shot("inline-auth-failure");
+  await page.evaluate(() => {
+    globalThis.document.documentElement.dataset.theme = "dark";
+    globalThis.document.documentElement.style.colorScheme = "dark";
+  });
+  await shot("inline-auth-failure-dark");
+  await page.evaluate(() => {
+    globalThis.document.documentElement.dataset.theme = "light";
+    globalThis.document.documentElement.style.colorScheme = "light";
+  });
 
   await scenario("unknown");
   await expect(send()).toBeDisabled();
