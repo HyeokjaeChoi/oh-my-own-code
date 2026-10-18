@@ -669,6 +669,21 @@ function requestQuit() {
   return quitPromise;
 }
 
+// A typed path skips the native folder picker, so the user confirms the resolved folder here.
+async function confirmTypedImport(path) {
+  const result = await dialog.showMessageBox(mainWindow, {
+    type: "question",
+    title: "작업 공간 등록",
+    message: "이 폴더를 작업 공간으로 등록할까요?",
+    detail: path,
+    buttons: ["취소", "등록"],
+    defaultId: 0,
+    cancelId: 0,
+    noLink: true,
+  });
+  return result.response === 1;
+}
+
 async function confirmWorkspaceTrust(path, action) {
   const folderAction =
     action === "worktree.inspect" || action === "worktree.delete";
@@ -1226,6 +1241,7 @@ app.whenReady().then(async () => {
       return result.response === 1;
     },
     confirmTrust: confirmWorkspaceTrust,
+    confirmImport: confirmTypedImport,
   });
   bindIpc();
   createWindow();

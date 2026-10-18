@@ -3,6 +3,7 @@
 import {
   openMoreMenuItem,
   openSettings,
+  openWorkspaceMenu,
   selectWorkspace,
 } from "./e2e-shell.mjs";
 import assert from "node:assert/strict";
@@ -39,8 +40,10 @@ const fixture = await realpath(
 const scratch = join(fixture, "tmp");
 const project = join(fixture, "sample-project");
 const SECRET = "never-render-this-fixture";
+const typedProject = join(fixture, "typed-project");
 await mkdir(scratch);
 await mkdir(project);
+await mkdir(typedProject);
 await writeFile(join(project, ".env"), `SYNTHETIC_SECRET=${SECRET}\n`);
 await writeFile(
   join(project, "package.json"),
@@ -755,6 +758,57 @@ try {
     await page.keyboard.press("Escape");
     await expect(search).toBeHidden();
   });
+
+  await check(
+    "typed-path-import",
+    async () => {
+      const menu = await openWorkspaceMenu(page);
+      await menu.getByRole("menuitem", { name: "경로로 열기…" }).click();
+      const field = page.getByRole("textbox", { name: "폴더 경로" });
+      await field.fill(join(fixture, "does-not-exist"));
+      await page.getByRole("button", { name: "경로로 가져오기" }).click();
+      const alert = page.getByRole("alert").filter({ hasText: "폴더 열기" });
+      await expect(alert).toBeVisible();
+      await expect(alert).toContainText("확인하거나");
+      assert.ok(!(await alert.innerText()).includes("does-not-exist"));
+      // Native confirm: decline first (nothing registers), then accept; the
+      // dialog must show the canonical resolved path.
+      await application.evaluate(({ dialog: d }) => {
+        globalThis.__importPrompts = [];
+        globalThis.__importAnswer = 0;
+        d.showMessageBox = async (...args) => {
+          const options = args.at(-1);
+          globalThis.__importPrompts.push(options.detail);
+          return {
+            response: globalThis.__importAnswer,
+            checkboxChecked: false,
+          };
+        };
+      });
+      const viaDotDot = `${typedProject}/../typed-project`;
+      await field.fill(viaDotDot);
+      await page.getByRole("button", { name: "경로로 가져오기" }).click();
+      await expect
+        .poll(() => application.evaluate(() => globalThis.__importPrompts))
+        .toEqual([typedProject]);
+      const declined = await bridge({ type: "snapshot" });
+      assert.ok(
+        !declined.value?.workspaces.some((w) => w.path === typedProject),
+        "declined import registered nothing",
+      );
+      await application.evaluate(() => {
+        globalThis.__importAnswer = 1;
+      });
+      await page.getByRole("button", { name: "경로로 가져오기" }).click();
+      await expect(field).toBeHidden();
+      const after = await bridge({ type: "snapshot" });
+      assert.ok(
+        after.value?.workspaces.some((w) => w.path === typedProject),
+        "typed path registered",
+      );
+    },
+    { needs: "runtime" },
+  );
 
   results.push({
     name: "no-renderer-page-errors",
