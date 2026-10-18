@@ -539,6 +539,87 @@ try {
     await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
   });
 
+  await check("layout-panel-width", async () => {
+    const storageKey = "omoc.preferences.v1";
+    const stored = () =>
+      page.evaluate(
+        (k) => JSON.parse(globalThis.localStorage.getItem(k) ?? "{}"),
+        storageKey,
+      );
+    const handle = () =>
+      page.getByRole("separator", { name: "상세 패널 너비" });
+    const reopen = async () => {
+      await page.reload();
+      await expect(
+        page.locator(".workbench-header [data-connection]"),
+      ).toHaveAttribute(
+        "data-connection",
+        /connected|disconnected|unavailable|starting/,
+        {
+          timeout: CONNECT_TIMEOUT_MS,
+        },
+      );
+      if (!(await handle().count()))
+        await page
+          .getByRole("button", { name: "보조 패널", exact: true })
+          .click();
+    };
+    if (!(await handle().count()))
+      await page
+        .getByRole("button", { name: "보조 패널", exact: true })
+        .click();
+    await expect(handle()).toBeVisible();
+    await handle().focus();
+    await page.keyboard.press("Enter"); // reset to the default first
+    await expect(handle()).toHaveAttribute("aria-valuenow", "420");
+    for (let i = 0; i < 5; i++) await page.keyboard.press("ArrowLeft");
+    await expect(handle()).toHaveAttribute("aria-valuenow", "470");
+    assert.equal((await stored()).layout?.panelWidth, 470);
+    // Appearance preferences saved later must not drop the layout.
+    await openSettings(page);
+    await dialog()
+      .getByRole("tab", { name: "일반", exact: true })
+      .click()
+      .catch(() => {});
+    await page.keyboard.press("Escape");
+    await reopen();
+    await expect(handle()).toHaveAttribute("aria-valuenow", "470");
+    // Corrupt / out-of-range storage falls back to a valid width.
+    await page.evaluate((k) => {
+      const blob = JSON.parse(globalThis.localStorage.getItem(k) ?? "{}");
+      globalThis.localStorage.setItem(
+        k,
+        JSON.stringify({ ...blob, layout: { panelWidth: "wide" } }),
+      );
+    }, storageKey);
+    await reopen();
+    await expect(handle()).toHaveAttribute("aria-valuenow", "420");
+    await page.evaluate((k) => {
+      const blob = JSON.parse(globalThis.localStorage.getItem(k) ?? "{}");
+      globalThis.localStorage.setItem(
+        k,
+        JSON.stringify({ ...blob, layout: { panelWidth: 99999 } }),
+      );
+    }, storageKey);
+    await reopen();
+    const max = Math.round(
+      (await page.evaluate(() => window.innerWidth)) * 0.6,
+    );
+    await expect(handle()).toHaveAttribute("aria-valuenow", String(max));
+    await page.evaluate(
+      (k) => globalThis.localStorage.setItem(k, "{not json"),
+      storageKey,
+    );
+    await reopen();
+    await expect(handle()).toHaveAttribute("aria-valuenow", "420");
+    // Reset path: double-click restores the default and persists it.
+    await handle().focus();
+    await page.keyboard.press("ArrowLeft");
+    await handle().dblclick();
+    await expect(handle()).toHaveAttribute("aria-valuenow", "420");
+    assert.equal((await stored()).layout?.panelWidth, 420);
+  });
+
   results.push({
     name: "no-renderer-page-errors",
     status: pageErrors.length ? "fail" : "pass",

@@ -4,9 +4,15 @@ import test from "node:test";
 
 const {
   applyPreferences,
+  DEFAULT_LAYOUT,
   DEFAULT_PREFERENCES,
+  loadLayout,
   loadPreferences,
+  PANEL_WIDTH_MAX,
+  PANEL_WIDTH_MIN,
+  parseLayout,
   parsePreferences,
+  saveLayout,
   savePreferences,
   SHORTCUTS,
 } = await import("./renderer/shared/preferences/index.mjs");
@@ -125,4 +131,57 @@ test("font scale base values match tokens.css", () => {
 test("shortcut help lists the help key", () => {
   assert.ok(SHORTCUTS.some((s) => s.keys === "?"));
   assert.ok(SHORTCUTS.some((s) => s.keys === "Cmd/Ctrl+K"));
+});
+
+test("layout panelWidth parses, clamps and defaults", () => {
+  assert.deepEqual(parseLayout(null), DEFAULT_LAYOUT);
+  assert.deepEqual(parseLayout("{bad"), DEFAULT_LAYOUT);
+  assert.deepEqual(parseLayout({ layout: "x" }), DEFAULT_LAYOUT);
+  for (const bad of ["500", NaN, Infinity, null, {}])
+    assert.equal(parseLayout({ layout: { panelWidth: bad } }).panelWidth, 420);
+  assert.equal(
+    parseLayout({ layout: { panelWidth: 10 } }).panelWidth,
+    PANEL_WIDTH_MIN,
+  );
+  assert.equal(
+    parseLayout({ layout: { panelWidth: 1e9 } }).panelWidth,
+    PANEL_WIDTH_MAX,
+  );
+  assert.equal(
+    parseLayout(JSON.stringify({ layout: { panelWidth: 512.6 } })).panelWidth,
+    513,
+  );
+  // Layout never leaks into the appearance preferences.
+  assert.deepEqual(
+    parsePreferences({ layout: { panelWidth: 600 } }),
+    DEFAULT_PREFERENCES,
+  );
+});
+
+test("layout and preferences share one blob without clobbering each other", () => {
+  const data = new Map();
+  const storage = {
+    getItem: (k) => data.get(k) ?? null,
+    setItem: (k, v) => data.set(k, v),
+  };
+  saveLayout({ panelWidth: 640 }, storage);
+  savePreferences({ ...DEFAULT_PREFERENCES, theme: "dark" }, storage);
+  assert.equal(loadLayout(storage).panelWidth, 640);
+  assert.equal(loadPreferences(storage).theme, "dark");
+  saveLayout({ panelWidth: 99999 }, storage);
+  assert.equal(loadLayout(storage).panelWidth, PANEL_WIDTH_MAX);
+  assert.equal(loadPreferences(storage).theme, "dark");
+  // Reset path: saving the default restores the default width.
+  saveLayout(DEFAULT_LAYOUT, storage);
+  assert.equal(loadLayout(storage).panelWidth, 420);
+  const broken = {
+    getItem() {
+      throw new Error("blocked");
+    },
+    setItem() {
+      throw new Error("blocked");
+    },
+  };
+  assert.deepEqual(loadLayout(broken), DEFAULT_LAYOUT);
+  saveLayout({ panelWidth: 500 }, broken);
 });
