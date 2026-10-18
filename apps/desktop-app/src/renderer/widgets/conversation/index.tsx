@@ -65,7 +65,7 @@ import {
 import {
   clearModelUnavailable,
   findFreeRouter,
-  freeFailure,
+  turnFailure,
   loadUnavailableModels,
   retryablePrompt,
   markModelUnavailable,
@@ -83,6 +83,7 @@ import {
   type WorkbenchPermission,
   validAssistantRuntime,
   variantLabel,
+  defaultModelText,
 } from "../../shared/api/index.js";
 
 /* eslint-disable no-unused-vars -- Names document type-only callback parameters. */
@@ -310,7 +311,7 @@ function FreeFailureNote({
   kind,
   onRetry,
 }: {
-  kind: "unavailable" | "limit";
+  kind: "unavailable" | "limit" | "auth" | "server";
   onRetry?: (() => void) | undefined;
 }) {
   return (
@@ -318,8 +319,21 @@ function FreeFailureNote({
       <p>
         {kind === "unavailable"
           ? "이 모델은 지금 무료로 쓸 수 없습니다."
-          : "무료 사용 한도에 걸렸습니다. 잠시 후 다시 시도하거나 다른 모델을 고르세요."}
+          : kind === "limit"
+            ? "무료 사용 한도에 걸렸습니다. 잠시 후 다시 시도하거나 다른 모델을 고르세요."
+            : kind === "auth"
+              ? "제공자가 요청을 거부했습니다. 키 또는 요금제를 확인하세요."
+              : "제공자 응답 오류입니다. 잠시 후 다시 시도하세요."}
       </p>
+      {kind === "auth" && (
+        <Button
+          size="compact"
+          type="button"
+          onClick={() => openSettingsPage("models")}
+        >
+          설정 열기
+        </Button>
+      )}
       {onRetry && (
         <Button size="compact" type="button" onClick={onRetry}>
           Free Models Router로 다시 보내기
@@ -452,7 +466,7 @@ export function Conversation(props: Props) {
       : "기본 에이전트";
   const modelLabel = model
     ? (selectedModel?.name ?? model)
-    : (reportedModel?.name ?? sessionSetting?.model?.id ?? "기본 모델");
+    : defaultModelText(reportedModel?.name ?? sessionSetting?.model?.id).chip;
   // Requested for the next send vs reported by the session: a difference is
   // shown as a dot on the chip with the detail in its tooltip.
   const reportedModelName = reportedModel?.name ?? sessionSetting?.model?.id;
@@ -534,7 +548,7 @@ export function Conversation(props: Props) {
   const failures = useMemo(() => {
     const found = new Map<
       string,
-      { kind: "unavailable" | "limit"; id?: string }
+      { kind: "unavailable" | "limit" | "auth" | "server"; id?: string }
     >();
     const entries =
       props.catalog?.models.status === "available"
@@ -543,7 +557,7 @@ export function Conversation(props: Props) {
     for (const message of props.messages) {
       const failed =
         message.role === "assistant" && message.failure
-          ? freeFailure(entries, message.runtime?.model, message.failure.status)
+          ? turnFailure(entries, message.runtime?.model, message.failure)
           : undefined;
       if (failed) found.set(message.id, failed);
     }
@@ -799,6 +813,8 @@ export function Conversation(props: Props) {
                       );
                       const prompt = retryablePrompt(props.messages[index - 1]);
                       const canRetry =
+                        (failed.kind === "unavailable" ||
+                          failed.kind === "limit") &&
                         freeRouter &&
                         prompt &&
                         index === props.messages.length - 1 &&
@@ -1367,6 +1383,9 @@ export function Conversation(props: Props) {
                       model={model}
                       variant={variant}
                       variantCleared={variantCleared}
+                      reportedName={
+                        reportedModel?.name ?? sessionSetting?.model?.id
+                      }
                       disabled={optionsHeld}
                       unavailable={unavailable}
                       onModel={setModel}

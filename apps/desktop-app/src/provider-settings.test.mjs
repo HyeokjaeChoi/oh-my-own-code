@@ -167,6 +167,22 @@ test("free-model failures classify by structured status and never touch paid mod
   );
 });
 
+test("any failed turn classifies from structured status/kind only", async () => {
+  const { turnFailure } = await import("./renderer/shared/providers/index.mjs");
+  const paid = { providerId: "opencode", id: "gpt" };
+  assert.equal(turnFailure([], paid, { status: 403 })?.kind, "auth");
+  assert.equal(turnFailure([], paid, { status: 401 })?.kind, "auth");
+  assert.equal(turnFailure([], paid, { kind: "auth" })?.kind, "auth");
+  assert.equal(turnFailure([], paid, { status: 502 })?.kind, "server");
+  assert.equal(turnFailure([], paid, { kind: "network" })?.kind, "server");
+  // Free-model 404/429 keep their own kinds; a paid 404/429 stays generic.
+  const free = { providerId: "openrouter", id: "a/b:free" };
+  assert.equal(turnFailure([], free, { status: 404 })?.kind, "unavailable");
+  assert.equal(turnFailure([], free, { status: 429 })?.kind, "limit");
+  assert.equal(turnFailure([], paid, { status: 404 }), undefined);
+  assert.equal(turnFailure([], paid, undefined), undefined);
+});
+
 test("unavailable marks expire after a day, clear on success, bounded to catalog ids", async () => {
   const { loadUnavailableModels, markModelUnavailable, clearModelUnavailable } =
     await import("./renderer/shared/providers/index.mjs");

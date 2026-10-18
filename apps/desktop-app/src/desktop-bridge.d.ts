@@ -167,6 +167,8 @@ export interface WorkbenchSession {
   archived?: boolean;
   parentSessionId?: string;
   permissionMode?: "ask" | "scoped_edit" | "read_plan";
+  /** Native's last activity time, ms since epoch; absent when unknown. */
+  updatedAt?: number;
 }
 export interface WorkbenchDiagnostics {
   startedAt: number;
@@ -196,7 +198,7 @@ export interface WorkbenchMessage {
   context?: HistoricalContext;
   runtime?: AssistantRuntime;
   // HTTP status of a failed assistant turn (400-599), when the runtime reports one.
-  failure?: { status: number };
+  failure?: { status?: number; kind?: "auth" | "network" };
   id: string;
   role: "user" | "assistant";
   text: string;

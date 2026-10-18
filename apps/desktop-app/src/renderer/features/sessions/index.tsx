@@ -16,6 +16,7 @@ import {
   validSessionTitle,
   isPlaceholderTitle,
   relativeTime,
+  sessionTime,
   type SessionActivity,
 } from "./navigation.js";
 import styles from "./sessions.module.css";
@@ -173,9 +174,9 @@ export function SessionNavigation(props: Props) {
             selected={session.id === props.selectedId}
             unread={unread.includes(session.id)}
             time={
-              active[session.id] === undefined
+              sessionTime(session, active) === undefined
                 ? ""
-                : relativeTime(active[session.id]!, now)
+                : relativeTime(sessionTime(session, active)!, now)
             }
             permission={props.permissionIds?.includes(session.id) ?? false}
             disabled={

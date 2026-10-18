@@ -671,6 +671,7 @@ export function applyRuntimeOptionsState(fixture, name) {
       workspaceId: "fixture-w",
       title: "Runtime Session B",
       status: "idle",
+      updatedAt: Date.now() - 3 * 3_600_000,
     },
   ];
   const scope = {

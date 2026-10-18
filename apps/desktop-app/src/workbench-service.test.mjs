@@ -76,6 +76,10 @@ async function fixture(
         infos.set(result.id, result);
         return result;
       }),
+      list: method("sessions", () => ({
+        data: state.sessionList ?? [...infos.values()],
+        cursor: {},
+      })),
       active: method("active", () => state.active),
       inbox: { list: method("inbox", () => state.inbox) },
       switchAgent: method("switchAgent", () => {}),
@@ -2495,4 +2499,50 @@ test("a failed assistant turn projects only its numeric HTTP status", () => {
   assert.equal(JSON.stringify(failed).includes("sk-secret"), false);
   assert.equal("failure" in plain, false);
   assert.equal("failure" in odd, false);
+});
+test("snapshot sessions carry Native's last activity time as updatedAt", async (t) => {
+  const f = await fixture(t);
+  const original = f.client.session.get;
+  f.client.session.get = async (...args) => ({
+    ...(await original(...args)),
+    time: { created: 1, updated: 5000, idle: 7000 },
+  });
+  const sessions = (await f.service.handle({ type: "snapshot", ...f.ids }))
+    .value.sessions;
+  assert.equal(sessions[0].updatedAt, 7000); // Sessions other than the selected one get their time from Native's list.
+  const created = await f.service.handle({
+    type: "session.create",
+    workspaceId: f.ids.workspaceId,
+    title: "Other",
+  });
+  assert.equal(created.ok, true);
+  f.state.sessionList = [
+    {
+      ...(await original({ sessionID: "sdk-1" })),
+      time: { created: 1, updated: 9000 },
+    },
+  ];
+  const other = (
+    await f.service.handle({ type: "snapshot", ...f.ids })
+  ).value.sessions.find((x) => x.title === "Other");
+  assert.equal(other.updatedAt, 9000);
+});
+test("a failed turn's type reduces to a closed cause and never leaves main", () => {
+  const turn = (error) => ({
+    id: "a",
+    type: "assistant",
+    content: [],
+    time: { created: 1 },
+    error,
+  });
+  const [auth, net, other, none] = projectMessages([
+    turn({ type: "provider.auth", status: 403, message: "sk-secret" }),
+    turn({ type: "provider.network-error", message: "http://x" }),
+    turn({ type: "provider.rate-limit", status: 429 }),
+    turn({ type: "unknown" }),
+  ]);
+  assert.deepEqual(auth.failure, { status: 403, kind: "auth" });
+  assert.deepEqual(net.failure, { kind: "network" });
+  assert.deepEqual(other.failure, { status: 429 });
+  assert.equal("failure" in none, false);
 });

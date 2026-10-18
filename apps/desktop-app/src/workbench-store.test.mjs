@@ -19363,6 +19363,8 @@ test("runtime options: session setting correlation and closedness reject absent 
       { role: "user", failure: { status: 404 } },
       { role: "assistant", failure: { status: 200 } },
       { role: "assistant", failure: { status: 404, message: "leak" } },
+      { role: "assistant", failure: {} },
+      { role: "assistant", failure: { kind: "other" } },
     ].map(({ role, failure }) => ({
       messages: [{ id: "m", role, text: "", tools: [], failure }],
     })),
@@ -19371,7 +19373,7 @@ test("runtime options: session setting correlation and closedness reject absent 
     assert.equal(store.getState(), before);
   }
 });
-test("a failed assistant turn is accepted with its status and drives lastTurnFreeFailure", () => {
+test("a failed assistant turn is accepted with its status and drives lastTurnFailure", () => {
   const { api } = runtimeWindow(() => undefined);
   seed(
     api.store,
@@ -19391,7 +19393,7 @@ test("a failed assistant turn is accepted with its status and drives lastTurnFre
       ],
     }),
   );
-  assert.equal(selectors.lastTurnFreeFailure(api.store.getState()), "limit");
+  assert.equal(selectors.lastTurnFailure(api.store.getState()), "limit");
   seed(
     api.store,
     snapshot(2, "a", {
@@ -19410,7 +19412,25 @@ test("a failed assistant turn is accepted with its status and drives lastTurnFre
       ],
     }),
   );
-  assert.equal(selectors.lastTurnFreeFailure(api.store.getState()), undefined);
+  assert.equal(selectors.lastTurnFailure(api.store.getState()), undefined);
+  // Auth and server failures are explained inline whatever the model is.
+  for (const [index, [failure, kind]] of [
+    [{ status: 403, kind: "auth" }, "auth"],
+    [{ status: 401 }, "auth"],
+    [{ status: 503 }, "server"],
+    [{ kind: "network" }, "server"],
+    [{ status: 400 }, undefined],
+  ].entries()) {
+    seed(
+      api.store,
+      snapshot(3 + index, "a", {
+        messages: [
+          { id: "m", role: "assistant", text: "", tools: [], failure },
+        ],
+      }),
+    );
+    assert.equal(selectors.lastTurnFailure(api.store.getState()), kind);
+  }
 });
 test("runtime options: current session report waits for fresh snapshot at ACK floor; never copies NEXT request", async () => {
   const noRead = deferred();
