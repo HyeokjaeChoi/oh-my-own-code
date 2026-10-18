@@ -244,6 +244,37 @@ export function projectRevert(revert) {
     filesRestored: Boolean(revert.snapshot),
   };
 }
+// A failed turn reduced to its HTTP status and a closed cause derived from the
+// error type; the type and message themselves never leave main.
+export function projectFailure(error) {
+  const status =
+    Number.isInteger(error?.status) &&
+    error.status >= 400 &&
+    error.status <= 599
+      ? error.status
+      : undefined;
+  const type = typeof error?.type === "string" ? error.type : "";
+  // Auth only for Native's auth type (or a 401); another 403 type, such as a
+  // content filter, is not a key or plan problem.
+  const kind =
+    type === "provider.auth" || status === 401
+      ? "auth"
+      : /^provider\.(transport|timeout)$/.test(type)
+        ? "network"
+        : undefined;
+  return status === undefined && kind === undefined
+    ? undefined
+    : {
+        ...(status !== undefined && { status }),
+        ...(kind && { kind }),
+      };
+}
+// Native's last activity: the end of its last run, else creation. Its own
+// `updated` also moves on app-initiated edits (rename, pin), so it is not used.
+export function activityTime(time) {
+  const t = time?.idle ?? time?.created;
+  return Number.isSafeInteger(t) && t > 0 ? t : undefined;
+}
 export function projectMessages(data) {
   if (!Array.isArray(data)) fail("RUNTIME_ERROR");
   return data
@@ -269,11 +300,8 @@ export function projectMessages(data) {
         : {}),
       // Only the numeric HTTP status of a failed turn; its type and message
       // can carry URLs or keys and never reach the renderer.
-      ...(message.type === "assistant" &&
-      Number.isInteger(message.error?.status) &&
-      message.error.status >= 400 &&
-      message.error.status <= 599
-        ? { failure: { status: message.error.status } }
+      ...(message.type === "assistant" && projectFailure(message.error)
+        ? { failure: projectFailure(message.error) }
         : {}),
       text:
         message.type === "user"
@@ -2936,24 +2964,28 @@ export function createWorkbenchService({
           archived,
           parentSessionId,
           permissionMode,
-        }) => ({
-          id,
-          workspaceId,
-          permissionMode: modeOf({ permissionMode }),
-          title,
-          status:
-            blocked ||
-            recovery.resources.some(
-              (r) =>
-                r.workspaceId === workspaceId &&
-                (!r.sessionId || r.sessionId === id),
-            )
-              ? "unavailable"
-              : (nativeProjections.get(id)?.status ?? status),
-          pinned,
-          archived,
-          ...(parentSessionId && { parentSessionId }),
-        }),
+        }) => {
+          const updatedAt = sessionTimes.get(tables().sessions.get(id)?.sdkId);
+          return {
+            id,
+            workspaceId,
+            permissionMode: modeOf({ permissionMode }),
+            title,
+            status:
+              blocked ||
+              recovery.resources.some(
+                (r) =>
+                  r.workspaceId === workspaceId &&
+                  (!r.sessionId || r.sessionId === id),
+              )
+                ? "unavailable"
+                : (nativeProjections.get(id)?.status ?? status),
+            pinned,
+            archived,
+            ...(updatedAt && { updatedAt }),
+            ...(parentSessionId && { parentSessionId }),
+          };
+        },
       ),
       ...(w && { selectedWorkspaceId: w.id }),
       ...(s && { selectedSessionId: s.id }),
@@ -3199,6 +3231,8 @@ export function createWorkbenchService({
         s.sessionSelection = projectSessionSelection(info, s.id);
         // Native does not hide reverted messages; the boundary message and all
         // later ones are hidden here.
+        const infoTime = activityTime(info.time);
+        if (infoTime) sessionTimes.set(s.sdkId, infoTime);
         s.revert = projectRevert(info.revert);
         if (s.revert && checkpoints) {
           const record = await checkpoints.staged(s.workspaceId, s.id);
@@ -5080,6 +5114,29 @@ export function createWorkbenchService({
       fail(code);
     }
   }
+  // Native's own last-activity time per session (ms), for the sidebar's
+  // relative time. Never awaited by a snapshot: one first-page list read (most
+  // recent 100), at most every 30s, feeds the next snapshot. A failed read
+  // keeps the last known values.
+  const sessionTimes = new Map();
+  let sessionTimesAt = -Infinity;
+  async function readSessionTimes() {
+    if (performance.now() - sessionTimesAt < 30000) return;
+    if (!client || runtime.snapshot().state !== "connected") return;
+    sessionTimesAt = performance.now();
+    try {
+      // Read-only and detached from the request: it must not take part in the
+      // caller's operation scope, so it bypasses call().
+      const result = await client.session.list({ limit: 100, order: "desc" });
+      if (!Array.isArray(result?.data)) return;
+      for (const item of result.data) {
+        const t = activityTime(item?.time);
+        if (opaque(item?.id) && t) sessionTimes.set(item.id, t);
+      }
+    } catch {
+      // Keep what is known; the sidebar falls back to observed activity.
+    }
+  }
   async function noDescendants(s) {
     if (
       [...tables().sessions.values()].some(
@@ -5631,6 +5688,14 @@ export function createWorkbenchService({
               (item) => item.workspaceId === w.id && !item.archived,
             )
           : tables().sessions.get(defaultSession));
+      // The selected session's time comes from its own read below; only others
+      // need the list scan.
+      if (
+        [...tables().sessions.values()].some(
+          (item) => item.id !== selectedS?.id && !item.archived,
+        )
+      )
+        void readSessionTimes();
       const projection =
         selectedS &&
         !selectedS.unavailable &&

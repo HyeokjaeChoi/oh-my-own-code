@@ -498,7 +498,30 @@ test("runtime options snapshot closes native setting scope and per-message repor
     messages: [{ ...snapshot.messages[0], failure: { status: 404 } }],
   };
   assert.deepEqual(validateSnapshot(failed), failed);
+  for (const ok of [{ status: 403, kind: "auth" }, { kind: "network" }]) {
+    const withKind = {
+      ...snapshot,
+      messages: [{ ...snapshot.messages[0], failure: ok }],
+    };
+    assert.deepEqual(validateSnapshot(withKind), withKind);
+  }
+  const timed = {
+    ...snapshot,
+    sessions: [{ ...snapshot.sessions[0], updatedAt: 1792212150603 }],
+  };
+  assert.deepEqual(validateSnapshot(timed), timed);
+  for (const updatedAt of [0, -1, 1.5, "1"])
+    assert.throws(
+      () =>
+        validateSnapshot({
+          ...snapshot,
+          sessions: [{ ...snapshot.sessions[0], updatedAt }],
+        }),
+      { appCode: "INVALID_REQUEST" },
+    );
   for (const failure of [
+    {},
+    { kind: "other" },
     { status: 200 },
     { status: "404" },
     { status: 404, message: "leak" },

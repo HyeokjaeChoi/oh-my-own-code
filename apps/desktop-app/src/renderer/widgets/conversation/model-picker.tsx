@@ -3,6 +3,7 @@ import { Check } from "lucide-react";
 import { Input, Segmented, Switch } from "@workbench/ui";
 import {
   defaultFreeOnly,
+  defaultModelText,
   groupModels,
   modelDisplayName,
   variantLabel,
@@ -30,6 +31,8 @@ type Props = {
   model: string;
   variant: string;
   variantCleared: boolean;
+  // Name the session reports, shown on the default row.
+  reportedName?: string | undefined;
   disabled: boolean;
   // Catalog ids that answered "not available for free"; still selectable.
   unavailable: readonly string[];
@@ -59,7 +62,11 @@ export function ModelPicker(props: Props) {
   const lead: Row[] = query
     ? []
     : [
-        { id: "", name: "기본 모델", hint: "런타임이 정합니다" },
+        {
+          id: "",
+          name: "기본 모델",
+          hint: defaultModelText(props.reportedName).hint,
+        },
         ...(model && !selected
           ? [{ id: model, name: `${model} (사용 불가)` }]
           : []),

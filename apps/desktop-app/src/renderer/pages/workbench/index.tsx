@@ -61,6 +61,7 @@ import type {
   WorktreeResult,
 } from "../../../desktop-bridge.js";
 import { selectionKey } from "../../shared/projection/index.js";
+import { inlineExplained } from "../../shared/providers/index.js";
 import styles from "./shell.module.css";
 
 const MIN_PANEL_WIDTH = 320;
@@ -74,8 +75,8 @@ export function Workbench() {
   const { actions, store } = useWindowWorkbench();
   const recovery = useWorkbenchSelector(selectors.recovery);
   const gitObservation = useWorkbenchSelector(currentGitReviewObservation);
-  // The free-model failure sentence replaces the generic banner.
-  const freeFailure = useWorkbenchSelector(selectors.lastTurnFreeFailure);
+  // An inline failure note on the last turn replaces the generic banner.
+  const turnFailure = useWorkbenchSelector(selectors.lastTurnFailure);
   // 변경 is the default tab once a current Git read shows changes.
   const hasChanges =
     gitObservation?.status === "available" && gitObservation.files.length > 0;
@@ -914,7 +915,7 @@ export function Workbench() {
           </div>
         ) : (
           snapshot?.error &&
-          !freeFailure && (
+          !inlineExplained(turnFailure, snapshot.error.code) && (
             <div
               className={`${styles.statusLine} ${styles.error}`}
               role="alert"

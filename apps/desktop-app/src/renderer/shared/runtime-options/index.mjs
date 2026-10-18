@@ -231,3 +231,12 @@ export const variantLabel = (id) =>
 // The 무료 badge says it; a "(free)" suffix in the name would repeat it.
 export const modelDisplayName = (name) =>
   name.replace(/\s*\(free\)\s*$/iu, "") || name;
+// No explicit model on the draft: the runtime sends what the session reports.
+// The chip and the picker's default row both say so, with that same name.
+export const defaultModelText = (reportedName) => {
+  const name = reportedName && modelDisplayName(reportedName);
+  return {
+    chip: name ? `기본 · ${name}` : "기본 모델",
+    hint: name ? `지금: ${name}` : "런타임이 정합니다",
+  };
+};

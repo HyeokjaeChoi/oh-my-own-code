@@ -167,6 +167,41 @@ test("free-model failures classify by structured status and never touch paid mod
   );
 });
 
+test("any failed turn classifies from structured status/kind only", async () => {
+  const { turnFailure, inlineExplained } = await import(
+    "./renderer/shared/providers/index.mjs"
+  );
+  // The page banner yields only to a failed turn's own page error.
+  assert.equal(inlineExplained("auth", "AUTH_REQUIRED"), true);
+  assert.equal(inlineExplained("server", "RUNTIME_ERROR"), true);
+  assert.equal(inlineExplained("limit", "RUNTIME_ERROR"), true);
+  assert.equal(inlineExplained("auth", "UNKNOWN_OUTCOME"), false);
+  assert.equal(inlineExplained("auth", "UNAVAILABLE"), false);
+  assert.equal(inlineExplained(undefined, "RUNTIME_ERROR"), false);
+  // A later runtime error that the failed turn did not produce still shows.
+  assert.equal(inlineExplained("auth", "RUNTIME_ERROR"), false);
+  assert.equal(inlineExplained("refused", "RUNTIME_ERROR"), false);
+  assert.equal(inlineExplained("limit", "AUTH_REQUIRED"), false);
+  assert.equal(inlineExplained("server", "AUTH_REQUIRED"), false);
+  const paid = { providerId: "opencode", id: "gpt" };
+  // Only main's derived kind says auth; another 401/403 is a plain refusal.
+  assert.equal(turnFailure([], paid, { status: 403 })?.kind, "refused");
+  assert.equal(turnFailure([], paid, { status: 401 })?.kind, "refused");
+  assert.equal(
+    turnFailure([], paid, { status: 403, kind: "auth" })?.kind,
+    "auth",
+  );
+  assert.equal(turnFailure([], paid, { kind: "auth" })?.kind, "auth");
+  assert.equal(turnFailure([], paid, { status: 502 })?.kind, "server");
+  assert.equal(turnFailure([], paid, { kind: "network" })?.kind, "server");
+  // Free-model 404/429 keep their own kinds; a paid 404/429 stays generic.
+  const free = { providerId: "openrouter", id: "a/b:free" };
+  assert.equal(turnFailure([], free, { status: 404 })?.kind, "unavailable");
+  assert.equal(turnFailure([], free, { status: 429 })?.kind, "limit");
+  assert.equal(turnFailure([], paid, { status: 404 }), undefined);
+  assert.equal(turnFailure([], paid, undefined), undefined);
+});
+
 test("unavailable marks expire after a day, clear on success, bounded to catalog ids", async () => {
   const { loadUnavailableModels, markModelUnavailable, clearModelUnavailable } =
     await import("./renderer/shared/providers/index.mjs");

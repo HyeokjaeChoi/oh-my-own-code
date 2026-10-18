@@ -76,6 +76,10 @@ async function fixture(
         infos.set(result.id, result);
         return result;
       }),
+      list: method("sessions", () => ({
+        data: state.sessionList ?? [...infos.values()],
+        cursor: {},
+      })),
       active: method("active", () => state.active),
       inbox: { list: method("inbox", () => state.inbox) },
       switchAgent: method("switchAgent", () => {}),
@@ -2495,4 +2499,99 @@ test("a failed assistant turn projects only its numeric HTTP status", () => {
   assert.equal(JSON.stringify(failed).includes("sk-secret"), false);
   assert.equal("failure" in plain, false);
   assert.equal("failure" in odd, false);
+});
+test("snapshot sessions carry Native's last activity time as updatedAt", async (t) => {
+  const f = await fixture(t);
+  const original = f.client.session.get;
+  f.client.session.get = async (...args) => ({
+    ...(await original(...args)),
+    time: { created: 1, updated: 5000, idle: 7000 },
+  });
+  const sessions = (await f.service.handle({ type: "snapshot", ...f.ids }))
+    .value.sessions;
+  assert.equal(sessions[0].updatedAt, 7000);
+  // Sessions other than the selected one get their time from Native's list
+  // (end of last run, else creation; its `updated` also moves on renames). The
+  // read never blocks a snapshot: the next one carries the result.
+  f.state.sessionList = [
+    { id: "sdk-1", time: { created: 1, updated: 99999, idle: 9000 } },
+  ];
+  const created = await f.service.handle({
+    type: "session.create",
+    workspaceId: f.ids.workspaceId,
+    title: "Other",
+  });
+  assert.equal(created.ok, true);
+  await f.service.handle({ type: "snapshot", ...f.ids });
+  await new Promise((resolve) => setTimeout(resolve, 20));
+  const other = (
+    await f.service.handle({ type: "snapshot", ...f.ids })
+  ).value.sessions.find((x) => x.title === "Other");
+  assert.equal(other.updatedAt, 9000);
+});
+test("session time reads skip while not connected and keep old values on failure", async (t) => {
+  const f = await fixture(t);
+  const listCalls = () => f.calls.filter((c) => c.name === "sessions").length;
+  const snap = async () => {
+    await f.service.handle({ type: "snapshot", ...f.ids });
+    await new Promise((resolve) => setTimeout(resolve, 20));
+  };
+  const other = () =>
+    f.service
+      .handle({ type: "snapshot", ...f.ids })
+      .then((r) => r.value.sessions.find((x) => x.title === "Other"));
+  f.state.connection = "disconnected";
+  const before = listCalls();
+  await snap();
+  assert.equal(listCalls(), before);
+  // Not connected must not burn the 30s throttle.
+  f.state.connection = "connected";
+  f.state.sessionList = [{ id: "sdk-1", time: { created: 1, idle: 4000 } }];
+  await f.service.handle({
+    type: "session.create",
+    workspaceId: f.ids.workspaceId,
+    title: "Other",
+  });
+  await snap();
+  await snap();
+  assert.ok(listCalls() > before);
+  assert.equal((await other()).updatedAt, 4000);
+  // Past the throttle a failing read keeps the last known value.
+  const realNow = globalThis.performance.now.bind(globalThis.performance);
+  t.mock.method(globalThis.performance, "now", () => realNow() + 31000);
+  f.client.session.list = async () => {
+    throw new Error("boom");
+  };
+  await snap();
+  assert.equal((await other()).updatedAt, 4000);
+});
+test("activityTime prefers the last idle, then creation, never updated", async () => {
+  const { activityTime } = await import("./workbench-service.mjs");
+  assert.equal(activityTime({ created: 1, updated: 99, idle: 7 }), 7);
+  assert.equal(activityTime({ created: 5, updated: 99 }), 5);
+  assert.equal(activityTime({ updated: 99 }), undefined);
+  assert.equal(activityTime(undefined), undefined);
+});
+test("a failed turn's type reduces to a closed cause and never leaves main", () => {
+  const turn = (error) => ({
+    id: "a",
+    type: "assistant",
+    content: [],
+    time: { created: 1 },
+    error,
+  });
+  const [auth, net, other, none, filtered, unauth] = projectMessages([
+    turn({ type: "provider.auth", status: 403, message: "sk-secret" }),
+    turn({ type: "provider.transport", message: "http://x" }),
+    turn({ type: "provider.rate-limit", status: 429 }),
+    turn({ type: "unknown" }),
+    turn({ type: "provider.content-filter", status: 403 }),
+    turn({ type: "provider.other", status: 401 }),
+  ]);
+  assert.deepEqual(filtered.failure, { status: 403 });
+  assert.deepEqual(unauth.failure, { status: 401, kind: "auth" });
+  assert.deepEqual(auth.failure, { status: 403, kind: "auth" });
+  assert.deepEqual(net.failure, { kind: "network" });
+  assert.deepEqual(other.failure, { status: 429 });
+  assert.equal("failure" in none, false);
 });

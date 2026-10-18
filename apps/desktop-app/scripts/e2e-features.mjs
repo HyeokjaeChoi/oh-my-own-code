@@ -171,7 +171,7 @@ try {
     // With the side panel open the sidebar is a sheet behind this button.
     await selectWorkspace(page, workspace.id);
     await page
-      .getByRole("button", { name: "E2E features session", exact: true })
+      .getByRole("button", { name: /^E2E features session(?! 세션 작업)/ })
       .click();
     if (await dialog().count()) await page.keyboard.press("Escape");
   };
