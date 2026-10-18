@@ -23,6 +23,7 @@ import { fileURLToPath } from "node:url";
 import { _electron as electron, expect } from "@playwright/test";
 import { createWorkbenchBridge } from "./e2e-bridge.mjs";
 import { openComposerPopover } from "./e2e-composer.mjs";
+import { auditDialogFocus, auditDom, auditTabOrder } from "./e2e-a11y.mjs";
 
 const CONNECT_TIMEOUT_MS =
   Number(process.env.OMOC_E2E_CONNECT_TIMEOUT_MS) || 150000;
@@ -618,6 +619,99 @@ try {
     await handle().dblclick();
     await expect(handle()).toHaveAttribute("aria-valuenow", "420");
     assert.equal((await stored()).layout?.panelWidth, 420);
+  });
+
+  const failIfAny = (label, violations) =>
+    assert.equal(violations.length, 0, `${label}: ${violations.join("; ")}`);
+
+  await check("a11y-audit-detects-violations", async () => {
+    // Guard against a vacuous audit: seeded violations must be reported.
+    await page.evaluate(() => {
+      const host = globalThis.document.createElement("div");
+      host.id = "a11y-seed";
+      host.innerHTML =
+        '<button></button><img src="data:," /><div tabindex="3"></div>' +
+        '<div role="dialog"></div><div role="radiogroup"></div>' +
+        '<input id="x" /><input id="x" />';
+      globalThis.document.body.append(host);
+    });
+    try {
+      const found = (await auditDom(page, "#a11y-seed")).join("\n");
+      for (const rule of [
+        "unnamed interactive: button",
+        "img without alt",
+        "positive tabindex",
+        "unnamed dialog",
+        "unnamed radiogroup",
+        "duplicate id: x",
+      ])
+        assert.ok(found.includes(rule), `audit missed: ${rule}\n${found}`);
+    } finally {
+      await page.evaluate(() =>
+        globalThis.document.getElementById("a11y-seed")?.remove(),
+      );
+    }
+  });
+
+  await check("a11y-workbench-shell", async () => {
+    failIfAny("shell dom", await auditDom(page));
+    const tabs = await auditTabOrder(page, { stops: 40 });
+    failIfAny("shell tab order", tabs.violations);
+    assert.ok(tabs.stops >= 8, `Tab reached ${tabs.stops} stops`);
+  });
+
+  await check("a11y-sidebar-sessions", async () => {
+    const nav = page.locator("nav, aside").first();
+    await expect(nav).toBeVisible();
+    failIfAny("sidebar dom", await auditDom(page, "nav, aside"));
+    const sessions = page.getByRole("button", { name: /세션/ });
+    assert.ok(
+      (await sessions.count()) > 0,
+      "sessions are listed as named buttons",
+    );
+  });
+
+  await check("a11y-settings-dialog", async () => {
+    const opener = page.getByRole("button", { name: "설정", exact: true });
+    failIfAny(
+      "settings focus",
+      await auditDialogFocus(page, {
+        open: () => openSettings(page),
+        openerLocator: (await opener.isVisible()) ? opener : undefined,
+        dialogLocator: dialog(),
+      }),
+    );
+    await openSettings(page);
+    await expect(dialog()).toBeVisible();
+    failIfAny("settings dom", await auditDom(page, "[role=dialog]"));
+    const general = dialog().getByRole("tab", { name: "일반", exact: true });
+    if (await general.isVisible()) await general.click();
+    failIfAny("settings general dom", await auditDom(page, "[role=dialog]"));
+    for (const name of ["테마", "글자 크기", "밀도"]) {
+      await expect(dialog().getByRole("radiogroup", { name })).toBeVisible();
+    }
+    await page.keyboard.press("Escape");
+    await expect(dialog()).toHaveCount(0);
+  });
+
+  await check("a11y-command-palette", async () => {
+    await page.keyboard.press(`${mod}+k`);
+    const search = page.getByRole("combobox", { name: "명령 검색" });
+    await expect(search).toBeVisible();
+    await expect(search).toBeFocused();
+    failIfAny("palette dom", await auditDom(page, "[role=dialog]"));
+    await expect(page.getByRole("listbox")).toBeVisible();
+    for (let i = 0; i < 20; i++) {
+      await page.keyboard.press("Tab");
+      assert.ok(
+        await page.evaluate(
+          () => !!globalThis.document.activeElement?.closest("[role=dialog]"),
+        ),
+        "focus stays inside the palette",
+      );
+    }
+    await page.keyboard.press("Escape");
+    await expect(search).toBeHidden();
   });
 
   results.push({
