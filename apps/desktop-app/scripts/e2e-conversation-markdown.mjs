@@ -459,7 +459,9 @@ try {
   await shot("late-copy-after-text-change");
   await clipboard("pending");
   await enter(copies());
-  await page.getByRole("button", { name: /^P6 Session B(\s|$)/ }).click();
+  await page
+    .getByRole("button", { name: /^P6 Session B(?! 세션 작업)/ })
+    .click();
   await expect(page.locator("[data-markdown-text]")).toContainText(
     "다른 세션의 같은 ID",
   );
@@ -468,7 +470,9 @@ try {
     "복사했습니다.",
   );
   await shot("late-copy-after-session-switch");
-  await page.getByRole("button", { name: /^P6 Session A(\s|$)/ }).click();
+  await page
+    .getByRole("button", { name: /^P6 Session A(?! 세션 작업)/ })
+    .click();
   await messages('부분 수신\n\n```js\nconst partial = "아직', "running");
   await expect(page.locator("[data-markdown-code]")).toContainText(
     "const partial",
