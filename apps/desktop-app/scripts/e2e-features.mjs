@@ -520,6 +520,13 @@ try {
 
   await check("preferences-theme", async () => {
     await openSettings(page);
+    // Without a connected provider the dialog opens on 모델; the theme is on 일반.
+    const general = dialog().getByRole("tab", { name: "일반", exact: true });
+    if (await general.isVisible()) await general.click();
+    else
+      await dialog()
+        .getByRole("combobox", { name: "설정 페이지", exact: true })
+        .selectOption({ label: "일반" });
     const theme = dialog().getByRole("radiogroup", { name: "테마" });
     await theme.getByRole("radio", { name: "다크" }).check();
     await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
