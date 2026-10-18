@@ -17,7 +17,50 @@ function parse(text) {
     return null;
   }
 }
-const lines = (out) => (out ? out.split("\n").filter(Boolean) : []);
+// ponytail: no extra text cap here; projection already bounds input (8KB) and
+// output (64KB), so these caps only bound row/DOM counts.
+const TRUNCATED = "… 표시 길이 제한";
+export const MAX_ROWS = 400;
+export const MAX_MATCHES = 200;
+export const MAX_LINE = 2000;
+const clipLine = (t) => (t.length > MAX_LINE ? `${t.slice(0, MAX_LINE)}…` : t);
+// Drops projection's trailing truncation marker; `cut` counts it as hidden.
+function lines(out) {
+  const all = out ? out.split("\n").filter(Boolean) : [];
+  const cut = all.at(-1) === TRUNCATED;
+  if (cut) all.pop();
+  return { all, cut: cut ? 1 : 0 };
+}
+// Each side gets its own budget so a long "-" block cannot push out every "+".
+function sideRows(old, add) {
+  const o = old === "" ? [] : old.split("\n");
+  const a = add.split("\n");
+  const delN = Math.min(o.length, MAX_ROWS - Math.min(a.length, MAX_ROWS / 2));
+  const addN = Math.min(a.length, MAX_ROWS - delN);
+  const row = (sign) => (text) => ({ sign, text: clipLine(text) });
+  return {
+    rows: [
+      ...o.slice(0, delN).map(row("-")),
+      ...a.slice(0, addN).map(row("+")),
+    ],
+    hiddenRows: o.length - delN + (a.length - addN),
+  };
+}
+
+function pathList(pattern, scope, output) {
+  const { all, cut } = lines(output);
+  return {
+    pattern,
+    scope,
+    matches: all.slice(0, MAX_MATCHES).map((p) =>
+      // Clipped paths are not real paths: show them as plain text.
+      p.length > MAX_LINE
+        ? { path: null, line: null, text: clipLine(p) }
+        : { path: p, line: null, text: "" },
+    ),
+    hiddenMatches: Math.max(0, all.length - MAX_MATCHES) + cut,
+  };
+}
 
 const BUILDERS = {
   read(i, output) {
@@ -45,33 +88,31 @@ const BUILDERS = {
       typeof i.newString !== "string"
     )
       return null;
-    const rows = [
-      ...i.oldString.split("\n").map((text) => ({ sign: "-", text })),
-      ...i.newString.split("\n").map((text) => ({ sign: "+", text })),
-    ];
-    return { path, rows, replaceAll: i.replaceAll === true };
+    return {
+      path,
+      ...sideRows(i.oldString, i.newString),
+      replaceAll: i.replaceAll === true,
+    };
   },
   write(i) {
     const path = str(i.filePath) ?? str(i.path);
     if (!path || typeof i.content !== "string") return null;
-    return {
-      path,
-      rows: i.content.split("\n").map((text) => ({ sign: "+", text })),
-      replaceAll: false,
-    };
+    return { path, ...sideRows("", i.content), replaceAll: false };
   },
   patch(i) {
     const text = str(i.patchText) ?? str(i.patch);
-    return text
-      ? {
-          path: null,
-          rows: text.split("\n").map((t) => ({
-            sign: t.startsWith("+") ? "+" : t.startsWith("-") ? "-" : " ",
-            text: t,
-          })),
-          replaceAll: false,
-        }
-      : null;
+    if (!text) return null;
+    const all = text.split("\n");
+    const rows = all.slice(0, MAX_ROWS).map((t) => ({
+      sign: t.startsWith("+") ? "+" : t.startsWith("-") ? "-" : " ",
+      text: clipLine(t),
+    }));
+    return {
+      path: null,
+      rows,
+      hiddenRows: Math.max(0, all.length - MAX_ROWS),
+      replaceAll: false,
+    };
   },
   shell(i, output) {
     const command = str(i.command);
@@ -87,35 +128,27 @@ const BUILDERS = {
   grep(i, output) {
     const pattern = str(i.pattern);
     if (!pattern) return null;
-    const matches = lines(output)
-      .slice(0, 200)
-      .map((l) => {
-        const m = /^(.+?):(\d+)[:-](.*)$/.exec(l);
-        return m
-          ? { path: m[1], line: Number(m[2]), text: m[3] }
-          : { path: null, line: null, text: l };
-      });
-    return { pattern, scope: str(i.path), matches };
+    const { all, cut } = lines(output);
+    const matches = all.slice(0, MAX_MATCHES).map((l) => {
+      const m = /^(.+?):(\d+)[:-](.*)$/.exec(clipLine(l));
+      return m
+        ? { path: m[1], line: Number(m[2]), text: m[3] }
+        : { path: null, line: null, text: clipLine(l) };
+    });
+    return {
+      pattern,
+      scope: str(i.path),
+      matches,
+      hiddenMatches: all.length - matches.length + cut,
+    };
   },
   glob(i, output) {
     const pattern = str(i.pattern);
     if (!pattern) return null;
-    return {
-      pattern,
-      scope: str(i.path),
-      matches: lines(output)
-        .slice(0, 200)
-        .map((path) => ({ path, line: null, text: "" })),
-    };
+    return pathList(pattern, str(i.path), output);
   },
   list(i, output) {
-    return {
-      pattern: "",
-      scope: str(i.path) ?? ".",
-      matches: lines(output)
-        .slice(0, 200)
-        .map((path) => ({ path, line: null, text: "" })),
-    };
+    return pathList("", str(i.path) ?? ".", output);
   },
   webfetch(i) {
     const url = str(i.url);

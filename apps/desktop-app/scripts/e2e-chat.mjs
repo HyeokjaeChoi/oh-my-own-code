@@ -456,6 +456,18 @@ try {
   });
   await expect(prompt).toHaveCount(0);
   assert.match(await readFile(written, "utf8"), new RegExp(WRITE_TEXT));
+  // F-08: the write call renders as a diff card with name and final status.
+  const writeCard = page.locator(
+    '.tool-detail[data-tool-name="write"][data-tool-kind="diff"]',
+  );
+  await expect(writeCard).toHaveAttribute("data-tool-state", "completed", {
+    timeout: 30_000,
+  });
+  await expect(writeCard.locator(".tool-heading")).toContainText("write");
+  await writeCard.locator("summary").first().click();
+  await expect(writeCard.locator('[data-sign="+"]').first()).toContainText(
+    WRITE_TEXT,
+  );
   await idle();
   observations.push(
     "turn 2: write permission prompt approved; file written; result and final reply rendered",

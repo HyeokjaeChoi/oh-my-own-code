@@ -144,7 +144,7 @@ export function ToolBody({ view }: { view: ToolView }) {
         <div>
           {view.path && <PathButton path={view.path} />}
           <OutputPre className={styles.toolDiff}>
-            {view.rows.slice(0, 400).map((row, i) => (
+            {view.rows.map((row, i) => (
               <span
                 key={i}
                 data-sign={row.sign.trim()}
@@ -161,6 +161,11 @@ export function ToolBody({ view }: { view: ToolView }) {
               </span>
             ))}
           </OutputPre>
+          {view.hiddenRows > 0 && (
+            <p className={styles.muted} data-truncated="true">
+              … {view.hiddenRows}줄 더 있음 (표시 한도)
+            </p>
+          )}
         </div>
       );
     case "shell":
@@ -188,6 +193,11 @@ export function ToolBody({ view }: { view: ToolView }) {
               </li>
             ))}
           </ul>
+          {view.hiddenMatches > 0 && (
+            <p className={styles.muted} data-truncated="true">
+              … {view.hiddenMatches}건 더 있음 (표시 한도)
+            </p>
+          )}
         </div>
       );
     case "web":
