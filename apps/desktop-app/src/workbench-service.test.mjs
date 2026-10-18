@@ -2529,6 +2529,42 @@ test("snapshot sessions carry Native's last activity time as updatedAt", async (
   ).value.sessions.find((x) => x.title === "Other");
   assert.equal(other.updatedAt, 9000);
 });
+test("session time reads skip while not connected and keep old values on failure", async (t) => {
+  const f = await fixture(t);
+  const listCalls = () => f.calls.filter((c) => c.name === "sessions").length;
+  const snap = async () => {
+    await f.service.handle({ type: "snapshot", ...f.ids });
+    await new Promise((resolve) => setTimeout(resolve, 20));
+  };
+  const other = () =>
+    f.service
+      .handle({ type: "snapshot", ...f.ids })
+      .then((r) => r.value.sessions.find((x) => x.title === "Other"));
+  f.state.connection = "disconnected";
+  const before = listCalls();
+  await snap();
+  assert.equal(listCalls(), before);
+  // Not connected must not burn the 30s throttle.
+  f.state.connection = "connected";
+  f.state.sessionList = [{ id: "sdk-1", time: { created: 1, idle: 4000 } }];
+  await f.service.handle({
+    type: "session.create",
+    workspaceId: f.ids.workspaceId,
+    title: "Other",
+  });
+  await snap();
+  await snap();
+  assert.ok(listCalls() > before);
+  assert.equal((await other()).updatedAt, 4000);
+  // Past the throttle a failing read keeps the last known value.
+  const realNow = globalThis.performance.now.bind(globalThis.performance);
+  t.mock.method(globalThis.performance, "now", () => realNow() + 31000);
+  f.client.session.list = async () => {
+    throw new Error("boom");
+  };
+  await snap();
+  assert.equal((await other()).updatedAt, 4000);
+});
 test("activityTime prefers the last idle, then creation, never updated", async () => {
   const { activityTime } = await import("./workbench-service.mjs");
   assert.equal(activityTime({ created: 1, updated: 99, idle: 7 }), 7);

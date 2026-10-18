@@ -167,31 +167,30 @@ export function SessionNavigation(props: Props) {
         </label>
       )}
       <ul className={`${styles.list} session-list`}>
-        {sessions.map((session) => (
-          <SessionRow
-            key={session.id}
-            session={session}
-            selected={session.id === props.selectedId}
-            unread={unread.includes(session.id)}
-            time={
-              sessionTime(session, active) === undefined
-                ? ""
-                : relativeTime(sessionTime(session, active)!, now)
-            }
-            permission={props.permissionIds?.includes(session.id) ?? false}
-            disabled={
-              props.disabled ||
-              props.pending ||
-              session.status !== "idle" ||
-              props.unknownIds.includes(session.id)
-            }
-            select={() => props.select(session.id)}
-            mutate={props.mutate}
-            afterHidden={() =>
-              (search.current ?? searchButton.current)?.focus()
-            }
-          />
-        ))}
+        {sessions.map((session) => {
+          const at = sessionTime(session, active);
+          return (
+            <SessionRow
+              key={session.id}
+              session={session}
+              selected={session.id === props.selectedId}
+              unread={unread.includes(session.id)}
+              time={at === undefined ? "" : relativeTime(at, now)}
+              permission={props.permissionIds?.includes(session.id) ?? false}
+              disabled={
+                props.disabled ||
+                props.pending ||
+                session.status !== "idle" ||
+                props.unknownIds.includes(session.id)
+              }
+              select={() => props.select(session.id)}
+              mutate={props.mutate}
+              afterHidden={() =>
+                (search.current ?? searchButton.current)?.focus()
+              }
+            />
+          );
+        })}
       </ul>
       {sessions.length === 0 && (
         <p className={styles.empty}>

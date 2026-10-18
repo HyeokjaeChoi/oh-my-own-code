@@ -307,7 +307,7 @@ function RunElapsed({ sessionId }: { sessionId: string }) {
 }
 // One sentence for a failed turn on a free model, plus the way out. The retry
 // button only appears where it is useful (latest turn, router available).
-function FreeFailureNote({
+function TurnFailureNote({
   kind,
   onRetry,
 }: {
@@ -826,7 +826,7 @@ export function Conversation(props: Props) {
                         !blocked &&
                         freeRouter.id !== failed.id;
                       return (
-                        <FreeFailureNote
+                        <TurnFailureNote
                           kind={failed.kind}
                           onRetry={
                             canRetry

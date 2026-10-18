@@ -228,8 +228,6 @@ const VARIANT_LABELS = {
 // Reasoning levels read in Korean when known; any other id shows as reported.
 export const variantLabel = (id) =>
   Object.hasOwn(VARIANT_LABELS, id) ? VARIANT_LABELS[id] : id;
-// No explicit model on the draft: the runtime sends what the session reports.
-// The chip and the picker's default row both say so, with that same name.
 // The 무료 badge says it; a "(free)" suffix in the name would repeat it.
 export const modelDisplayName = (name) =>
   name.replace(/\s*\(free\)\s*$/iu, "") || name;

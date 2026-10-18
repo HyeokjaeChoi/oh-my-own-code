@@ -174,9 +174,15 @@ test("any failed turn classifies from structured status/kind only", async () => 
   // The page banner yields only to a failed turn's own page error.
   assert.equal(inlineExplained("auth", "AUTH_REQUIRED"), true);
   assert.equal(inlineExplained("server", "RUNTIME_ERROR"), true);
+  assert.equal(inlineExplained("limit", "RUNTIME_ERROR"), true);
   assert.equal(inlineExplained("auth", "UNKNOWN_OUTCOME"), false);
   assert.equal(inlineExplained("auth", "UNAVAILABLE"), false);
   assert.equal(inlineExplained(undefined, "RUNTIME_ERROR"), false);
+  // A later runtime error that the failed turn did not produce still shows.
+  assert.equal(inlineExplained("auth", "RUNTIME_ERROR"), false);
+  assert.equal(inlineExplained("refused", "RUNTIME_ERROR"), false);
+  assert.equal(inlineExplained("limit", "AUTH_REQUIRED"), false);
+  assert.equal(inlineExplained("server", "AUTH_REQUIRED"), false);
   const paid = { providerId: "opencode", id: "gpt" };
   // Only main's derived kind says auth; another 401/403 is a plain refusal.
   assert.equal(turnFailure([], paid, { status: 403 })?.kind, "refused");
