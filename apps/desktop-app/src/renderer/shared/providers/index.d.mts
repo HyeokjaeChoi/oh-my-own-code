@@ -65,6 +65,13 @@ export function freeFailure(
   model: { providerId: string; id: string } | undefined,
   status: number | undefined,
 ): { kind: "unavailable" | "limit"; id?: string } | undefined;
+export function turnFailure(
+  entries: readonly RouterEntry[],
+  model: { providerId: string; id: string } | undefined,
+  failure: { status?: number; kind?: "auth" | "network" } | undefined,
+):
+  | { kind: "unavailable" | "limit" | "auth" | "server"; id?: string }
+  | undefined;
 export const UNAVAILABLE_TTL_MS: number;
 export function loadUnavailableModels(
   storage?: Pick<Storage, "getItem">,

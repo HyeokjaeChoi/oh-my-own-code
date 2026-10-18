@@ -734,8 +734,10 @@ export function validateSnapshot(value) {
     requiredObject(
       s,
       ["id", "workspaceId", "title", "status"],
-      ["pinned", "archived", "parentSessionId", "permissionMode"],
+      ["pinned", "archived", "parentSessionId", "permissionMode", "updatedAt"],
     );
+    if (Object.hasOwn(s, "updatedAt"))
+      needDTO(Number.isSafeInteger(s.updatedAt) && s.updatedAt > 0);
     needDTO(
       resourceId(s.id) &&
         workspaces.has(s.workspaceId) &&
@@ -828,12 +830,17 @@ export function validateSnapshot(value) {
       ["runtime", "context", "failure"],
     );
     if (Object.hasOwn(m, "failure")) {
-      requiredObject(m.failure, ["status"]);
+      requiredObject(m.failure, [], ["status", "kind"]);
       needDTO(
         m.role === "assistant" &&
-          Number.isInteger(m.failure.status) &&
-          m.failure.status >= 400 &&
-          m.failure.status <= 599,
+          (Object.hasOwn(m.failure, "status") ||
+            Object.hasOwn(m.failure, "kind")) &&
+          (!Object.hasOwn(m.failure, "status") ||
+            (Number.isInteger(m.failure.status) &&
+              m.failure.status >= 400 &&
+              m.failure.status <= 599)) &&
+          (!Object.hasOwn(m.failure, "kind") ||
+            ["auth", "network"].includes(m.failure.kind)),
       );
     }
     if (Object.hasOwn(m, "context"))

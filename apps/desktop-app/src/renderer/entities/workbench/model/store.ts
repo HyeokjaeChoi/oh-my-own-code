@@ -102,7 +102,7 @@ import {
 } from "../../../shared/api/index.js";
 import type { MutationRequest } from "../../../shared/transport/index.js";
 import { selectionKey } from "../../../shared/projection/index.js";
-import { freeFailure } from "../../../shared/providers/index.js";
+import { turnFailure } from "../../../shared/providers/index.js";
 import {
   SKILL_LIMITS,
   AGENT_LIMITS,
@@ -2485,6 +2485,19 @@ const closed = (
 };
 const wireId = (id: unknown, max = 128) =>
   typeof id === "string" && id.length <= max && /^[A-Za-z0-9_.:-]+$/.test(id);
+// A failed turn: an HTTP status, a closed cause, or both (never message text).
+const validFailure = (f: unknown) => {
+  if (!closed(f, [], ["status", "kind"])) return false;
+  const v = f as { status?: unknown; kind?: unknown };
+  return (
+    (Object.hasOwn(v, "status") || Object.hasOwn(v, "kind")) &&
+    (!Object.hasOwn(v, "status") ||
+      (Number.isInteger(v.status) &&
+        (v.status as number) >= 400 &&
+        (v.status as number) <= 599)) &&
+    (!Object.hasOwn(v, "kind") || v.kind === "auth" || v.kind === "network")
+  );
+};
 const validClock = (n: number) => Number.isSafeInteger(n) && n >= 0;
 function validProjection(next: WorkbenchSnapshot): boolean {
   if (
@@ -2556,8 +2569,16 @@ function validProjection(next: WorkbenchSnapshot): boolean {
       !closed(
         s,
         ["id", "workspaceId", "title", "status"],
-        ["pinned", "archived", "parentSessionId", "permissionMode"],
+        [
+          "pinned",
+          "archived",
+          "parentSessionId",
+          "permissionMode",
+          "updatedAt",
+        ],
       ) ||
+      (Object.hasOwn(s, "updatedAt") &&
+        !(Number.isSafeInteger(s.updatedAt) && (s.updatedAt ?? 0) > 0)) ||
       !wireId(s.id, 256) ||
       !workspaces.has(s.workspaceId) ||
       sessions.has(s.id) ||
@@ -2665,11 +2686,7 @@ function validProjection(next: WorkbenchSnapshot): boolean {
         (message.role !== "assistant" ||
           !validAssistantRuntime(message.runtime))) ||
       (Object.hasOwn(message, "failure") &&
-        (message.role !== "assistant" ||
-          !closed(message.failure, ["status"]) ||
-          !Number.isInteger(message.failure?.status) ||
-          (message.failure?.status ?? 0) < 400 ||
-          (message.failure?.status ?? 0) > 599))
+        (message.role !== "assistant" || !validFailure(message.failure)))
     )
       return false;
     for (const tool of message.tools) {
@@ -9812,21 +9829,23 @@ export function createWorkbenchStore(wide = true) {
   };
 }
 export type WorkbenchStore = ReturnType<typeof createWorkbenchStore>;
-// How the latest assistant turn failed when its model is free (404 = no longer
-// served for free, 429 = rate limit); the page uses it to drop its generic banner.
-function lastTurnFreeFailure(s: State): "unavailable" | "limit" | undefined {
+// How the latest assistant turn failed, when the conversation explains it
+// inline (free-model 404/429, auth, server); the page drops its generic banner.
+function lastTurnFailure(
+  s: State,
+): "unavailable" | "limit" | "auth" | "server" | undefined {
   const last = currentSelectedSnapshot(s)?.messages.at(-1);
   if (last?.role !== "assistant" || !last.failure) return undefined;
   const models = s.catalog?.models;
-  return freeFailure(
+  return turnFailure(
     models?.status === "available" ? models.entries : [],
     last.runtime?.model,
-    last.failure.status,
+    last.failure,
   )?.kind;
 }
 export const selectors = {
   revert: currentRevert,
-  lastTurnFreeFailure,
+  lastTurnFailure,
   conversationContext: (s: State) => s.conversationContext,
   contextDraft: selectedContextDraft,
   contextEffectsReady,

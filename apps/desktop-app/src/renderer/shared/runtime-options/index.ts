@@ -12,6 +12,7 @@ export {
   groupModels,
   variantLabel,
   modelDisplayName,
+  defaultModelText,
   projectAssistantRuntime,
   projectSessionSelection,
 } from "./index.mjs";

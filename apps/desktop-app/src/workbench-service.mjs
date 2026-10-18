@@ -244,6 +244,29 @@ export function projectRevert(revert) {
     filesRestored: Boolean(revert.snapshot),
   };
 }
+// A failed turn reduced to its HTTP status and a closed cause derived from the
+// error type; the type and message themselves never leave main.
+export function projectFailure(error) {
+  const status =
+    Number.isInteger(error?.status) &&
+    error.status >= 400 &&
+    error.status <= 599
+      ? error.status
+      : undefined;
+  const type = typeof error?.type === "string" ? error.type : "";
+  const kind =
+    type === "provider.auth"
+      ? "auth"
+      : /^provider\.(network|timeout|connection)/.test(type)
+        ? "network"
+        : undefined;
+  return status === undefined && kind === undefined
+    ? undefined
+    : {
+        ...(status !== undefined && { status }),
+        ...(kind && { kind }),
+      };
+}
 export function projectMessages(data) {
   if (!Array.isArray(data)) fail("RUNTIME_ERROR");
   return data
@@ -269,11 +292,8 @@ export function projectMessages(data) {
         : {}),
       // Only the numeric HTTP status of a failed turn; its type and message
       // can carry URLs or keys and never reach the renderer.
-      ...(message.type === "assistant" &&
-      Number.isInteger(message.error?.status) &&
-      message.error.status >= 400 &&
-      message.error.status <= 599
-        ? { failure: { status: message.error.status } }
+      ...(message.type === "assistant" && projectFailure(message.error)
+        ? { failure: projectFailure(message.error) }
         : {}),
       text:
         message.type === "user"
@@ -2952,6 +2972,9 @@ export function createWorkbenchService({
               : (nativeProjections.get(id)?.status ?? status),
           pinned,
           archived,
+          ...(sessionTimes.get(tables().sessions.get(id)?.sdkId) && {
+            updatedAt: sessionTimes.get(tables().sessions.get(id)?.sdkId),
+          }),
           ...(parentSessionId && { parentSessionId }),
         }),
       ),
@@ -3199,6 +3222,12 @@ export function createWorkbenchService({
         s.sessionSelection = projectSessionSelection(info, s.id);
         // Native does not hide reverted messages; the boundary message and all
         // later ones are hidden here.
+        const infoTime = Math.max(
+          info.time?.updated ?? 0,
+          info.time?.idle ?? 0,
+        );
+        if (Number.isSafeInteger(infoTime) && infoTime > 0)
+          sessionTimes.set(s.sdkId, infoTime);
         s.revert = projectRevert(info.revert);
         if (s.revert && checkpoints) {
           const record = await checkpoints.staged(s.workspaceId, s.id);
@@ -5080,6 +5109,29 @@ export function createWorkbenchService({
       fail(code);
     }
   }
+  // Native's own last-activity time per session (ms), for the sidebar's
+  // relative time. One bounded list scan, reused for 30s; a failed read keeps
+  // the last known values and never fails a snapshot.
+  const sessionTimes = new Map();
+  let sessionTimesAt = -Infinity;
+  async function readSessionTimes() {
+    if (performance.now() - sessionTimesAt < 30000) return;
+    sessionTimesAt = performance.now();
+    try {
+      await scanSessions(
+        {},
+        (data) => {
+          for (const item of data) {
+            const t = Math.max(item.time?.updated ?? 0, item.time?.idle ?? 0);
+            if (Number.isSafeInteger(t) && t > 0) sessionTimes.set(item.id, t);
+          }
+        },
+        "RUNTIME_ERROR",
+      );
+    } catch {
+      // Keep what is known; the sidebar falls back to observed activity.
+    }
+  }
   async function noDescendants(s) {
     if (
       [...tables().sessions.values()].some(
@@ -5631,6 +5683,10 @@ export function createWorkbenchService({
               (item) => item.workspaceId === w.id && !item.archived,
             )
           : tables().sessions.get(defaultSession));
+      // The selected session's time comes from its own read below; only others
+      // need the list scan.
+      if ([...tables().sessions.keys()].some((id) => id !== selectedS?.id))
+        await readSessionTimes();
       const projection =
         selectedS &&
         !selectedS.unavailable &&

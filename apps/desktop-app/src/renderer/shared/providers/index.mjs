@@ -156,6 +156,23 @@ export function freeFailure(entries, model, status) {
   return free ? { kind, ...(entry ? { id: entry.id } : {}) } : undefined;
 }
 
+// Any failed turn, from its structured failure only ({status, kind}; never the
+// provider's message). Free-model cases first, then the auth and server causes.
+export function turnFailure(entries, model, failure) {
+  if (!failure) return undefined;
+  const free = freeFailure(entries, model, failure.status);
+  if (free) return free;
+  if (
+    failure.kind === "auth" ||
+    failure.status === 401 ||
+    failure.status === 403
+  )
+    return { kind: "auth" };
+  if (failure.kind === "network" || failure.status >= 500)
+    return { kind: "server" };
+  return undefined;
+}
+
 // Models that answered "not available for free", remembered per profile in the
 // same renderer storage as the picker memory (catalog ids only). A mark expires
 // after a day (free availability comes and goes) and a successful turn clears it.

@@ -8,6 +8,7 @@
 //   4. a ":free" model answers 404 -> one sentence + fallback button ->
 //      the same prompt is resent on openrouter/free; the model is marked
 //      "사용 불가" in the picker.
+//   5. a provider 401 shows an inline auth note and no generic page banner.
 import assert from "node:assert/strict";
 import { windowsEnv } from "./e2e-env.mjs";
 import { once } from "node:events";
@@ -52,6 +53,18 @@ const mock = createServer((req, res) => {
       tools: Boolean(parsed.tools?.length),
       text: JSON.stringify(parsed.messages ?? []).includes("FALLBACK-PROMPT"),
     });
+    if (
+      parsed.tools?.length &&
+      JSON.stringify(parsed.messages ?? []).includes("AUTH-PROMPT")
+    ) {
+      res.writeHead(401, { "content-type": "application/json" });
+      res.end(
+        JSON.stringify({
+          error: { message: "PROVIDER-PRIVATE-TEXT", code: 401 },
+        }),
+      );
+      return;
+    }
     if (parsed.tools?.length && parsed.model !== "openrouter/free") {
       res.writeHead(404, { "content-type": "application/json" });
       res.end(
@@ -249,6 +262,32 @@ try {
   observations.push(
     "free 404 -> fallback button -> resent on router; picker tags 사용 불가",
   );
+
+  // 5. A provider rejection (401) shows inline on its turn, not as the page
+  // banner, with a short cause (never the provider's text) and a way to Settings.
+  await composer.fill("AUTH-PROMPT");
+  await page
+    .getByRole("button", { name: "메시지 보내기", exact: true })
+    .click();
+  const authNote = page.locator('[data-free-failure="auth"]');
+  await expect(authNote).toContainText(
+    "제공자가 요청을 거부했습니다. 키 또는 요금제를 확인하세요.",
+    { timeout: 90_000 },
+  );
+  await expect(
+    authNote.getByRole("button", { name: "설정 열기" }),
+  ).toBeVisible();
+  await expect(
+    page.getByText(
+      "요청을 완료하지 못했습니다. 연결과 현재 상태를 다시 확인하세요.",
+    ),
+  ).toHaveCount(0);
+  assert.ok(
+    !(await page.content()).includes("PROVIDER-PRIVATE-TEXT"),
+    "provider text not in DOM",
+  );
+  await shot(page, "auth-failure");
+  observations.push("provider 401 -> inline auth note, no page banner");
 
   assert.ok(!stderr.includes(FAKE_KEY), "key not in Main stderr");
   assert.ok(seen.some((r) => r.auth === `Bearer ${FAKE_KEY}`));

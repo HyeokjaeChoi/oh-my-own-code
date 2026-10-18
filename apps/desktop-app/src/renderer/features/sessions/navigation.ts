@@ -66,6 +66,17 @@ export function relativeTime(then: number, now: number): string {
   if (days === 1) return "어제";
   return days < 7 ? `${days}일` : `${Math.floor(days / 7)}주`;
 }
+// Native's own last-activity time leads; observed status changes cover what it
+// has not reported yet (and a run seen after its last list read).
+export const sessionTime = (
+  session: WorkbenchSession,
+  active: Record<string, number>,
+): number | undefined => {
+  const times = [session.updatedAt, active[session.id]].filter(
+    (t): t is number => typeof t === "number",
+  );
+  return times.length ? Math.max(...times) : undefined;
+};
 // Unread = a non-selected session finished a run (running/stopping -> idle)
 // since it was last opened. Derived from snapshots only; not persisted.
 export function trackSessions(

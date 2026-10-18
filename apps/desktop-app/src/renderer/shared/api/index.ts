@@ -165,6 +165,7 @@ export {
   groupModels,
   variantLabel,
   modelDisplayName,
+  defaultModelText,
 } from "../runtime-options/index.js";
 export type {
   RuntimeModel,
