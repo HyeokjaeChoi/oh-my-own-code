@@ -98,15 +98,15 @@ Model-initiated `subagent` works in the real app (2026-10-13/14): `OMOC_E2E_STRI
 
 ## F-09 Permissions
 
-| Clause                                          | Status  | Evidence                                                              |
-| ----------------------------------------------- | ------- | --------------------------------------------------------------------- |
-| Per-request allow/deny                          | done    | `permission.respond`, `conversation/index.tsx:482` (once)             |
-| Remember / "always"                             | partial | decision `once`/reject only; verify schema                            |
-| Presets (ask, scoped-edit, read/plan, custom)   | missing | read-only effective-rules view `features/permission-policy/index.tsx` |
-| Effective rules viewable                        | done    | `permission.policy.read`                                              |
-| Revoke saved rules                              | done    | `features/preferences/saved-rules.tsx`, `host/saved-rules-host.mjs`   |
-| Enforced at execution boundary                  | partial | `native-permission-*.mjs` overlay; no mode switching                  |
-| Mid-run switch, child, batch, expiry, duplicate | partial | duplicates guarded by requestId; rest unproven                        |
+| Clause                                          | Status  | Evidence                                                                                                                                                                                                                                                   |
+| ----------------------------------------------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Per-request allow/deny                          | done    | `permission.respond`, `conversation/index.tsx:482` (once)                                                                                                                                                                                                  |
+| Remember / "always"                             | partial | decision `once`/reject only; verify schema                                                                                                                                                                                                                 |
+| Presets (ask, scoped-edit, read/plan, custom)   | partial | 2026-10-19: per-session persisted mode exists (composer menu, `permission-mode.mjs`); policy view lists the 4 presets and marks the match (`classifyPreset`). Custom is display-only: `policy()` overwrites it before the next send                        |
+| Effective rules viewable                        | done    | `permission.policy.read`                                                                                                                                                                                                                                   |
+| Revoke saved rules                              | done    | `features/preferences/saved-rules.tsx`, `host/saved-rules-host.mjs`                                                                                                                                                                                        |
+| Enforced at execution boundary                  | partial | `native-permission-*.mjs` overlay + `workbench-service` `policy()`: writes/verifies `compileModeRules(mode)` before each send and on `permission.mode.set` (fail-closed readback); tool-level rules, not an OS sandbox; mid-run/child propagation unproven |
+| Mid-run switch, child, batch, expiry, duplicate | partial | duplicates guarded by requestId; rest unproven                                                                                                                                                                                                             |
 
 ## F-10 Preview
 

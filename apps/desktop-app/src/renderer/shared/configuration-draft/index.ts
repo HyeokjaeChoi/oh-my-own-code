@@ -154,3 +154,5 @@ export type {
   PermissionPolicyRule,
   WorkbenchPermissionPolicyObservation,
 } from "./permission-policy.mjs";
+export { classifyPreset } from "./permission-preset.mjs";
+export type { PermissionPresetId } from "./permission-preset.mjs";
