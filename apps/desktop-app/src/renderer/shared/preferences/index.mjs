@@ -47,7 +47,9 @@ export function parsePreferences(raw) {
 const parseBlob = (raw) => {
   try {
     const value = typeof raw === "string" ? JSON.parse(raw) : raw;
-    return value && typeof value === "object" ? value : {};
+    return value && typeof value === "object" && !Array.isArray(value)
+      ? value
+      : {};
   } catch {
     return {};
   }

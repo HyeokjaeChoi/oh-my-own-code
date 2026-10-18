@@ -64,7 +64,6 @@ import { selectionKey } from "../../shared/projection/index.js";
 import { inlineExplained } from "../../shared/providers/index.js";
 import {
   DEFAULT_LAYOUT,
-  loadLayout,
   PANEL_WIDTH_MIN,
   saveLayout,
 } from "../../shared/preferences/index.js";
@@ -162,9 +161,6 @@ export function Workbench() {
     actions.layout({ panelWidth });
     if (persist) saveLayout({ panelWidth });
   };
-  useEffect(() => {
-    actions.layout({ panelWidth: loadLayout().panelWidth });
-  }, [actions]);
   const [createOpen, setCreateOpen] = useState(false);
   const [locationOpen, setLocationOpen] = useState(false);
   const [folderName, setFolderName] = useState("");
@@ -1059,6 +1055,8 @@ export function Workbench() {
               event.currentTarget.releasePointerCapture(event.pointerId);
             }}
             onPointerCancel={() => {
+              if (drag.current)
+                saveLayout({ panelWidth: store.getState().layout.panelWidth });
               drag.current = null;
             }}
           />

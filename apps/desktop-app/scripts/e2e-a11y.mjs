@@ -1,3 +1,5 @@
+import { expect } from "@playwright/test";
+
 // Dependency-free accessibility audit helpers for the e2e suites (no axe-core in
 // the repo): a DOM pass for names/roles/landmarks plus Playwright focus checks.
 
@@ -29,7 +31,35 @@ export async function auditDom(page, scope = "body") {
         return false;
       return el.getClientRects().length > 0;
     };
-    const text = (el) => (el.textContent ?? "").replace(/\s+/g, " ").trim();
+    // Text content without aria-hidden subtrees (decorative icons/glyphs).
+    const text = (el) => {
+      const copy = el.cloneNode(true);
+      copy
+        .querySelectorAll?.("[aria-hidden='true']")
+        .forEach((n) => n.remove());
+      return (copy.textContent ?? "").replace(/\s+/g, " ").trim();
+    };
+    // Containers (dialog, radiogroup, landmarks...) are named only by an
+    // explicit label, never by their content.
+    const labelOf = (el) => {
+      const by = el.getAttribute("aria-labelledby");
+      if (by) {
+        const joined = by
+          .split(/\s+/)
+          .map((id) => {
+            const target = document.getElementById(id);
+            return target ? text(target) : "";
+          })
+          .join(" ")
+          .trim();
+        if (joined) return joined;
+      }
+      const label = el.getAttribute("aria-label")?.trim();
+      if (label) return label;
+      if ("labels" in el && el.labels?.length)
+        return [...el.labels].map(text).join(" ").trim();
+      return "";
+    };
     const nameOf = (el) => {
       const by = el.getAttribute("aria-labelledby");
       if (by) {
@@ -79,14 +109,14 @@ export async function auditDom(page, scope = "body") {
     }
     for (const el of root.querySelectorAll("[role=dialog],[role=alertdialog]"))
       if (visible(el)) {
-        if (!nameOf(el)) out.push(`unnamed dialog: ${describe(el)}`);
+        if (!labelOf(el)) out.push(`unnamed dialog: ${describe(el)}`);
         if (el.getAttribute("aria-modal") !== "true")
           out.push(`dialog without aria-modal: ${describe(el)}`);
       }
     for (const el of root.querySelectorAll(
-      "[role=radiogroup],[role=tablist],[role=menu],[role=listbox],[role=group][aria-label]",
+      "[role=radiogroup],[role=tablist],[role=menu],[role=listbox]",
     ))
-      if (visible(el) && !nameOf(el) && el.getAttribute("role") !== "group")
+      if (visible(el) && !labelOf(el))
         out.push(`unnamed ${el.getAttribute("role")}: ${describe(el)}`);
     const landmarkSelector =
       "header,footer,nav,main,aside,section[aria-label],section[aria-labelledby],form[aria-label],[role=banner],[role=navigation],[role=main],[role=complementary],[role=region],[role=search],[role=contentinfo]";
@@ -111,16 +141,8 @@ export async function auditDom(page, scope = "body") {
       )
         continue;
       const role = roleOf(el);
-      const label =
-        nameOf(el) === text(el) && role !== "region" ? "" : nameOf(el);
       const list = byRole.get(role) ?? [];
-      list.push({
-        el,
-        label:
-          el.getAttribute("aria-label") ||
-          (el.getAttribute("aria-labelledby") ? nameOf(el) : "") ||
-          label,
-      });
+      list.push({ el, label: labelOf(el) });
       byRole.set(role, list);
     }
     for (const [role, list] of byRole) {
@@ -204,14 +226,13 @@ export async function auditDialogFocus(
   await page.keyboard.press("Escape");
   await dialog.waitFor({ state: "hidden" });
   if (openerLocator) {
-    // Focus is restored after the close transition; give it a moment.
-    let restored = false;
-    for (let i = 0; i < 20 && !restored; i++) {
-      restored = await openerLocator.evaluate(
-        (el) => el === globalThis.document.activeElement,
+    // Focus is restored after the close transition.
+    const restored = await expect(openerLocator)
+      .toBeFocused({ timeout: 2000 })
+      .then(
+        () => true,
+        () => false,
       );
-      if (!restored) await page.waitForTimeout(100);
-    }
     if (!restored) out.push("focus did not return to the opener");
   }
   return out;
