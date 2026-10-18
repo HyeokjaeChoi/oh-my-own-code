@@ -2964,27 +2964,28 @@ export function createWorkbenchService({
           archived,
           parentSessionId,
           permissionMode,
-        }) => ({
-          id,
-          workspaceId,
-          permissionMode: modeOf({ permissionMode }),
-          title,
-          status:
-            blocked ||
-            recovery.resources.some(
-              (r) =>
-                r.workspaceId === workspaceId &&
-                (!r.sessionId || r.sessionId === id),
-            )
-              ? "unavailable"
-              : (nativeProjections.get(id)?.status ?? status),
-          pinned,
-          archived,
-          ...(sessionTimes.get(tables().sessions.get(id)?.sdkId) && {
-            updatedAt: sessionTimes.get(tables().sessions.get(id)?.sdkId),
-          }),
-          ...(parentSessionId && { parentSessionId }),
-        }),
+        }) => {
+          const updatedAt = sessionTimes.get(tables().sessions.get(id)?.sdkId);
+          return {
+            id,
+            workspaceId,
+            permissionMode: modeOf({ permissionMode }),
+            title,
+            status:
+              blocked ||
+              recovery.resources.some(
+                (r) =>
+                  r.workspaceId === workspaceId &&
+                  (!r.sessionId || r.sessionId === id),
+              )
+                ? "unavailable"
+                : (nativeProjections.get(id)?.status ?? status),
+            pinned,
+            archived,
+            ...(updatedAt && { updatedAt }),
+            ...(parentSessionId && { parentSessionId }),
+          };
+        },
       ),
       ...(w && { selectedWorkspaceId: w.id }),
       ...(s && { selectedSessionId: s.id }),
@@ -5121,11 +5122,11 @@ export function createWorkbenchService({
   let sessionTimesAt = -Infinity;
   async function readSessionTimes() {
     if (performance.now() - sessionTimesAt < 30000) return;
+    if (!client || runtime.snapshot().state !== "connected") return;
     sessionTimesAt = performance.now();
     try {
       // Read-only and detached from the request: it must not take part in the
       // caller's operation scope, so it bypasses call().
-      if (!client || runtime.snapshot().state !== "connected") return;
       const result = await client.session.list({ limit: 100, order: "desc" });
       if (!Array.isArray(result?.data)) return;
       for (const item of result.data) {
