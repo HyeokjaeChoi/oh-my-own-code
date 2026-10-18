@@ -369,6 +369,37 @@ try {
   );
 
   await check(
+    "permission-presets",
+    async () => {
+      await selectFixture();
+      const panel = await openComposerPopover(page, "permission");
+      const policy = panel.locator("[data-permission-policy-status]");
+      await policy.locator("summary").click();
+      await policy.locator('[data-permission-policy-action="observe"]').click();
+      await expect(policy).toHaveAttribute(
+        "data-permission-policy-status",
+        "observed",
+        { timeout: 30000 },
+      );
+      const list = policy.getByRole("list").first();
+      const items = policy.locator("[data-permission-preset]");
+      await expect(items).toHaveCount(4);
+      await expect(policy.locator('[data-current="true"]')).toHaveCount(1);
+      await expect(
+        policy.locator('[data-permission-preset="scoped_edit"]'),
+      ).toHaveAttribute("data-current", "true");
+      await expect(
+        policy.locator("[data-permission-preset][aria-current]"),
+      ).toContainText("범위 내 편집 허용");
+      await expect(policy).toContainText("external_directory");
+      await expect(list).toBeVisible();
+      const found = await auditDom(page, "[data-permission-presets]");
+      assert.equal(found.length, 0, `presets dom: ${found.join("; ")}`);
+    },
+    { needs: "runtime" },
+  );
+
+  await check(
     "data-export",
     async () => {
       const out = join(fixture, "export-ui.json");
