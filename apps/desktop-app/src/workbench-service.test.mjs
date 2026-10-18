@@ -2509,23 +2509,32 @@ test("snapshot sessions carry Native's last activity time as updatedAt", async (
   });
   const sessions = (await f.service.handle({ type: "snapshot", ...f.ids }))
     .value.sessions;
-  assert.equal(sessions[0].updatedAt, 7000); // Sessions other than the selected one get their time from Native's list.
+  assert.equal(sessions[0].updatedAt, 7000);
+  // Sessions other than the selected one get their time from Native's list
+  // (end of last run, else creation; its `updated` also moves on renames). The
+  // read never blocks a snapshot: the next one carries the result.
+  f.state.sessionList = [
+    { id: "sdk-1", time: { created: 1, updated: 99999, idle: 9000 } },
+  ];
   const created = await f.service.handle({
     type: "session.create",
     workspaceId: f.ids.workspaceId,
     title: "Other",
   });
   assert.equal(created.ok, true);
-  f.state.sessionList = [
-    {
-      ...(await original({ sessionID: "sdk-1" })),
-      time: { created: 1, updated: 9000 },
-    },
-  ];
+  await f.service.handle({ type: "snapshot", ...f.ids });
+  await new Promise((resolve) => setTimeout(resolve, 20));
   const other = (
     await f.service.handle({ type: "snapshot", ...f.ids })
   ).value.sessions.find((x) => x.title === "Other");
   assert.equal(other.updatedAt, 9000);
+});
+test("activityTime prefers the last idle, then creation, never updated", async () => {
+  const { activityTime } = await import("./workbench-service.mjs");
+  assert.equal(activityTime({ created: 1, updated: 99, idle: 7 }), 7);
+  assert.equal(activityTime({ created: 5, updated: 99 }), 5);
+  assert.equal(activityTime({ updated: 99 }), undefined);
+  assert.equal(activityTime(undefined), undefined);
 });
 test("a failed turn's type reduces to a closed cause and never leaves main", () => {
   const turn = (error) => ({
@@ -2535,12 +2544,16 @@ test("a failed turn's type reduces to a closed cause and never leaves main", () 
     time: { created: 1 },
     error,
   });
-  const [auth, net, other, none] = projectMessages([
+  const [auth, net, other, none, filtered, unauth] = projectMessages([
     turn({ type: "provider.auth", status: 403, message: "sk-secret" }),
-    turn({ type: "provider.network-error", message: "http://x" }),
+    turn({ type: "provider.transport", message: "http://x" }),
     turn({ type: "provider.rate-limit", status: 429 }),
     turn({ type: "unknown" }),
+    turn({ type: "provider.content-filter", status: 403 }),
+    turn({ type: "provider.other", status: 401 }),
   ]);
+  assert.deepEqual(filtered.failure, { status: 403 });
+  assert.deepEqual(unauth.failure, { status: 401, kind: "auth" });
   assert.deepEqual(auth.failure, { status: 403, kind: "auth" });
   assert.deepEqual(net.failure, { kind: "network" });
   assert.deepEqual(other.failure, { status: 429 });

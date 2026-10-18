@@ -70,8 +70,15 @@ export function turnFailure(
   model: { providerId: string; id: string } | undefined,
   failure: { status?: number; kind?: "auth" | "network" } | undefined,
 ):
-  | { kind: "unavailable" | "limit" | "auth" | "server"; id?: string }
+  | {
+      kind: "unavailable" | "limit" | "auth" | "refused" | "server";
+      id?: string;
+    }
   | undefined;
+export function inlineExplained(
+  kind: string | undefined,
+  errorCode: string | undefined,
+): boolean;
 export const UNAVAILABLE_TTL_MS: number;
 export function loadUnavailableModels(
   storage?: Pick<Storage, "getItem">,

@@ -254,10 +254,12 @@ export function projectFailure(error) {
       ? error.status
       : undefined;
   const type = typeof error?.type === "string" ? error.type : "";
+  // Auth only for Native's auth type (or a 401); another 403 type, such as a
+  // content filter, is not a key or plan problem.
   const kind =
-    type === "provider.auth"
+    type === "provider.auth" || status === 401
       ? "auth"
-      : /^provider\.(network|timeout|connection)/.test(type)
+      : /^provider\.(transport|timeout)$/.test(type)
         ? "network"
         : undefined;
   return status === undefined && kind === undefined
@@ -266,6 +268,12 @@ export function projectFailure(error) {
         ...(status !== undefined && { status }),
         ...(kind && { kind }),
       };
+}
+// Native's last activity: the end of its last run, else creation. Its own
+// `updated` also moves on app-initiated edits (rename, pin), so it is not used.
+export function activityTime(time) {
+  const t = time?.idle ?? time?.created;
+  return Number.isSafeInteger(t) && t > 0 ? t : undefined;
 }
 export function projectMessages(data) {
   if (!Array.isArray(data)) fail("RUNTIME_ERROR");
@@ -3222,12 +3230,8 @@ export function createWorkbenchService({
         s.sessionSelection = projectSessionSelection(info, s.id);
         // Native does not hide reverted messages; the boundary message and all
         // later ones are hidden here.
-        const infoTime = Math.max(
-          info.time?.updated ?? 0,
-          info.time?.idle ?? 0,
-        );
-        if (Number.isSafeInteger(infoTime) && infoTime > 0)
-          sessionTimes.set(s.sdkId, infoTime);
+        const infoTime = activityTime(info.time);
+        if (infoTime) sessionTimes.set(s.sdkId, infoTime);
         s.revert = projectRevert(info.revert);
         if (s.revert && checkpoints) {
           const record = await checkpoints.staged(s.workspaceId, s.id);
@@ -5110,24 +5114,24 @@ export function createWorkbenchService({
     }
   }
   // Native's own last-activity time per session (ms), for the sidebar's
-  // relative time. One bounded list scan, reused for 30s; a failed read keeps
-  // the last known values and never fails a snapshot.
+  // relative time. Never awaited by a snapshot: one first-page list read (most
+  // recent 100), at most every 30s, feeds the next snapshot. A failed read
+  // keeps the last known values.
   const sessionTimes = new Map();
   let sessionTimesAt = -Infinity;
   async function readSessionTimes() {
     if (performance.now() - sessionTimesAt < 30000) return;
     sessionTimesAt = performance.now();
     try {
-      await scanSessions(
-        {},
-        (data) => {
-          for (const item of data) {
-            const t = Math.max(item.time?.updated ?? 0, item.time?.idle ?? 0);
-            if (Number.isSafeInteger(t) && t > 0) sessionTimes.set(item.id, t);
-          }
-        },
-        "RUNTIME_ERROR",
-      );
+      // Read-only and detached from the request: it must not take part in the
+      // caller's operation scope, so it bypasses call().
+      if (!client || runtime.snapshot().state !== "connected") return;
+      const result = await client.session.list({ limit: 100, order: "desc" });
+      if (!Array.isArray(result?.data)) return;
+      for (const item of result.data) {
+        const t = activityTime(item?.time);
+        if (opaque(item?.id) && t) sessionTimes.set(item.id, t);
+      }
     } catch {
       // Keep what is known; the sidebar falls back to observed activity.
     }
@@ -5685,8 +5689,12 @@ export function createWorkbenchService({
           : tables().sessions.get(defaultSession));
       // The selected session's time comes from its own read below; only others
       // need the list scan.
-      if ([...tables().sessions.keys()].some((id) => id !== selectedS?.id))
-        await readSessionTimes();
+      if (
+        [...tables().sessions.values()].some(
+          (item) => item.id !== selectedS?.id && !item.archived,
+        )
+      )
+        void readSessionTimes();
       const projection =
         selectedS &&
         !selectedS.unavailable &&

@@ -17,6 +17,7 @@ export {
   showFirstRun,
   freeFailure,
   turnFailure,
+  inlineExplained,
   retryablePrompt,
   loadUnavailableModels,
   markModelUnavailable,
