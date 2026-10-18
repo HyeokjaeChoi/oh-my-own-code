@@ -1654,6 +1654,18 @@ try {
                 '<img src=x onerror="globalThis.fixtureExecuted=true"><script>bad()</script>',
             },
             {
+              id: "long-write",
+              name: "write",
+              status: "completed",
+              input: JSON.stringify({
+                path: "long.txt",
+                content: Array.from({ length: 450 }, (_, i) => `l${i}`).join(
+                  "\n",
+                ),
+              }),
+              output: "ok",
+            },
+            {
               id: "failed-tool",
               name: "read_file",
               status: "error",
@@ -1742,6 +1754,12 @@ try {
       assert.equal(
         await page.evaluate(() => window.fixtureExecuted),
         undefined,
+      );
+      // Capped diffs say so instead of silently dropping rows.
+      const longWrite = page.locator('.tool-detail[data-tool-name="write"]');
+      await longWrite.locator("summary").first().click();
+      await expect(longWrite.locator('[data-truncated="true"]')).toContainText(
+        "50줄",
       );
       await page.locator(".transcript").evaluate((element) => {
         element.scrollTop = element.scrollHeight;

@@ -17,38 +17,48 @@ function parse(text) {
     return null;
   }
 }
-const lines = (out) =>
-  out ? out.slice(0, MAX_TEXT).split("\n").filter(Boolean) : [];
-// Caps keep hostile/huge text from becoming huge arrays or DOM; `hidden*` feeds the notice.
+// ponytail: no extra text cap here; projection already bounds input (8KB) and
+// output (64KB), so these caps only bound row/DOM counts.
+const TRUNCATED = "… 표시 길이 제한";
 export const MAX_ROWS = 400;
 export const MAX_MATCHES = 200;
 export const MAX_LINE = 2000;
-const MAX_TEXT = 262144;
 const clipLine = (t) => (t.length > MAX_LINE ? `${t.slice(0, MAX_LINE)}…` : t);
-function diffRows(sign, text) {
-  const all = text.slice(0, MAX_TEXT).split("\n");
-  return {
-    rows: all.slice(0, MAX_ROWS).map((t) => ({ sign, text: clipLine(t) })),
-    hidden:
-      Math.max(0, all.length - MAX_ROWS) + (text.length > MAX_TEXT ? 1 : 0),
-  };
+// Drops projection's trailing truncation marker; `cut` counts it as hidden.
+function lines(out) {
+  const all = out ? out.split("\n").filter(Boolean) : [];
+  const cut = all.at(-1) === TRUNCATED;
+  if (cut) all.pop();
+  return { all, cut: cut ? 1 : 0 };
 }
-function capRows(rows, hiddenBefore = 0) {
+// Each side gets its own budget so a long "-" block cannot push out every "+".
+function sideRows(old, add) {
+  const o = old === "" ? [] : old.split("\n");
+  const a = add.split("\n");
+  const delN = Math.min(o.length, MAX_ROWS - Math.min(a.length, MAX_ROWS / 2));
+  const addN = Math.min(a.length, MAX_ROWS - delN);
+  const row = (sign) => (text) => ({ sign, text: clipLine(text) });
   return {
-    rows: rows.slice(0, MAX_ROWS),
-    hiddenRows: hiddenBefore + Math.max(0, rows.length - MAX_ROWS),
+    rows: [
+      ...o.slice(0, delN).map(row("-")),
+      ...a.slice(0, addN).map(row("+")),
+    ],
+    hiddenRows: o.length - delN + (a.length - addN),
   };
 }
 
 function pathList(pattern, scope, output) {
-  const all = lines(output);
+  const { all, cut } = lines(output);
   return {
     pattern,
     scope,
-    matches: all
-      .slice(0, MAX_MATCHES)
-      .map((path) => ({ path: clipLine(path), line: null, text: "" })),
-    hiddenMatches: Math.max(0, all.length - MAX_MATCHES),
+    matches: all.slice(0, MAX_MATCHES).map((p) =>
+      // Clipped paths are not real paths: show them as plain text.
+      p.length > MAX_LINE
+        ? { path: null, line: null, text: clipLine(p) }
+        : { path: p, line: null, text: "" },
+    ),
+    hiddenMatches: Math.max(0, all.length - MAX_MATCHES) + cut,
   };
 }
 
@@ -78,24 +88,21 @@ const BUILDERS = {
       typeof i.newString !== "string"
     )
       return null;
-    const del = diffRows("-", i.oldString);
-    const add = diffRows("+", i.newString);
     return {
       path,
-      ...capRows([...del.rows, ...add.rows], del.hidden + add.hidden),
+      ...sideRows(i.oldString, i.newString),
       replaceAll: i.replaceAll === true,
     };
   },
   write(i) {
     const path = str(i.filePath) ?? str(i.path);
     if (!path || typeof i.content !== "string") return null;
-    const add = diffRows("+", i.content);
-    return { path, rows: add.rows, hiddenRows: add.hidden, replaceAll: false };
+    return { path, ...sideRows("", i.content), replaceAll: false };
   },
   patch(i) {
     const text = str(i.patchText) ?? str(i.patch);
     if (!text) return null;
-    const all = text.slice(0, MAX_TEXT).split("\n");
+    const all = text.split("\n");
     const rows = all.slice(0, MAX_ROWS).map((t) => ({
       sign: t.startsWith("+") ? "+" : t.startsWith("-") ? "-" : " ",
       text: clipLine(t),
@@ -103,8 +110,7 @@ const BUILDERS = {
     return {
       path: null,
       rows,
-      hiddenRows:
-        Math.max(0, all.length - MAX_ROWS) + (text.length > MAX_TEXT ? 1 : 0),
+      hiddenRows: Math.max(0, all.length - MAX_ROWS),
       replaceAll: false,
     };
   },
@@ -122,7 +128,7 @@ const BUILDERS = {
   grep(i, output) {
     const pattern = str(i.pattern);
     if (!pattern) return null;
-    const all = lines(output);
+    const { all, cut } = lines(output);
     const matches = all.slice(0, MAX_MATCHES).map((l) => {
       const m = /^(.+?):(\d+)[:-](.*)$/.exec(clipLine(l));
       return m
@@ -133,7 +139,7 @@ const BUILDERS = {
       pattern,
       scope: str(i.path),
       matches,
-      hiddenMatches: all.length - matches.length,
+      hiddenMatches: all.length - matches.length + cut,
     };
   },
   glob(i, output) {
