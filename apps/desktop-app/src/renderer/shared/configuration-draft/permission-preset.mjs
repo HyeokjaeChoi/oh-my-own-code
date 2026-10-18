@@ -1,6 +1,7 @@
 // Pure, inert classifier: which built-in permission mode do the session's rules
 // equal? Mirrors src/permission-mode.mjs compileModeRules (a test pins the two
 // together). Exact ordered match only; anything else is "custom".
+import { BASELINE_POLICY } from "./policy.mjs";
 const r = (action, resource, effect) => ({ action, resource, effect });
 const ENV = [
   r("read", "*.env", "ask"),
@@ -20,8 +21,7 @@ const TAIL = [
   r("webfetch", "*", "deny"),
   r("websearch", "*", "deny"),
 ];
-const FLOOR = r("external_directory", "*", "deny");
-const ASK = r("*", "*", "ask");
+const [ASK, FLOOR] = BASELINE_POLICY;
 const TEMPLATES = {
   ask: [ASK, FLOOR],
   scoped_edit: [ASK, r("edit", "*", "allow"), ...VCS, ...TAIL, FLOOR],
