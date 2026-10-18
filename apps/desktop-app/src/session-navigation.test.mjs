@@ -162,3 +162,34 @@ test("placeholder titles display as 새 세션 or the first prompt; stored title
     ],
   );
 });
+
+test("recentSessions lists recent opens excluding the open, archived and foreign-workspace sessions", async () => {
+  const { recentSessions } = await import(
+    "./renderer/features/sessions/navigation.ts"
+  );
+  const s = (id, extra = {}) => ({
+    id,
+    workspaceId: "w",
+    title: id,
+    status: "idle",
+    ...extra,
+  });
+  const list = [
+    s("a"),
+    s("b"),
+    s("c", { archived: true }),
+    s("d", { workspaceId: "x" }),
+    s("e"),
+    s("f"),
+  ];
+  const ids = (r) => r.map((session) => session.id);
+  assert.deepEqual(
+    ids(recentSessions(list, ["a", "b", "c", "d", "gone", "e"], "w", "a")),
+    ["b", "e"],
+  );
+  assert.deepEqual(
+    ids(recentSessions(list, ["a", "b", "e", "f"], "w", undefined, 2)),
+    ["a", "b"],
+  );
+  assert.deepEqual(recentSessions(list, [], "w"), []);
+});
