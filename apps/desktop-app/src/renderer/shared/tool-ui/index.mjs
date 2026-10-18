@@ -17,7 +17,40 @@ function parse(text) {
     return null;
   }
 }
-const lines = (out) => (out ? out.split("\n").filter(Boolean) : []);
+const lines = (out) =>
+  out ? out.slice(0, MAX_TEXT).split("\n").filter(Boolean) : [];
+// Caps keep hostile/huge text from becoming huge arrays or DOM; `hidden*` feeds the notice.
+export const MAX_ROWS = 400;
+export const MAX_MATCHES = 200;
+export const MAX_LINE = 2000;
+const MAX_TEXT = 262144;
+const clipLine = (t) => (t.length > MAX_LINE ? `${t.slice(0, MAX_LINE)}…` : t);
+function diffRows(sign, text) {
+  const all = text.slice(0, MAX_TEXT).split("\n");
+  return {
+    rows: all.slice(0, MAX_ROWS).map((t) => ({ sign, text: clipLine(t) })),
+    hidden:
+      Math.max(0, all.length - MAX_ROWS) + (text.length > MAX_TEXT ? 1 : 0),
+  };
+}
+function capRows(rows, hiddenBefore = 0) {
+  return {
+    rows: rows.slice(0, MAX_ROWS),
+    hiddenRows: hiddenBefore + Math.max(0, rows.length - MAX_ROWS),
+  };
+}
+
+function pathList(pattern, scope, output) {
+  const all = lines(output);
+  return {
+    pattern,
+    scope,
+    matches: all
+      .slice(0, MAX_MATCHES)
+      .map((path) => ({ path: clipLine(path), line: null, text: "" })),
+    hiddenMatches: Math.max(0, all.length - MAX_MATCHES),
+  };
+}
 
 const BUILDERS = {
   read(i, output) {
@@ -45,33 +78,35 @@ const BUILDERS = {
       typeof i.newString !== "string"
     )
       return null;
-    const rows = [
-      ...i.oldString.split("\n").map((text) => ({ sign: "-", text })),
-      ...i.newString.split("\n").map((text) => ({ sign: "+", text })),
-    ];
-    return { path, rows, replaceAll: i.replaceAll === true };
+    const del = diffRows("-", i.oldString);
+    const add = diffRows("+", i.newString);
+    return {
+      path,
+      ...capRows([...del.rows, ...add.rows], del.hidden + add.hidden),
+      replaceAll: i.replaceAll === true,
+    };
   },
   write(i) {
     const path = str(i.filePath) ?? str(i.path);
     if (!path || typeof i.content !== "string") return null;
-    return {
-      path,
-      rows: i.content.split("\n").map((text) => ({ sign: "+", text })),
-      replaceAll: false,
-    };
+    const add = diffRows("+", i.content);
+    return { path, rows: add.rows, hiddenRows: add.hidden, replaceAll: false };
   },
   patch(i) {
     const text = str(i.patchText) ?? str(i.patch);
-    return text
-      ? {
-          path: null,
-          rows: text.split("\n").map((t) => ({
-            sign: t.startsWith("+") ? "+" : t.startsWith("-") ? "-" : " ",
-            text: t,
-          })),
-          replaceAll: false,
-        }
-      : null;
+    if (!text) return null;
+    const all = text.slice(0, MAX_TEXT).split("\n");
+    const rows = all.slice(0, MAX_ROWS).map((t) => ({
+      sign: t.startsWith("+") ? "+" : t.startsWith("-") ? "-" : " ",
+      text: clipLine(t),
+    }));
+    return {
+      path: null,
+      rows,
+      hiddenRows:
+        Math.max(0, all.length - MAX_ROWS) + (text.length > MAX_TEXT ? 1 : 0),
+      replaceAll: false,
+    };
   },
   shell(i, output) {
     const command = str(i.command);
@@ -87,35 +122,27 @@ const BUILDERS = {
   grep(i, output) {
     const pattern = str(i.pattern);
     if (!pattern) return null;
-    const matches = lines(output)
-      .slice(0, 200)
-      .map((l) => {
-        const m = /^(.+?):(\d+)[:-](.*)$/.exec(l);
-        return m
-          ? { path: m[1], line: Number(m[2]), text: m[3] }
-          : { path: null, line: null, text: l };
-      });
-    return { pattern, scope: str(i.path), matches };
+    const all = lines(output);
+    const matches = all.slice(0, MAX_MATCHES).map((l) => {
+      const m = /^(.+?):(\d+)[:-](.*)$/.exec(clipLine(l));
+      return m
+        ? { path: m[1], line: Number(m[2]), text: m[3] }
+        : { path: null, line: null, text: clipLine(l) };
+    });
+    return {
+      pattern,
+      scope: str(i.path),
+      matches,
+      hiddenMatches: all.length - matches.length,
+    };
   },
   glob(i, output) {
     const pattern = str(i.pattern);
     if (!pattern) return null;
-    return {
-      pattern,
-      scope: str(i.path),
-      matches: lines(output)
-        .slice(0, 200)
-        .map((path) => ({ path, line: null, text: "" })),
-    };
+    return pathList(pattern, str(i.path), output);
   },
   list(i, output) {
-    return {
-      pattern: "",
-      scope: str(i.path) ?? ".",
-      matches: lines(output)
-        .slice(0, 200)
-        .map((path) => ({ path, line: null, text: "" })),
-    };
+    return pathList("", str(i.path) ?? ".", output);
   },
   webfetch(i) {
     const url = str(i.url);
