@@ -18,6 +18,7 @@ export type ToolView =
       name: string;
       path: string | null;
       rows: ToolRow[];
+      hiddenRows: number;
       replaceAll: boolean;
     }
   | {
@@ -34,6 +35,7 @@ export type ToolView =
       pattern: string;
       scope: string | null;
       matches: SearchMatch[];
+      hiddenMatches: number;
     }
   | { kind: "web"; name: string; url: string | null; query: string | null }
   | {
@@ -41,6 +43,9 @@ export type ToolView =
       name: string;
       items: { content: string; status: string }[];
     };
+export const MAX_ROWS: number;
+export const MAX_MATCHES: number;
+export const MAX_LINE: number;
 export function canonicalToolName(name: string): string;
 export function deriveToolView(tool: {
   name: string;

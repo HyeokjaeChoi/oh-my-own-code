@@ -1,6 +1,9 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import {
+  MAX_LINE,
+  MAX_MATCHES,
+  MAX_ROWS,
   deriveToolView,
   effectiveToolStatus,
   permissionsForTool,
@@ -80,4 +83,85 @@ test("permission correlation by tool id", () => {
   assert.equal(effectiveToolStatus("running", [ps[0]]), "needs-permission");
   assert.equal(effectiveToolStatus("completed", [ps[0]]), "completed");
   assert.equal(effectiveToolStatus("running", []), "running");
+});
+
+test("hostile and huge input stays bounded and text-only", () => {
+  const html = '<img src=x onerror="alert(1)"><script>1</script>';
+  const w = deriveToolView(
+    tool("write", { path: "a.html", content: `${html}\n`.repeat(5000) }),
+  );
+  assert.equal(w.rows.length, MAX_ROWS);
+  assert.ok(w.hiddenRows >= 4600);
+  assert.equal(w.rows[0].text, html);
+  const long = deriveToolView(
+    tool("edit", { path: "a", oldString: "x".repeat(1e6), newString: "y" }),
+  );
+  assert.ok(long.rows[0].text.length <= MAX_LINE + 1);
+  const p = deriveToolView(
+    tool("apply_patch", { patchText: "+a\n".repeat(1e5) }),
+  );
+  assert.equal(p.rows.length, MAX_ROWS);
+  assert.ok(p.hiddenRows > 0);
+  const g = deriveToolView(
+    tool("grep", { pattern: "x" }, "f.ts:1:hit\n".repeat(1000)),
+  );
+  assert.equal(g.matches.length, MAX_MATCHES);
+  assert.equal(g.hiddenMatches, 800);
+  const gl = deriveToolView(tool("glob", { pattern: "*" }, "p\n".repeat(500)));
+  assert.equal(gl.hiddenMatches, 300);
+  assert.equal(
+    deriveToolView(tool("grep", { pattern: "x" }, `a:1:${"z".repeat(1e6)}`))
+      .matches[0].text.length <=
+      MAX_LINE + 1,
+    true,
+  );
+});
+
+test("unknown tools, binary-ish output and deep JSON fall back safely", () => {
+  assert.deepEqual(deriveToolView(tool("mcp_weird", { a: 1 })), {
+    kind: "generic",
+  });
+  assert.deepEqual(deriveToolView(tool("__proto__", { a: 1 })), {
+    kind: "generic",
+  });
+  assert.deepEqual(deriveToolView(tool("constructor", { a: 1 })), {
+    kind: "generic",
+  });
+  let deep = "1";
+  for (let i = 0; i < 20000; i++) deep = `[${deep}]`;
+  assert.deepEqual(deriveToolView(tool("read", deep)), { kind: "generic" });
+  const nested =
+    '{"filePath":' + '{"a":'.repeat(50) + "1" + "}".repeat(50) + "}";
+  assert.deepEqual(deriveToolView(tool("read", nested)), { kind: "generic" });
+  const bin = deriveToolView(
+    tool("bash", { command: "cat x" }, "\u0000\u0001�‮".repeat(10)),
+  );
+  assert.equal(bin.kind, "shell");
+  assert.equal(bin.exitCode, null);
+  assert.equal(deriveToolView(tool("read", { filePath: 1 })).kind, "generic");
+});
+
+test("long edit keeps both sides and marks truncation; marker and clipped paths are not paths", () => {
+  const e = deriveToolView(
+    tool("edit", {
+      path: "a",
+      oldString: Array.from({ length: 800 }, (_, i) => `old${i}`).join("\n"),
+      newString: "NEW",
+    }),
+  );
+  assert.ok(e.rows.some((r) => r.sign === "+" && r.text === "NEW"));
+  assert.ok(e.rows.length <= MAX_ROWS);
+  assert.equal(e.hiddenRows, 800 - (MAX_ROWS - 1));
+  const g = deriveToolView(
+    tool(
+      "glob",
+      { pattern: "*" },
+      `a.ts\n${"p".repeat(MAX_LINE + 5)}\n… 표시 길이 제한`,
+    ),
+  );
+  assert.deepEqual(
+    g.matches.map((m) => m.path),
+    ["a.ts", null],
+  );
+  assert.equal(g.hiddenMatches, 1);
 });
