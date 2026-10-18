@@ -306,6 +306,8 @@ export function validateRequest(value) {
     )
       fail("INVALID_REQUEST");
   }
+  if (value.type === "workspace.import" && value.path === "")
+    fail("INVALID_REQUEST");
   if (
     [
       "configuration.skill.runtime.read",

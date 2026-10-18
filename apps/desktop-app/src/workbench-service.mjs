@@ -67,7 +67,8 @@ import {
   waitForReady,
 } from "./host/workbench-admission.mjs";
 import { performance } from "node:perf_hooks";
-import { basename, isAbsolute } from "node:path";
+import { homedir } from "node:os";
+import { basename, isAbsolute, normalize } from "node:path";
 import { isDeepStrictEqual } from "node:util";
 import { redactReceipt } from "./host/workbench-receipts.mjs";
 import { isPlaceholderTitle, nativeSessionTitle } from "./session-title.mjs";
@@ -5736,21 +5737,34 @@ export function createWorkbenchService({
       }
       if (!registry) await markEffect();
       // A typed path takes the same canonicalization, limit and native trust path as a picked one.
+      // Only "~" and "~/..." expand (to this user's home); "~name" and relative paths are rejected.
+      const typed =
+        request.path === "~" || request.path?.startsWith("~/")
+          ? homedir() + request.path.slice(1)
+          : request.path;
       if (
-        request.path !== undefined &&
+        typed !== undefined &&
         (request.type !== "workspace.import" ||
-          !isAbsolute(request.path) ||
-          request.path.length === 0)
+          !isAbsolute(typed) ||
+          typed.length === 0)
       )
         fail("INVALID_REQUEST");
-      const picked = request.path ?? (await pickDirectory());
+      const picked =
+        typed === undefined ? await pickDirectory() : normalize(typed);
       checkLive();
       if (!picked) fail("CANCELLED");
       if (!registry) await markEffect();
-      const path =
-        request.type === "workspace.create"
-          ? await createFolder(picked, request.name)
-          : await canonicalDirectory(picked);
+      let path;
+      try {
+        path =
+          request.type === "workspace.create"
+            ? await createFolder(picked, request.name)
+            : await canonicalDirectory(picked);
+      } catch (error) {
+        // Missing, not a directory, or permission denied: one non-leaking code for typed paths.
+        if (error.appCode || typed === undefined) throw error;
+        fail("FILE_DENIED");
+      }
       if (
         tables().workspaces.size >= 100 &&
         ![...tables().workspaces.values()].some(
