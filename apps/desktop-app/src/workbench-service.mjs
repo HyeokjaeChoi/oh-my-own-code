@@ -67,6 +67,7 @@ import {
   waitForReady,
 } from "./host/workbench-admission.mjs";
 import { performance } from "node:perf_hooks";
+import { homedir } from "node:os";
 import { basename, isAbsolute } from "node:path";
 import { isDeepStrictEqual } from "node:util";
 import { redactReceipt } from "./host/workbench-receipts.mjs";
@@ -354,6 +355,7 @@ export function createWorkbenchService({
   pickDirectory,
   probeWorkspace,
   confirmTrust,
+  confirmImport = async () => false,
   confirmSessionRemoval = async () => false,
   confirmSessionRevert = async () => false,
   checkpoints, // app-owned file checkpoint store (host/workspace-checkpoint.mjs)
@@ -5735,22 +5737,33 @@ export function createWorkbenchService({
         return base(created);
       }
       if (!registry) await markEffect();
-      // A typed path takes the same canonicalization, limit and native trust path as a picked one.
+      // A typed path takes the same canonicalization and limit as a picked one, but skips the
+      // native picker, so the resolved folder gets an explicit native confirmation below.
+      // Only "~" and "~/..." expand (to this user's home); "~name" and relative paths are rejected.
+      const typed =
+        request.path === "~" || request.path?.startsWith("~/")
+          ? homedir() + request.path.slice(1)
+          : request.path;
       if (
-        request.path !== undefined &&
-        (request.type !== "workspace.import" ||
-          !isAbsolute(request.path) ||
-          request.path.length === 0)
+        typed !== undefined &&
+        (request.type !== "workspace.import" || !isAbsolute(typed))
       )
         fail("INVALID_REQUEST");
-      const picked = request.path ?? (await pickDirectory());
+      const picked = typed === undefined ? await pickDirectory() : typed;
       checkLive();
       if (!picked) fail("CANCELLED");
       if (!registry) await markEffect();
-      const path =
-        request.type === "workspace.create"
-          ? await createFolder(picked, request.name)
-          : await canonicalDirectory(picked);
+      let path;
+      try {
+        path =
+          request.type === "workspace.create"
+            ? await createFolder(picked, request.name)
+            : await canonicalDirectory(picked);
+      } catch (error) {
+        // Missing, not a directory, or permission denied: one non-leaking code for typed paths.
+        if (error.appCode || typed === undefined) throw error;
+        fail("FILE_DENIED");
+      }
       if (
         tables().workspaces.size >= 100 &&
         ![...tables().workspaces.values()].some(
@@ -5758,6 +5771,11 @@ export function createWorkbenchService({
         )
       )
         fail("LIMIT_REACHED");
+      if (typed !== undefined) {
+        const confirmed = await confirmImport(path);
+        checkLive();
+        if (!confirmed) fail("CANCELLED");
+      }
       // Both ordinary new directories and imports require native trust before SDK activation.
       const reservation = registry
         ? await reserveSession(undefined, "imported", path)
