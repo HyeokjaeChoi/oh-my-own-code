@@ -379,6 +379,17 @@ try {
     { needs: "runtime" },
   );
 
+  const { eachTheme, visualAudit, takeAuditNotes } = createVisualAudit(page);
+  const tagScope = async (locator) => {
+    await locator.evaluate((el) => {
+      globalThis.document
+        .querySelectorAll("[data-a11y-scope]")
+        .forEach((n) => n.removeAttribute("data-a11y-scope"));
+      el.setAttribute("data-a11y-scope", "");
+    });
+    return "[data-a11y-scope]";
+  };
+
   await check(
     "permission-presets",
     async () => {
@@ -414,6 +425,11 @@ try {
       await expect(list).toBeVisible();
       const found = await auditDom(page, "[data-permission-presets]");
       assert.equal(found.length, 0, `presets dom: ${found.join("; ")}`);
+      // Visual a11y (both themes): current marker, descriptions, floor text.
+      const visual = await visualAudit(
+        "permission presets (current marker)",
+        await tagScope(panel),
+      );
       // Changing the mode makes the earlier observation stale: no current.
       await mode("읽기/계획").click();
       await expect(mode("읽기/계획")).toBeChecked({ timeout: 15000 });
@@ -423,10 +439,19 @@ try {
         { timeout: 15000 },
       );
       await expect(list.locator('[data-current="true"]')).toHaveCount(0);
+      // Stale warning, no marker.
+      visual.push(
+        ...(await visualAudit(
+          "permission presets (stale warning)",
+          await tagScope(panel),
+        )),
+      );
+      assert.equal(visual.length, 0, `presets visual: ${visual.join("; ")}`);
       await observe();
       await expect(
         list.locator('[data-permission-preset="read_plan"]'),
       ).toHaveAttribute("data-current", "true");
+      return takeAuditNotes();
     },
     { needs: "runtime" },
   );
@@ -824,18 +849,7 @@ try {
 
   // Visual a11y: WCAG contrast (text) and keyboard focus indicators on each key
   // surface, in both themes (the app follows the OS colour scheme by default),
-  // plus advisory field-boundary notes. Nothing is allow-listed here.
-  const { eachTheme, visualAudit, takeFieldNotes } = createVisualAudit(page);
-  const tagScope = async (locator) => {
-    await locator.evaluate((el) => {
-      globalThis.document
-        .querySelectorAll("[data-a11y-scope]")
-        .forEach((n) => n.removeAttribute("data-a11y-scope"));
-      el.setAttribute("data-a11y-scope", "");
-    });
-    return "[data-a11y-scope]";
-  };
-
+  // plus text-field boundaries (WCAG 1.4.11). Nothing is allow-listed here.
   await check("a11y-visual-detects-violations", async () => {
     // Guard against a vacuous audit, in both themes: bad seeds must be reported
     // and good seeds (ring, outline, pseudo-element indicators) must not.
@@ -876,6 +890,47 @@ try {
         { border: "0", background: "#fff" },
         make("div", {}, { background: "#fff" }),
       ).setAttribute("aria-label", "seed field");
+      // Bordered counterpart: #767676 on white is 4.54:1, must pass.
+      make(
+        "input",
+        {},
+        { border: "1px solid #767676", background: "#fff" },
+        make("div", {}, { background: "#fff" }),
+      ).setAttribute("aria-label", "bordered seed field");
+      // Bordered but only 2.39:1 on its #3d3d3d wrapper, inside an outer card
+      // with a strong border that must not rescue it (first edge decides).
+      make(
+        "input",
+        {},
+        { border: "1px solid #767676", background: "#3d3d3d" },
+        make(
+          "div",
+          {},
+          { background: "#3d3d3d", padding: "4px" },
+          make(
+            "div",
+            {},
+            { background: "#fff", border: "2px solid #000", padding: "4px" },
+          ),
+        ),
+      ).setAttribute("aria-label", "weak seed field");
+      // Borderless field inside a card with a strong border: the card is the
+      // first edge, so this passes.
+      make(
+        "input",
+        {},
+        { border: "0", background: "transparent" },
+        make(
+          "div",
+          {},
+          { background: "#fff", padding: "4px" },
+          make(
+            "div",
+            {},
+            { background: "#fff", border: "1px solid #767676", padding: "4px" },
+          ),
+        ),
+      ).setAttribute("aria-label", "carded seed field");
       const button = (textContent, className, style = {}) =>
         make("button", { textContent, className }, style);
       button("no indicator", "", { outline: "none" });
@@ -912,7 +967,21 @@ try {
         assert.ok(!contrast.includes("fine text"), tag(contrast));
         const field = (await auditFieldBoundaries(page, "#a11y-visual-seed"))
           .violations;
-        assert.equal(field.length, 1, tag("field: " + field.join("\n")));
+        assert.equal(field.length, 2, tag("field: " + field.join("\n")));
+        assert.ok(field.join().includes('"seed field"'), tag(field.join()));
+        assert.ok(field.join().includes("weak seed field"), tag(field.join()));
+        assert.ok(!field.join().includes("bordered"), tag(field.join("\n")));
+        assert.ok(!field.join().includes("carded"), tag(field.join("\n")));
+        // The documented allow-list (reason required) is the only escape.
+        assert.equal(
+          (
+            await auditFieldBoundaries(page, "#a11y-visual-seed", {
+              allow: [{ match: /seed field"/, reason: "self-test" }],
+            })
+          ).violations.length,
+          0,
+          tag("allow-list ignored"),
+        );
         const focus = (
           await auditFocusIndicators(page, "#a11y-visual-seed")
         ).violations.join("\n");
@@ -934,7 +1003,7 @@ try {
 
   await check("a11y-visual-workbench-shell", async () => {
     failIfAny("shell visual", await visualAudit("shell + sidebar", "body"));
-    return takeFieldNotes();
+    return takeAuditNotes();
   });
 
   await check(
@@ -949,7 +1018,25 @@ try {
         await visualAudit("permission popover", await tagScope(panel)),
       );
       await page.keyboard.press("Escape");
-      return takeFieldNotes();
+      return takeAuditNotes();
+    },
+    { needs: "runtime" },
+  );
+
+  await check(
+    "a11y-visual-composer-popovers",
+    async () => {
+      const found = [];
+      for (const [kind, surface] of [
+        ["attach", "attach popover"],
+        ["agent", "agent popover"],
+      ]) {
+        const panel = await openComposerPopover(page, kind);
+        found.push(...(await visualAudit(surface, await tagScope(panel))));
+        await page.keyboard.press("Escape");
+      }
+      failIfAny("composer popovers visual", found);
+      return takeAuditNotes();
     },
     { needs: "runtime" },
   );
@@ -969,7 +1056,7 @@ try {
     }
     failIfAny("settings visual", found);
     await page.keyboard.press("Escape");
-    return takeFieldNotes();
+    return takeAuditNotes();
   });
 
   await check("a11y-visual-menus", async () => {
@@ -981,7 +1068,7 @@ try {
     found.push(...(await visualAudit("more menu", '[role="menu"]')));
     await page.keyboard.press("Escape");
     failIfAny("menus visual", found);
-    return takeFieldNotes();
+    return takeAuditNotes();
   });
 
   await check(
@@ -1001,7 +1088,7 @@ try {
         found.push(...(await visualAudit(`side panel ${name.trim()}`, "body")));
       }
       failIfAny("side panel visual", found);
-      return takeFieldNotes();
+      return takeAuditNotes();
     },
     { needs: "runtime" },
   );
@@ -1016,7 +1103,7 @@ try {
       await visualAudit("command palette", "[role=dialog]"),
     );
     await page.keyboard.press("Escape");
-    return takeFieldNotes();
+    return takeAuditNotes();
   });
 
   await check(
