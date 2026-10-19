@@ -258,23 +258,24 @@ export async function auditFieldBoundaries(
   const base = NO_BASE;
   const violations = [];
   for (const item of items.items) {
-    let best = 0;
+    // The first level that draws an edge decides (a border, else a visible
+    // fill); outer levels are only consulted when inner ones draw nothing.
+    let ratio = 1;
     let note = "";
     for (const level of item.chain) {
+      const edge = level.border?.a ? level.border : level.own;
+      if (!edge?.a) continue;
       const around = flatten(level.around, base);
-      const edge = level.border ?? level.own;
-      const ratio = edge?.a
-        ? contrastRatio(compositeOver(edge, around), around)
-        : 1;
-      if (ratio > best) {
-        best = ratio;
-        note = `${level.border ? "border" : "fill"} ${hex(compositeOver(edge, around))} on ${hex(around)}`;
-      }
+      const r = contrastRatio(compositeOver(edge, around), around);
+      if (edge !== level.border && r < 1.01) continue; // fill == surroundings
+      ratio = r;
+      note = `${level.border?.a ? "border" : "fill"} ${hex(compositeOver(edge, around))} on ${hex(around)}`;
+      break;
     }
-    if (best >= 3) continue;
+    if (ratio >= 3) continue;
     if (allowed(item.description)) continue;
     violations.push(
-      `field boundary contrast ${formatRatio(best)} < 3: ${item.description} (best edge: ${note || "none"})`,
+      `field boundary contrast ${formatRatio(ratio)} < 3: ${item.description} (first edge: ${note || "none"})`,
     );
   }
   return { violations, checked: items.items.length };
