@@ -1,12 +1,12 @@
-/* Shared box for Input, Textarea and Select: borderless fill, 1px transparent
-   edge so forced-colors still draws the control. */
+/* Shared box for Input, Textarea and Select: subtle fill plus a 1px control
+   border (>= 3:1 against the surroundings, WCAG 1.4.11). */
 .control {
   display: block;
   width: 100%;
   min-width: 0;
   min-height: var(--omoc-component-size-control-hit-target);
   padding: 0 10px;
-  border: 1px solid transparent;
+  border: 1px solid var(--omoc-component-color-input-border);
   border-radius: var(--omoc-component-size-control-radius);
   background: var(--omoc-semantic-color-fill-subtle);
   color: var(--omoc-semantic-color-text-primary);
@@ -21,6 +21,7 @@
 }
 
 .control:hover:not(:disabled):not([readonly]) {
+  border-color: var(--omoc-component-color-input-hover-border);
   background: var(--omoc-semantic-color-fill-hover);
 }
 
