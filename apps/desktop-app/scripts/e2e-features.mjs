@@ -824,8 +824,8 @@ try {
 
   // Visual a11y: WCAG contrast (text) and keyboard focus indicators on each key
   // surface, in both themes (the app follows the OS colour scheme by default),
-  // plus advisory field-boundary notes. Nothing is allow-listed here.
-  const { eachTheme, visualAudit, takeFieldNotes } = createVisualAudit(page);
+  // plus text-field boundaries (WCAG 1.4.11). Nothing is allow-listed here.
+  const { eachTheme, visualAudit, takeAuditNotes } = createVisualAudit(page);
   const tagScope = async (locator) => {
     await locator.evaluate((el) => {
       globalThis.document
@@ -876,6 +876,13 @@ try {
         { border: "0", background: "#fff" },
         make("div", {}, { background: "#fff" }),
       ).setAttribute("aria-label", "seed field");
+      // Bordered counterpart: #767676 on white is 4.54:1, must pass.
+      make(
+        "input",
+        {},
+        { border: "1px solid #767676", background: "#fff" },
+        make("div", {}, { background: "#fff" }),
+      ).setAttribute("aria-label", "bordered seed field");
       const button = (textContent, className, style = {}) =>
         make("button", { textContent, className }, style);
       button("no indicator", "", { outline: "none" });
@@ -913,6 +920,18 @@ try {
         const field = (await auditFieldBoundaries(page, "#a11y-visual-seed"))
           .violations;
         assert.equal(field.length, 1, tag("field: " + field.join("\n")));
+        assert.ok(field[0].includes('"seed field"'), tag(field[0]));
+        assert.ok(!field.join().includes("bordered"), tag(field.join("\n")));
+        // The documented allow-list (reason required) is the only escape.
+        assert.equal(
+          (
+            await auditFieldBoundaries(page, "#a11y-visual-seed", {
+              allow: [{ match: /"seed field"/, reason: "self-test" }],
+            })
+          ).violations.length,
+          0,
+          tag("allow-list ignored"),
+        );
         const focus = (
           await auditFocusIndicators(page, "#a11y-visual-seed")
         ).violations.join("\n");
@@ -934,7 +953,7 @@ try {
 
   await check("a11y-visual-workbench-shell", async () => {
     failIfAny("shell visual", await visualAudit("shell + sidebar", "body"));
-    return takeFieldNotes();
+    return takeAuditNotes();
   });
 
   await check(
@@ -949,7 +968,50 @@ try {
         await visualAudit("permission popover", await tagScope(panel)),
       );
       await page.keyboard.press("Escape");
-      return takeFieldNotes();
+      return takeAuditNotes();
+    },
+    { needs: "runtime" },
+  );
+
+  await check(
+    "a11y-visual-permission-presets",
+    async () => {
+      await selectFixture();
+      const panel = await openComposerPopover(page, "permission");
+      const mode = (label) =>
+        panel.getByRole("radio", { name: new RegExp(`^${label}`) });
+      const policy = panel.locator("[data-permission-policy-status]");
+      const status = (value) =>
+        expect(policy).toHaveAttribute("data-permission-policy-status", value, {
+          timeout: 30000,
+        });
+      await mode("범위 내 편집 허용").click();
+      await expect(mode("범위 내 편집 허용")).toBeChecked({ timeout: 15000 });
+      await policy.locator("summary").click();
+      await policy.locator('[data-permission-policy-action="observe"]').click();
+      await status("observed");
+      await expect(
+        policy.locator('[data-permission-preset][data-current="true"]'),
+      ).toHaveCount(1);
+      const found = await visualAudit(
+        "permission presets (current marker)",
+        await tagScope(panel),
+      );
+      // Changing the mode makes the observation stale: warning text, no marker.
+      await mode("읽기/계획").click();
+      await status("stale");
+      await expect(
+        policy.locator('[data-permission-preset][data-current="true"]'),
+      ).toHaveCount(0);
+      found.push(
+        ...(await visualAudit(
+          "permission presets (stale warning)",
+          await tagScope(panel),
+        )),
+      );
+      failIfAny("permission presets visual", found);
+      await page.keyboard.press("Escape");
+      return takeAuditNotes();
     },
     { needs: "runtime" },
   );
@@ -969,7 +1031,7 @@ try {
     }
     failIfAny("settings visual", found);
     await page.keyboard.press("Escape");
-    return takeFieldNotes();
+    return takeAuditNotes();
   });
 
   await check("a11y-visual-menus", async () => {
@@ -981,7 +1043,7 @@ try {
     found.push(...(await visualAudit("more menu", '[role="menu"]')));
     await page.keyboard.press("Escape");
     failIfAny("menus visual", found);
-    return takeFieldNotes();
+    return takeAuditNotes();
   });
 
   await check(
@@ -1001,7 +1063,7 @@ try {
         found.push(...(await visualAudit(`side panel ${name.trim()}`, "body")));
       }
       failIfAny("side panel visual", found);
-      return takeFieldNotes();
+      return takeAuditNotes();
     },
     { needs: "runtime" },
   );
@@ -1016,7 +1078,7 @@ try {
       await visualAudit("command palette", "[role=dialog]"),
     );
     await page.keyboard.press("Escape");
-    return takeFieldNotes();
+    return takeAuditNotes();
   });
 
   await check(

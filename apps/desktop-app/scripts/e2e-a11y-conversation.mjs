@@ -130,10 +130,10 @@ try {
     page.locator('[data-tool-state="error"] summary [class*=summaryState]'),
   ).toHaveText("오류");
   await expect(page.getByText("src/a.ts:3:needle here")).toBeVisible();
-  const { visualAudit, takeFieldNotes } = createVisualAudit(page);
+  const { visualAudit, takeAuditNotes } = createVisualAudit(page);
   const found = await visualAudit("conversation + tool cards", "body");
   assert.equal(found.length, 0, found.join("\n"));
-  console.log(JSON.stringify({ result: "pass", notes: takeFieldNotes() }));
+  console.log(JSON.stringify({ result: "pass", notes: takeAuditNotes() }));
 } catch (error) {
   failure = error;
   console.error(String(error?.message ?? error).slice(0, 4000));

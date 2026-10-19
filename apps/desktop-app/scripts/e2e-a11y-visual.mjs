@@ -232,9 +232,10 @@ export async function auditFieldBoundaries(
         continue;
       if (el.closest("[aria-hidden='true'],[inert],[hidden],.xterm,:disabled"))
         continue;
-      // The field itself, else its direct wrapper, may draw the edge.
+      // The field itself, else its wrapper, may draw the edge (border or fill);
+      // the wrapper's parent may only add a border (the composer card).
       const chain = [];
-      for (let n = el, i = 0; n && i < 2; n = n.parentElement, i++) {
+      for (let n = el, i = 0; n && i < 3; n = n.parentElement, i++) {
         const ns = g.getComputedStyle(n);
         const border = ["Top", "Right", "Bottom", "Left"]
           .map((side) => ({
@@ -245,7 +246,7 @@ export async function auditFieldBoundaries(
           .find((b) => b.width > 0 && b.style !== "none");
         chain.push({
           border: border?.color ?? null,
-          own: g.__a11yNorm(ns.backgroundColor),
+          own: i < 2 ? g.__a11yNorm(ns.backgroundColor) : null,
           around: g.__a11yLayers(n.parentElement ?? n).layers,
         });
       }
@@ -493,13 +494,11 @@ export async function auditFocusIndicators(
 
 /**
  * Runs the contrast + focus audits on `scope` in both themes (emulated OS colour
- * scheme; the app follows it by default). visualAudit returns the violations;
- * field-boundary findings (WCAG 1.4.11) are advisory and collected for
- * takeFieldNotes(), because the borderless fill controls are an open design
- * decision (docs/engineering/backlog-status.md, F-18).
+ * scheme; the app follows it by default). visualAudit returns the violations,
+ * including text-field boundaries (WCAG 1.4.11, hard failures).
+ * allow: { contrast, focus, field } lists of { match: RegExp, reason: string }.
  */
 export function createVisualAudit(page, { allow = {} } = {}) {
-  const fieldNotes = [];
   const audited = [];
   const skipped = {};
   const eachTheme = async (fn) => {
@@ -534,25 +533,22 @@ export function createVisualAudit(page, { allow = {} } = {}) {
             n,
           );
       }
-      const fields = await auditFieldBoundaries(page, scope);
-      fieldNotes.push(
-        ...fields.violations.map((v) => `(${surface}) [${scheme}] ${v}`),
-      );
+      const fields = await auditFieldBoundaries(page, scope, {
+        allow: allow.field ?? [],
+      });
+      checked += fields.checked;
+      found.push(...fields.violations.map((v) => `[${scheme}] ${v}`));
     });
     if (checked === 0) found.push(`nothing was audited on ${surface}`);
     audited.push(`${surface}=${checked}`);
     return found.map((v) => `(${surface}) ${v}`);
   };
-  const takeFieldNotes = () => {
-    const notes = [...new Set(fieldNotes.splice(0))];
+  const takeAuditNotes = () => {
     const skips = Object.entries(skipped)
       .map(([reason, n]) => `${reason} x${n}`)
       .join(", ");
     Object.keys(skipped).forEach((k) => delete skipped[k]);
-    const stats = `audited (text+focus checks, 2 themes): ${audited.splice(0).join(", ")}; unchecked (max per surface/theme): ${skips || "none"}`;
-    return notes.length
-      ? `${stats}; advisory, ${notes.length} field boundary note(s): ${notes.join("; ")}`
-      : stats;
+    return `audited (text+focus+field checks, 2 themes): ${audited.splice(0).join(", ")}; unchecked (max per surface/theme): ${skips || "none"}`;
   };
-  return { eachTheme, visualAudit, takeFieldNotes };
+  return { eachTheme, visualAudit, takeAuditNotes };
 }
