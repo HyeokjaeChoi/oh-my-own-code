@@ -2953,8 +2953,79 @@ export async function openWorkspaceRegistry({
       })),
     });
   }
+  // Startup repair for a first-run managed create abandoned after its folder was
+  // materialized (no native work, no task, no session). All-or-nothing: every
+  // retained operation must qualify and the folder must still be a real,
+  // symlink-free directory (never created, fixed or read). Each is then
+  // completed as a registry-only "no_effect" create (workspace registered, no
+  // session). Anything else stays in hold.
+  function resolveAbandonedManagedCreates() {
+    return serialized(async () => {
+      if (!journal || closedRegistry || storeReason()) return status();
+      const operations = [...root.operations.values()].filter(retained);
+      if (!operations.length) return status();
+      if ([...root.tasks.values()].some((task) => task.phase !== "settled"))
+        return status();
+      for (const operation of operations) {
+        const { identity, reservation, dispatches } = operation;
+        const workspace = reservation?.workspace;
+        const row = workspace && root.workspaces.get(workspace.workspaceId);
+        const steps = dispatches.map((entry) => entry.step);
+        if (
+          identity.type !== "workspace.create" ||
+          identity.workspaceId ||
+          identity.sessionId ||
+          workspace?.ownership !== "managed" ||
+          workspace.folderSessionId !== reservation.appSessionId ||
+          row?.registrationState !== "reserved" ||
+          !sameWorkspace(row, workspace) ||
+          !steps.includes("filesystem.managed_folder") ||
+          !steps.every((step) =>
+            ["filesystem.managed_base", "filesystem.managed_folder"].includes(
+              step,
+            ),
+          ) ||
+          root.tasks.has(key(identity)) ||
+          operation.permissionTarget ||
+          operation.permissionProgress?.length ||
+          root.sessions.has(reservation.appSessionId) ||
+          [...root.sessions.values()].some(
+            (session) => session.workspaceId === workspace.workspaceId,
+          ) ||
+          [...root.operations.values()].some(
+            (other) =>
+              other !== operation &&
+              (other.identity.workspaceId === workspace.workspaceId ||
+                other.reservation?.workspace?.workspaceId ===
+                  workspace.workspaceId),
+          )
+        )
+          return status();
+        try {
+          if (
+            (await canonicalDirectory(workspace.canonicalPath, paths, true)) !==
+            workspace.canonicalPath
+          )
+            return status();
+        } catch {
+          return status();
+        }
+      }
+      for (const operation of operations) {
+        const completion = bootstrapReconciliationCompletion(operation, root, {
+          outcome: "no_effect",
+          revision: root.revision + 1,
+        });
+        need(completion, "identity_conflict");
+        await commit(completion);
+      }
+      await journal.checkpoint();
+      return status();
+    });
+  }
   return {
     crashRecoveryPlan,
+    resolveAbandonedManagedCreates,
     // Owner-verified (Main) and only after the user chose 계속.
     retainTailAsUnknown: () =>
       serialized(async () => {

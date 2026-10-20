@@ -13,7 +13,7 @@ const unique = (needle) => {
 const guardStart = unique("    let ownerReason;");
 const guardEnd = unique("    const storage = await openWorkspaceRegistry({");
 const loopStart = text.indexOf("    for (const method of [", guardEnd);
-const loopEnd = text.indexOf("    return registry;", loopStart);
+const loopEnd = text.indexOf("    // Before any hydrate/reconcile", loopStart);
 assert.ok(guardEnd > guardStart && loopStart > guardEnd && loopEnd > loopStart);
 const create = new Function(
   "owner",
@@ -32,6 +32,7 @@ const methods = [
   "recordOwnerIntent",
   "recordMigrationPhase",
   "checkpoint",
+  "resolveAbandonedManagedCreates",
   "recordTask",
   "recordPermissionReconciled",
   "permissionProgress",

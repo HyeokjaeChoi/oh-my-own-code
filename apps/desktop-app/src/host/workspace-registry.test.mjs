@@ -13112,3 +13112,220 @@ test("CRASH-A finishing a decision at open is owner-fenced", async (t) => {
   const { sequence, checkpointSequence } = unowned.status().journal;
   assert.notEqual(sequence, checkpointSequence);
 });
+
+// Abandoned first-run managed create (admission -> reservation -> folder
+// dispatch, no task/completion): repaired registry-only at startup.
+async function abandonedCreate(t, { failMkdir, steps = "materialize" } = {}) {
+  const f = await fixture(t);
+  await f.registry.close();
+  const registry = await openWorkspaceRegistry({
+    ...f.options,
+    pathIO: {
+      mkdir: async (path, ...rest) => {
+        if (failMkdir?.(path))
+          throw Object.assign(new Error("x"), { code: "EIO" });
+        return fs.mkdir(path, ...rest);
+      },
+    },
+  });
+  const request = { runtimeEpoch: "old", operationId: "ws" };
+  await registry.begin(identity("ws"));
+  if (steps !== "admission") {
+    const reserved = await registry.reserve({
+      ...request,
+      ownership: "managed",
+      plannedNativeSessionId: "native-ws",
+    });
+    f.reserved = reserved;
+    if (steps === "materialize")
+      await registry.materializeManaged(request).catch(() => {});
+  }
+  await registry.checkpoint();
+  await registry.close();
+  return f;
+}
+const journalBytesOf = (f) => fs.readFile(join(f.directory, "journal.jsonl"));
+async function assertHeld(t, f) {
+  const next = await reopened(t, f);
+  const before = await journalBytesOf(f);
+  assert.equal(next.crashRecoveryPlan().state, "hold");
+  await next.resolveAbandonedManagedCreates();
+  assert.equal(next.crashRecoveryPlan().state, "hold");
+  assert.deepEqual(await journalBytesOf(f), before);
+  return next;
+}
+
+test("ABANDON managed create with its folder is completed registry-only and replays", async (t) => {
+  const f = await abandonedCreate(t);
+  const next = await reopened(t, f);
+  assert.equal(next.crashRecoveryPlan().state, "hold");
+  assert.equal((await next.resolveAbandonedManagedCreates()).state, "ready");
+  const workspace = f.reserved.workspace;
+  assert.equal(next.crashRecoveryPlan().state, "none");
+  assert.deepEqual(next.readView().retainedOperations, []);
+  assert.equal(next.reconcilePlan().candidates.length, 0);
+  assert.equal(next.readView().sessions.length, 0);
+  const row = next
+    .readView()
+    .workspaces.find((w) => w.workspaceId === workspace.workspaceId);
+  assert.equal(row.registrationState, "registered");
+  assert.equal(
+    next.lookup({ runtimeEpoch: "old", operationId: "ws" }).receipt.effect,
+    "confirmed",
+  );
+  assert.equal(
+    next.status().journal.sequence,
+    next.status().journal.checkpointSequence,
+  );
+  await next.close();
+  const again = await openWorkspaceRegistry({
+    ...f.options,
+    runtimeEpoch: "third",
+  });
+  t.after(() => again.close());
+  assert.equal(again.crashRecoveryPlan().state, "none");
+  assert.equal(again.readView().sessions.length, 0);
+  // A following session.create reuses the folder session id.
+  await again.begin(
+    identity("s1", {
+      runtimeEpoch: "third",
+      type: "session.create",
+      workspaceId: workspace.workspaceId,
+    }),
+  );
+  const reserved = await again.reserve({
+    runtimeEpoch: "third",
+    operationId: "s1",
+    workspaceId: workspace.workspaceId,
+    plannedNativeSessionId: "native-s1",
+  });
+  assert.equal(reserved.appSessionId, workspace.folderSessionId);
+});
+
+test("ABANDON a non-empty folder resolves and its contents are untouched", async (t) => {
+  const f = await abandonedCreate(t);
+  const file = join(f.reserved.workspace.canonicalPath, "keep.txt");
+  await fs.writeFile(file, "mine");
+  const next = await reopened(t, f);
+  await next.resolveAbandonedManagedCreates();
+  assert.equal(next.crashRecoveryPlan().state, "none");
+  assert.equal(await fs.readFile(file, "utf8"), "mine");
+});
+
+test("ABANDON a reservation without any filesystem dispatch stays held even if the folder exists", async (t) => {
+  const f = await abandonedCreate(t, { steps: "reserved" });
+  await fs.mkdir(f.reserved.workspace.canonicalPath, { recursive: true });
+  await assertHeld(t, f);
+});
+
+test("ABANDON a base-only dispatch stays held even if the folder exists", async (t) => {
+  const f = await abandonedCreate(t, {
+    failMkdir: (path) => path.endsWith("OhMyOwnCode"),
+  });
+  await fs.mkdir(f.reserved.workspace.canonicalPath, { recursive: true });
+  await assertHeld(t, f);
+});
+
+test("ABANDON admission-only stays held", async (t) => {
+  const f = await abandonedCreate(t, { steps: "admission" });
+  await assertHeld(t, f);
+});
+
+test("ABANDON a managed_folder dispatch whose folder is missing stays held and creates nothing", async (t) => {
+  const f = await abandonedCreate(t);
+  await fs.rm(f.reserved.workspace.canonicalPath, { recursive: true });
+  const next = await assertHeld(t, f);
+  await assert.rejects(fs.lstat(f.reserved.workspace.canonicalPath), {
+    code: "ENOENT",
+  });
+  assert.ok(next);
+});
+
+test("ABANDON a symlinked folder or parent stays held", async (t) => {
+  const f = await abandonedCreate(t);
+  const folder = f.reserved.workspace.canonicalPath;
+  const other = join(f.root, "other");
+  await fs.mkdir(other);
+  await fs.rm(folder, { recursive: true });
+  await fs.symlink(other, folder);
+  await assertHeld(t, f);
+  await fs.rm(folder);
+  await fs.mkdir(folder);
+  const base = join(folder, "..");
+  await fs.rename(base, join(f.root, "moved-base"));
+  await fs.symlink(join(f.root, "moved-base"), base);
+  await assertHeld(t, f);
+});
+
+test("ABANDON a native dispatch without a task stays held", async (t) => {
+  const f = await abandonedCreate(t);
+  const open = await openWorkspaceRegistry({
+    ...f.options,
+    runtimeEpoch: "old",
+  });
+  await open.dispatch({
+    runtimeEpoch: "old",
+    operationId: "ws",
+    step: "native.create",
+    nativeSessionId: "native-ws",
+  });
+  await open.checkpoint();
+  await open.close();
+  await assertHeld(t, f);
+});
+
+test("ABANDON mixed with another retained operation stays held", async (t) => {
+  const f = await abandonedCreate(t);
+  const open = await openWorkspaceRegistry({
+    ...f.options,
+    runtimeEpoch: "old",
+  });
+  await open.begin(identity("other"));
+  await open.checkpoint();
+  await open.close();
+  await assertHeld(t, f);
+});
+
+test("ABANDON another operation referencing the same workspace stays held", async (t) => {
+  const f = await abandonedCreate(t);
+  const open = await openWorkspaceRegistry({
+    ...f.options,
+    runtimeEpoch: "old",
+  });
+  await open.begin(
+    identity("other", {
+      type: "session.create",
+      workspaceId: f.reserved.workspace.workspaceId,
+    }),
+  );
+  await open.checkpoint();
+  await open.close();
+  await assertHeld(t, f);
+});
+
+test("ABANDON an unconfirmed tail is left alone", async (t) => {
+  const f = await abandonedCreate(t);
+  const open = await openWorkspaceRegistry({
+    ...f.options,
+    runtimeEpoch: "old",
+    idleCheckpoint: false,
+  });
+  await open.begin(identity("tail"));
+  const next = await crashCopy(t, f);
+  assert.equal(next.status().reason, "unconfirmed_tail");
+  await next.resolveAbandonedManagedCreates();
+  assert.equal(next.status().reason, "unconfirmed_tail");
+  assert.equal(next.readView().retainedOperations.length >= 1, true);
+  await open.close();
+});
+
+test("ABANDON a closed registry rejects", async (t) => {
+  const f = await abandonedCreate(t);
+  const next = await reopened(t, f);
+  await next.close();
+  assert.notEqual(
+    (await next.resolveAbandonedManagedCreates()).state,
+    undefined,
+  );
+  assert.equal(next.status().closed, true);
+});
