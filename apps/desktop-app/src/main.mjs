@@ -324,6 +324,7 @@ const registryPromise = (async () => {
       "recordMigrationPhase",
       "checkpoint",
       "retainTailAsUnknown",
+      "resolveAbandonedManagedCreates",
       "recordTask",
       "recordPermissionReconciled",
       "permissionProgress",
@@ -342,6 +343,22 @@ const registryPromise = (async () => {
           await requireOwner();
         return result;
       };
+    }
+    // Before any hydrate/reconcile: finish a managed workspace create that was
+    // abandoned after its folder existed (no native work). Failure keeps hold.
+    try {
+      const before = registry.readView().retainedOperations.length;
+      await registry.resolveAbandonedManagedCreates();
+      const resolved = before - registry.readView().retainedOperations.length;
+      if (resolved > 0)
+        process.stderr.write(
+          `[crash-recovery] ${JSON.stringify({ state: "resolved", operations: resolved })}\n`,
+        );
+    } catch (error) {
+      // Not repaired (or owner lost): the normal hold paths decide.
+      process.stderr.write(
+        `[crash-recovery] ${JSON.stringify({ state: "repair_failed", code: typeof error?.code === "string" ? error.code : "unknown" })}\n`,
+      );
     }
     return registry;
   } catch (error) {
@@ -782,7 +799,7 @@ async function resolveCrashRecovery(store) {
       message:
         plan.reason === "uncertain_checkpoint"
           ? "앱이 비정상 종료되어 마지막 저장 확인이 끝나지 않았습니다. 데이터를 보호하기 위해 저장소를 잠근 상태로 시작합니다."
-          : "앱이 비정상 종료되어 마지막 작업의 결과를 확인할 수 없습니다. 권한이나 실행과 관련된 작업이 포함되어 있어 자동으로 계속할 수 없습니다.",
+          : "앱이 비정상 종료되어 마지막 작업의 결과를 확인할 수 없어 자동으로 계속할 수 없습니다.",
       detail: `${crashRecoveryLines(plan.operations).join("\n")}${plan.operations.length ? "\n\n" : ""}기존 기록은 그대로 보존됩니다. 앱은 읽기 전용으로 열리며 새 작업은 실행되지 않습니다.\n데이터 위치: ${location}`,
       buttons: ["데이터 위치 열기", "닫기"],
       defaultId: 1,

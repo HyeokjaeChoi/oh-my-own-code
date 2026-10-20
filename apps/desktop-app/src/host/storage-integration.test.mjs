@@ -7189,6 +7189,36 @@ for (const step of [5, 7, 8])
     assert.equal(reopened.snapshot.workspaces.length, 1);
   });
 
+test("abandoned-create repair leaves a bootstrap create with a native/task trail to the reconciler", async (t) => {
+  const { f } = await crashedFixture(t, 5, { fromStart: true });
+  const rig = await openReconciling(t, f);
+  const bytes = await journalBytes(f);
+  const plan = rig.registry.reconcilePlan();
+  assert.equal(plan.candidates.length, 1);
+  await rig.registry.resolveAbandonedManagedCreates();
+  assert.deepEqual(await journalBytes(f), bytes);
+  assert.deepEqual(rig.registry.reconcilePlan(), plan);
+  assert.equal(rig.registry.readView().retainedOperations.length, 1);
+});
+
+test("held default bootstrap (folder only, no native work) is resolved by the startup repair", async (t) => {
+  const { f } = await bootstrapped(t, { held: true });
+  await f.ready();
+  await f.registry.checkpoint();
+  assert.equal(f.registry.readView().retainedOperations.length, 1);
+  const reopen = await openWorkspaceRegistry({
+    ...f.options,
+    runtimeEpoch: "new",
+  });
+  t.after(() => reopen.close());
+  assert.equal(reopen.crashRecoveryPlan().state, "hold");
+  await reopen.resolveAbandonedManagedCreates();
+  assert.equal(reopen.crashRecoveryPlan().state, "none");
+  assert.deepEqual(reopen.readView().retainedOperations, []);
+  assert.equal(reopen.readView().sessions.length, 0);
+  assert.equal(reopen.readView().workspaces[0].registrationState, "registered");
+});
+
 for (const step of [2, 3])
   test(`reconcile: a proven-absent default-workspace bootstrap registers the empty workspace and the app stays usable (crash before journal write ${step})`, async (t) => {
     const { f, child } = await crashedFixture(t, step, { fromStart: true });

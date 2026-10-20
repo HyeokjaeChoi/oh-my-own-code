@@ -12,6 +12,7 @@ import {
   readdir,
   readFile,
   readlink,
+  realpath,
   rm,
   writeFile,
 } from "node:fs/promises";
@@ -630,6 +631,99 @@ async function assertMidFlightCrashRecovery() {
   }
 }
 
+// Dev only: a managed workspace create abandoned after its folder was made (no
+// native work, no task, no session). The fixture rebuilds that journal in a
+// cleanly closed profile (appended after its bootstrapped workspace); the relaunch must repair it silently (no recovery
+// dialog, no hold) and open an empty, usable workbench.
+async function assertAbandonedManagedCreateRepair() {
+  const profile = join(e2eRoot, "abandoned-create-profile");
+  const storage = join(profile, "appdata", "OhMyOwnCode", "storage-v1");
+  const metadata = join(storage, "metadata");
+  const documentsPath = join(profile, "Documents");
+  const launchEnv = { ...env, OMOC_APP_DATA_DIR: profile };
+  const first = await electron.launch({ executablePath, args, env: launchEnv });
+  const firstProcess = first.process();
+  await expect(
+    (await first.firstWindow()).locator(".workbench-header [data-connection]"),
+  ).toHaveAttribute("data-connection", "connected", {
+    timeout: CONNECT_TIMEOUT_MS,
+  });
+  await first.evaluate(({ app: electronApp }) => electronApp.quit());
+  assert.equal(await waitForExit(firstProcess, 20_000), 0);
+  const { storeId } = JSON.parse(
+    await readFile(join(storage, "manifest.json"), "utf8"),
+  );
+  const epoch = "e2e-abandoned-create";
+  const registry = await openWorkspaceRegistry({
+    directory: await realpath(metadata), // the registry requires real paths
+    storeId,
+    documentsPath: await realpath(documentsPath),
+    runtimeEpoch: epoch,
+    idleCheckpoint: false,
+  });
+  const request = { runtimeEpoch: epoch, operationId: "e2e-abandoned" };
+  await registry.begin({
+    ...request,
+    type: "workspace.create",
+    digest: "a".repeat(64),
+  });
+  await registry.reserve({
+    ...request,
+    ownership: "managed",
+    plannedNativeSessionId: "e2e-planned-native",
+  });
+  await registry.materializeManaged(request);
+  await registry.checkpoint();
+  await registry.close();
+  const second = await electron.launch({
+    executablePath,
+    args,
+    env: launchEnv,
+  });
+  const secondProcess = second.process();
+  let log = "";
+  secondProcess.stderr?.on("data", (chunk) => (log += chunk));
+  try {
+    const page = await second.firstWindow();
+    await expect(
+      page.locator(".workbench-header [data-connection]"),
+    ).toHaveAttribute("data-connection", "connected", {
+      timeout: CONNECT_TIMEOUT_MS,
+    });
+    await expect(
+      page.getByRole("button", { name: "새 세션" }).first(),
+    ).toBeEnabled({ timeout: 30_000 });
+    assert.match(
+      log,
+      /\[crash-recovery\] \{"state":"resolved","operations":1\}/,
+    );
+    assert.doesNotMatch(log, /"state":"hold"/);
+    const payloads = (await readFile(join(metadata, "journal.jsonl"), "utf8"))
+      .trim()
+      .split("\n")
+      .map((line) => JSON.parse(line).payload);
+    assert.equal(
+      payloads.filter(
+        (payload) =>
+          payload.kind === "completion" &&
+          payload.operationId === "e2e-abandoned",
+      ).length,
+      1,
+    );
+    console.log(
+      "PASS abandoned_managed_create: repaired without a recovery hold, workbench connected",
+    );
+  } catch (error) {
+    console.error(log);
+    throw error;
+  } finally {
+    if (secondProcess.exitCode === null) {
+      await second.evaluate(({ app: electronApp }) => electronApp.quit());
+      assert.equal(await waitForExit(secondProcess, 20_000), 0);
+    }
+  }
+}
+
 const inspection = mode === "packaged" ? await inspectedIdentity() : null;
 if (inspection) await assertPackagedStartupFailures();
 const app = await electron.launch({ executablePath, args, env });
@@ -816,6 +910,7 @@ try {
       "SKIPPED crash_restart: relaunch on same profile is runtime-unavailable (set OMOC_E2E_CRASH_RESTART=1)",
     );
   if (mode === "dev") await assertMainCrashRelaunch();
+  if (mode === "dev") await assertAbandonedManagedCreateRepair();
   if (mode === "dev") await assertMidFlightCrashRecovery();
   await rm(e2eRoot, { recursive: true, force: false });
   console.log(
