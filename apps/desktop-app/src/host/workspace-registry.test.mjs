@@ -12985,17 +12985,194 @@ test("CRASH-A a gate-only tail continues without a prompt and keeps configuratio
     "admitted",
   );
 });
-test("CRASH-A an owner_intent-only tail is retained and ready", async (t) => {
+test("CRASH-A an owner_intent-only tail is confirmed at open when the owner fence passes", async (t) => {
   const f = await fixture(t, noIdleCheckpoint());
   await f.registry.recordOwnerIntent({
     ownerNonce: "11111111-1111-4111-8111-111111111111",
     phase: "startup",
   });
   const next = await reopened(t, f);
+  assert.equal(next.status().state, "ready");
+  assert.equal(
+    next.status().journal.sequence,
+    next.status().journal.checkpointSequence,
+  );
+});
+test("ABANDON a killed shutdown intent after an abandoned create does not block its repair", async (t) => {
+  const f = await abandonedCreate(t);
+  const killed = await reopened(t, f, { idleCheckpoint: false });
+  await killed.recordOwnerIntent({
+    ownerNonce: "11111111-1111-4111-8111-111111111111",
+    phase: "shutdown",
+  }); // killed before the checkpoint
+  const next = await reopened(t, { registry: killed, options: f.options });
+  assert.equal(next.status().state, "ready");
+  assert.equal((await next.resolveAbandonedManagedCreates()).state, "ready");
+  assert.deepEqual(next.readView().retainedOperations, []);
+});
+test("ABANDON a tail with a non-intent record stays held even after a killed shutdown", async (t) => {
+  const f = await abandonedCreate(t);
+  const killed = await reopened(t, f, { idleCheckpoint: false });
+  await killed.begin(identity("other"));
+  const next = await reopened(t, { registry: killed, options: f.options });
+  assert.equal(next.status().reason, "unconfirmed_tail");
+  await next.resolveAbandonedManagedCreates();
+  assert.equal(next.readView().retainedOperations.length, 2);
+});
+test("CRASH-A an owner_intent-only tail is retained and ready when the fence fails", async (t) => {
+  const f = await fixture(t, noIdleCheckpoint());
+  await f.registry.recordOwnerIntent({
+    ownerNonce: "11111111-1111-4111-8111-111111111111",
+    phase: "startup",
+  });
+  const next = await reopened(t, f, {
+    checkpointFence: async () => {
+      throw new Error("owner_unverified");
+    },
+  });
   assert.equal(next.status().reason, "unconfirmed_tail");
   assert.equal(next.crashRecoveryPlan().state, "offer");
   await next.retainTailAsUnknown();
   assert.equal(next.status().state, "ready");
+});
+// Intent-only tail confirmation: every case must fail without the guard in
+// openStorageJournal (reason "unconfirmed_tail" / hold) or, for the negatives,
+// if the guard were widened.
+const NONCE = "11111111-1111-4111-8111-111111111111";
+const intentTail = async (t, phases, { base } = {}) => {
+  const f = base ?? (await fixture(t, noIdleCheckpoint()));
+  const killed = await reopened(t, f, { idleCheckpoint: false });
+  for (const phase of phases)
+    await killed.recordOwnerIntent({ ownerNonce: NONCE, phase });
+  await killed.close();
+  return f;
+};
+const dirBytes = async (f) =>
+  Object.fromEntries(
+    await Promise.all(
+      (await fs.readdir(f.directory))
+        .sort()
+        .map(async (name) => [
+          name,
+          (await fs.readFile(join(f.directory, name))).toString("base64"),
+        ]),
+    ),
+  );
+const reopenNew = (t, f, extra = {}) =>
+  reopened(
+    t,
+    { registry: { close: async () => {} }, options: f.options },
+    extra,
+  );
+test("TAIL multiple intents are confirmed; reopen is strictly replayable and nothing is deleted", async (t) => {
+  const f = await intentTail(t, ["startup", "child_started", "shutdown"]);
+  const lines = (await journalBytesOf(f)).toString().trim().split("\n");
+  const next = await reopenNew(t, f);
+  assert.equal(next.status().state, "ready");
+  const { sequence, checkpointSequence } = next.status().journal;
+  assert.equal(sequence, checkpointSequence);
+  assert.equal(next.crashRecoveryPlan().state, "none");
+  const after = (await journalBytesOf(f)).toString().trim().split("\n");
+  assert.equal(after.length, lines.length);
+  assert.ok(
+    !after.some(
+      (line) => JSON.parse(line).payload.kind === "recovery_decision",
+    ),
+  );
+  await next.close();
+  const again = await reopenNew(t, f);
+  assert.equal(again.status().state, "ready");
+  assert.equal(
+    again.status().journal.sequence,
+    again.status().journal.checkpointSequence,
+  );
+});
+test("TAIL an intent tail with an uncertain checkpoint marker stays held", async (t) => {
+  const f = await intentTail(t, ["shutdown"]);
+  const { checkpointGeneration } = (await reopenNew(t, f)).status().journal;
+  // restore the unconfirmed tail, then add the pending marker
+  const g = await intentTail(t, ["shutdown"]);
+  await fs.writeFile(
+    join(g.directory, "checkpoint.pending.json"),
+    `${JSON.stringify({ schemaVersion: 1, storeId: "store", baseGeneration: checkpointGeneration })}\n`,
+    { mode: 0o600 },
+  );
+  const before = await dirBytes(g);
+  const next = await reopenNew(t, g);
+  assert.equal(next.crashRecoveryPlan().state, "hold");
+  assert.equal(next.status().state, "recovery_required");
+  assert.deepEqual(await dirBytes(g), before);
+});
+for (const order of ["intent-first", "admission-first"]) {
+  test(`TAIL a mixed tail (${order}) stays held`, async (t) => {
+    const f = await fixture(t, noIdleCheckpoint());
+    const killed = await reopened(t, f, { idleCheckpoint: false });
+    const intent = () =>
+      killed.recordOwnerIntent({ ownerNonce: NONCE, phase: "shutdown" });
+    if (order === "intent-first") await intent();
+    await killed.begin(identity("other"));
+    if (order === "admission-first") await intent();
+    await killed.close();
+    const before = await dirBytes(f);
+    const next = await reopenNew(t, f);
+    assert.equal(next.status().reason, "unconfirmed_tail");
+    assert.equal(next.status().state, "recovery_required");
+    assert.deepEqual(await dirBytes(f), before);
+  });
+}
+test("TAIL an open with a recoveryReason stays held and writes nothing", async (t) => {
+  const f = await intentTail(t, ["shutdown"]);
+  const before = await dirBytes(f);
+  const next = await reopenNew(t, f, { recoveryReason: "owner_unverified" });
+  assert.equal(next.status().reason, "owner_unverified");
+  assert.deepEqual(await dirBytes(f), before);
+});
+test("TAIL a foreign storeId or a tampered intent record is never checkpointed", async (t) => {
+  const f = await intentTail(t, ["shutdown"]);
+  const before = await dirBytes(f);
+  const foreign = await reopenNew(t, f, { storeId: "someone-else" });
+  assert.notEqual(foreign.status().state, "ready");
+  await foreign.close();
+  const lines = (await journalBytesOf(f)).toString().trim().split("\n");
+  const last = JSON.parse(lines.at(-1));
+  last.payload.revision = 99;
+  lines[lines.length - 1] = JSON.stringify(last);
+  await fs.writeFile(
+    join(f.directory, "journal.jsonl"),
+    `${lines.join("\n")}\n`,
+  );
+  const tampered = await reopenNew(t, f);
+  assert.ok(
+    ["corrupt_journal", "identity_conflict"].includes(tampered.status().reason),
+  );
+  assert.equal(tampered.status().state, "recovery_required");
+  const names = await fs.readdir(f.directory);
+  for (const name of names.filter((n) => n.startsWith("checkpoint")))
+    assert.equal(
+      (await fs.readFile(join(f.directory, name))).toString("base64"),
+      before[name],
+    );
+});
+test("TAIL a failing owner fence leaves the tail unconfirmed and the files untouched", async (t) => {
+  const f = await intentTail(t, ["startup", "shutdown"]);
+  const before = await dirBytes(f);
+  const next = await reopenNew(t, f, {
+    checkpointFence: async () => {
+      throw new Error("owner_unverified");
+    },
+  });
+  assert.equal(next.status().reason, "unconfirmed_tail");
+  assert.deepEqual(await dirBytes(f), before);
+});
+test("TAIL end to end: abandoned managed create plus killed shutdown intents is repaired", async (t) => {
+  const f = await intentTail(t, ["shutdown"], {
+    base: await abandonedCreate(t),
+  });
+  const next = await reopenNew(t, f);
+  assert.equal(next.status().state, "ready");
+  assert.equal((await next.resolveAbandonedManagedCreates()).state, "ready");
+  assert.equal(next.crashRecoveryPlan().state, "none");
+  assert.deepEqual(next.readView().retainedOperations, []);
 });
 test("CRASH-A a retained message.send in the prefix denies the decision at the journal level", async (t) => {
   const { f, scope } = await renameScope(t);

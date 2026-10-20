@@ -761,7 +761,8 @@ async function resolveCrashRecovery(store) {
     `[crash-recovery] ${JSON.stringify({ state: plan.state, reason: plan.reason, operations: plan.operations.length })}\n`,
   );
   if (plan.state === "offer") {
-    // A tail of intent records only: no operation outcome is in question.
+    // Intent-only tails are confirmed at open (storage-journal); this branch
+    // remains for gate-only tails with no operation outcome in question.
     if (!plan.operations.length)
       return void (await store.retainTailAsUnknown());
     for (;;) {
