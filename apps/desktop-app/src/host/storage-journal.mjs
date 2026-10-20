@@ -2037,6 +2037,24 @@ export async function openStorageJournal({
       } catch {
         /* unfenced: the tail stays unconfirmed */
       }
+    // A tail of owner_intent records alone (killed between the shutdown intent
+    // and its checkpoint) leaves no outcome in question: finish its checkpoint
+    // the same owner-fenced way. Any other tail record keeps the hold.
+    if (
+      !reason &&
+      !uncertainCheckpoint &&
+      !pendingRetainCheckpoint &&
+      records.length > committed.length &&
+      records
+        .slice(committed.length)
+        .every((record) => record.payload.kind === "owner_intent")
+    )
+      try {
+        await checkpointFence();
+        pendingRetainCheckpoint = true;
+      } catch {
+        /* unfenced: the tail stays unconfirmed */
+      }
     if (
       !pendingRetainCheckpoint &&
       (records.length > committed.length || uncertainCheckpoint)

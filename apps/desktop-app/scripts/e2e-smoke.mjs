@@ -674,6 +674,12 @@ async function assertAbandonedManagedCreateRepair() {
   });
   await registry.materializeManaged(request);
   await registry.checkpoint();
+  // The old build was killed between its shutdown intent and the checkpoint:
+  // an intent-only unconfirmed tail must not block the repair.
+  await registry.recordOwnerIntent({
+    ownerNonce: "22222222-2222-4222-8222-222222222222",
+    phase: "shutdown",
+  });
   await registry.close();
   const second = await electron.launch({
     executablePath,
