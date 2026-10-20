@@ -344,7 +344,7 @@ const registryPromise = (async () => {
         return result;
       };
     }
-    // Before any hydrate/reconcile: finish a first-run managed create that was
+    // Before any hydrate/reconcile: finish a managed workspace create that was
     // abandoned after its folder existed (no native work). Failure keeps hold.
     try {
       const before = registry.readView().retainedOperations.length;
@@ -354,8 +354,11 @@ const registryPromise = (async () => {
         process.stderr.write(
           `[crash-recovery] ${JSON.stringify({ state: "resolved", operations: resolved })}\n`,
         );
-    } catch {
+    } catch (error) {
       // Not repaired (or owner lost): the normal hold paths decide.
+      process.stderr.write(
+        `[crash-recovery] ${JSON.stringify({ state: "repair_failed", code: typeof error?.code === "string" ? error.code : "unknown" })}\n`,
+      );
     }
     return registry;
   } catch (error) {

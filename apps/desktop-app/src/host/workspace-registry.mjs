@@ -2953,7 +2953,7 @@ export async function openWorkspaceRegistry({
       })),
     });
   }
-  // Startup repair for a first-run managed create abandoned after its folder was
+  // Startup repair for a managed workspace create abandoned after its folder was
   // materialized (no native work, no task, no session). All-or-nothing: every
   // retained operation must qualify and the folder must still be a real,
   // symlink-free directory (never created, fixed or read). Each is then
@@ -2963,7 +2963,8 @@ export async function openWorkspaceRegistry({
     return serialized(async () => {
       if (!journal || closedRegistry || storeReason()) return status();
       const operations = [...root.operations.values()].filter(retained);
-      if (!operations.length) return status();
+      // One op only: a mid-way failure can then never leave a partial repair.
+      if (operations.length !== 1) return status();
       if ([...root.tasks.values()].some((task) => task.phase !== "settled"))
         return status();
       for (const operation of operations) {
