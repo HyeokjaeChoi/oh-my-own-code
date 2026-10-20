@@ -631,7 +631,7 @@ async function assertMidFlightCrashRecovery() {
   }
 }
 
-// Dev only: a first-run managed create abandoned after its folder was made (no
+// Dev only: a managed workspace create abandoned after its folder was made (no
 // native work, no task, no session). The fixture rebuilds that journal in a
 // cleanly closed profile (appended after its bootstrapped workspace); the relaunch must repair it silently (no recovery
 // dialog, no hold) and open an empty, usable workbench.

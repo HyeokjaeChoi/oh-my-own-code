@@ -13113,7 +13113,7 @@ test("CRASH-A finishing a decision at open is owner-fenced", async (t) => {
   assert.notEqual(sequence, checkpointSequence);
 });
 
-// Abandoned first-run managed create (admission -> reservation -> folder
+// Abandoned managed workspace create (admission -> reservation -> folder
 // dispatch, no task/completion): repaired registry-only at startup.
 async function abandonedCreate(t, { failMkdir, steps = "materialize" } = {}) {
   const f = await fixture(t);
@@ -13319,13 +13319,88 @@ test("ABANDON an unconfirmed tail is left alone", async (t) => {
   await open.close();
 });
 
-test("ABANDON a closed registry rejects", async (t) => {
+test("ABANDON a closed registry is a no-op", async (t) => {
   const f = await abandonedCreate(t);
   const next = await reopened(t, f);
+  const before = await journalBytesOf(f);
   await next.close();
-  assert.notEqual(
-    (await next.resolveAbandonedManagedCreates()).state,
-    undefined,
-  );
+  await next.resolveAbandonedManagedCreates();
   assert.equal(next.status().closed, true);
+  assert.deepEqual(await journalBytesOf(f), before);
+});
+
+test("ABANDON two retained abandoned creates stay held and untouched", async (t) => {
+  const f = await abandonedCreate(t);
+  const open = await openWorkspaceRegistry({
+    ...f.options,
+    runtimeEpoch: "old",
+  });
+  const request = { runtimeEpoch: "old", operationId: "ws2" };
+  await open.begin(identity("ws2"));
+  await open.reserve({
+    ...request,
+    ownership: "managed",
+    plannedNativeSessionId: "native-ws2",
+  });
+  await open.materializeManaged(request);
+  await open.checkpoint();
+  await open.close();
+  await assertHeld(t, f);
+});
+
+test("ABANDON a task.prepare over the abandoned create is refused (task guard is defense in depth)", async (t) => {
+  const f = await abandonedCreate(t);
+  const { workspace } = f.reserved;
+  const open = await openWorkspaceRegistry({
+    ...f.options,
+    runtimeEpoch: "old",
+    taskAuthoritySource: () => true,
+  });
+  const { randomUUID } = await import("node:crypto");
+  const taskScopeId = randomUUID();
+  const origin = identity("ws");
+  const prepare = {
+    kind: "task.prepare",
+    runtimeEpoch: "old",
+    operationId: "ws",
+    taskScopeId,
+    sequence: 0,
+    identity: {
+      taskScopeId,
+      origin: Object.fromEntries(
+        ["runtimeEpoch", "operationId", "type", "digest"].map((k) => [
+          k,
+          origin[k],
+        ]),
+      ),
+      workspaceId: workspace.workspaceId,
+      projectId: "project",
+      locationId: randomUUID(),
+      modeGeneration: 1,
+      inventoryGeneration: 1,
+      originKind: "bootstrap",
+    },
+    binding: {
+      kind: "bootstrap",
+      step: "native.create",
+      reservationDigest: "c".repeat(64),
+      parentIdentityDigest: null,
+    },
+  };
+  let recorded = true;
+  try {
+    await open.recordTask(prepare);
+  } catch (error) {
+    recorded = error.code;
+  }
+  await open.checkpoint().catch(() => {});
+  await open.close();
+  // Either the registry refuses the prepare (state unreachable) or the task
+  // guard holds the profile; the repair must never run over a task.
+  const next = await reopened(t, f);
+  const before = await journalBytesOf(f);
+  await next.resolveAbandonedManagedCreates();
+  if (recorded === true)
+    assert.deepEqual(await journalBytesOf(f), before, "repair over a task");
+  else assert.equal(typeof recorded, "string");
 });
