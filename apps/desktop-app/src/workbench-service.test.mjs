@@ -26,7 +26,8 @@ async function fixture(
   t,
   { contextIO, deadlineMs = 5000, confirmSessionRevert, checkpoints } = {},
 ) {
-  const root = await mkdtemp(join(tmpdir(), "workbench-test-"));
+  // realpath: containment compares canonical paths (macOS TMPDIR is a symlink).
+  const root = await realpath(await mkdtemp(join(tmpdir(), "workbench-test-")));
   const workspace = join(root, "workspace");
   await mkdir(workspace);
   t.after(() => rm(root, { recursive: true, force: true }));

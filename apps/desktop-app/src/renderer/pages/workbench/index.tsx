@@ -104,6 +104,7 @@ const WORKTREE_ERRORS: Record<string, string> = {
 export function Workbench() {
   const { actions, store } = useWindowWorkbench();
   const recovery = useWorkbenchSelector(selectors.recovery);
+  const reconnectGap = useWorkbenchSelector(selectors.reconnectGap);
   const gitObservation = useWorkbenchSelector(currentGitReviewObservation);
   // An inline failure note on the last turn replaces the generic banner.
   const turnFailure = useWorkbenchSelector(selectors.lastTurnFailure);
@@ -991,6 +992,11 @@ export function Workbench() {
             workspaceId={selection.workspaceId}
             sessionId={selection.sessionId}
             messages={snapshot?.messages ?? []}
+            gapAfterMessageId={
+              reconnectGap?.sessionId === selection.sessionId
+                ? reconnectGap.afterMessageId
+                : undefined
+            }
             permissions={snapshot?.permissions ?? []}
             catalog={catalog}
             status={session?.status ?? "unknown"}

@@ -10,6 +10,7 @@ import {
 } from "../../features/conversation-context/index.js";
 import {
   type CSSProperties,
+  Fragment,
   useEffect,
   useId,
   useLayoutEffect,
@@ -114,6 +115,8 @@ type Props = {
   workspaceId: string;
   sessionId: string;
   messages: WorkbenchMessage[];
+  /** Divider after this message: the connection was lost and re-read here. */
+  gapAfterMessageId?: string | undefined;
   permissions: WorkbenchPermission[];
   catalog: WorkbenchCatalog | null;
   status: string;
@@ -1050,91 +1053,104 @@ export function Conversation(props: Props) {
               )}
               <ThreadPrimitive.Messages>
                 {({ message }) => (
-                  <MessageView
-                    key={message.id}
-                    role={message.role === "user" ? "user" : "assistant"}
-                    messageId={message.id}
-                    runtime={message.metadata?.custom.runtime}
-                    original={props.messages.find((m) => m.id === message.id)}
-                    // Agent/model once per turn: on the last assistant message.
-                    running={running}
-                    failure={(() => {
-                      const failed = failures.get(message.id);
-                      if (!failed) return undefined;
-                      const index = props.messages.findIndex(
-                        (m) => m.id === message.id,
-                      );
-                      const prompt = retryablePrompt(props.messages[index - 1]);
-                      const canRetry =
-                        (failed.kind === "unavailable" ||
-                          failed.kind === "limit") &&
-                        freeRouter &&
-                        prompt &&
-                        index === props.messages.length - 1 &&
-                        !blocked &&
-                        freeRouter.id !== failed.id;
-                      return (
-                        <TurnFailureNote
-                          kind={failed.kind}
-                          onRetry={
-                            canRetry
-                              ? () => {
-                                  if (retrying.current) return;
-                                  retrying.current = true;
-                                  actions.options({ model: freeRouter.id });
-                                  void actions
-                                    .resendMessage(
-                                      prompt,
-                                      freeRouter.id,
-                                      agent || undefined,
-                                    )
-                                    .finally(() => {
-                                      retrying.current = false;
-                                    });
-                                }
-                              : undefined
-                          }
-                        />
-                      );
-                    })()}
-                    onRetry={(() => {
-                      // Latest finished, non-failed turn on an idle session: the
-                      // old turn is never replayed, the prompt is sent anew.
-                      const index = props.messages.findIndex(
-                        (m) => m.id === message.id,
-                      );
-                      const last = props.messages[index];
-                      const prompt = retryablePrompt(props.messages[index - 1]);
-                      if (
-                        message.role !== "assistant" ||
-                        last?.failure ||
-                        index !== props.messages.length - 1 ||
-                        props.status !== "idle" ||
-                        !prompt ||
-                        blocked
-                      )
-                        return undefined;
-                      return () => {
-                        if (retrying.current) return;
-                        retrying.current = true;
-                        void actions
-                          .resendMessage(
-                            prompt,
-                            model || undefined,
-                            agent || undefined,
-                            variant || undefined,
-                          )
-                          .finally(() => {
-                            retrying.current = false;
-                          });
-                      };
-                    })()}
-                    showRuntime={
-                      props.messages[
-                        props.messages.findIndex((m) => m.id === message.id) + 1
-                      ]?.role !== "assistant"
-                    }
-                  />
+                  <Fragment key={message.id}>
+                    <MessageView
+                      key={message.id}
+                      role={message.role === "user" ? "user" : "assistant"}
+                      messageId={message.id}
+                      runtime={message.metadata?.custom.runtime}
+                      original={props.messages.find((m) => m.id === message.id)}
+                      // Agent/model once per turn: on the last assistant message.
+                      running={running}
+                      failure={(() => {
+                        const failed = failures.get(message.id);
+                        if (!failed) return undefined;
+                        const index = props.messages.findIndex(
+                          (m) => m.id === message.id,
+                        );
+                        const prompt = retryablePrompt(
+                          props.messages[index - 1],
+                        );
+                        const canRetry =
+                          (failed.kind === "unavailable" ||
+                            failed.kind === "limit") &&
+                          freeRouter &&
+                          prompt &&
+                          index === props.messages.length - 1 &&
+                          !blocked &&
+                          freeRouter.id !== failed.id;
+                        return (
+                          <TurnFailureNote
+                            kind={failed.kind}
+                            onRetry={
+                              canRetry
+                                ? () => {
+                                    if (retrying.current) return;
+                                    retrying.current = true;
+                                    actions.options({ model: freeRouter.id });
+                                    void actions
+                                      .resendMessage(
+                                        prompt,
+                                        freeRouter.id,
+                                        agent || undefined,
+                                      )
+                                      .finally(() => {
+                                        retrying.current = false;
+                                      });
+                                  }
+                                : undefined
+                            }
+                          />
+                        );
+                      })()}
+                      onRetry={(() => {
+                        // Latest finished, non-failed turn on an idle session: the
+                        // old turn is never replayed, the prompt is sent anew.
+                        const index = props.messages.findIndex(
+                          (m) => m.id === message.id,
+                        );
+                        const last = props.messages[index];
+                        const prompt = retryablePrompt(
+                          props.messages[index - 1],
+                        );
+                        if (
+                          message.role !== "assistant" ||
+                          last?.failure ||
+                          index !== props.messages.length - 1 ||
+                          props.status !== "idle" ||
+                          !prompt ||
+                          blocked
+                        )
+                          return undefined;
+                        return () => {
+                          if (retrying.current) return;
+                          retrying.current = true;
+                          void actions
+                            .resendMessage(
+                              prompt,
+                              model || undefined,
+                              agent || undefined,
+                              variant || undefined,
+                            )
+                            .finally(() => {
+                              retrying.current = false;
+                            });
+                        };
+                      })()}
+                      showRuntime={
+                        props.messages[
+                          props.messages.findIndex((m) => m.id === message.id) +
+                            1
+                        ]?.role !== "assistant"
+                      }
+                    />
+                    {message.id === props.gapAfterMessageId && (
+                      <p className={styles.muted} role="separator">
+                        연결이 복구되었습니다 — 이 사이의 일부 이벤트는 다시
+                        불러온 기록으로 표시됩니다.
+                      </p>
+                    )}
+                  </Fragment>
                 )}
               </ThreadPrimitive.Messages>
             </div>
