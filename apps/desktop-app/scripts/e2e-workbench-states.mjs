@@ -581,14 +581,12 @@ async function captureMatrix(page, state) {
       const visible = (locator) => expect(locator).toBeInViewport({ ratio: 1 });
       for (let index = 0; index < 2; index++) {
         const permission = permissions.nth(index);
-        await permission
+        // .first(): the "항상 허용" caption repeats the path in a <code>.
+        const detail = permission
           .getByText(index ? "src/app.ts" : "src/main.ts", { exact: true })
-          .scrollIntoViewIfNeeded();
-        await visible(
-          permission.getByText(index ? "src/app.ts" : "src/main.ts", {
-            exact: true,
-          }),
-        );
+          .first();
+        await detail.scrollIntoViewIfNeeded();
+        await visible(detail);
         const warning = permission.getByText(
           "거절하면 이 세션의 다른 대기 중 권한 요청도 취소됩니다.",
           { exact: true },
@@ -614,7 +612,7 @@ async function captureMatrix(page, state) {
           exact: true,
         });
         const always = permission.getByRole("button", {
-          name: "이 프로젝트에서 항상 허용",
+          name: "항상 허용",
           exact: true,
         });
         await allow.focus();
@@ -1528,12 +1526,14 @@ try {
             sessionId: "fixture-s",
             title: "파일 읽기",
             detail: "src/main.ts",
+            sessionAllow: ["src/main.ts"],
           },
           {
             id: "permission-two",
             sessionId: "fixture-s",
             title: "추가 파일 읽기",
             detail: "src/app.ts",
+            sessionAllow: ["src/app.ts"],
           },
         ];
       });

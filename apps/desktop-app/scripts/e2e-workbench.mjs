@@ -226,16 +226,18 @@ try {
   await openCommandMenuShortcut(page);
   await page.getByRole("button", { name: "명령 목록 닫기" }).click();
   await expect(composer).toHaveValue("Draft stays in this session");
+  // Scope to the session list: the recent strip repeats visited titles.
   await page
-    .getByRole("button", { name: "E2E second session", exact: true })
+    .locator(".session-list")
+    .getByRole("button", { name: /^E2E second session(?! 세션 작업)/ })
     .click();
   await expect(composer).toHaveValue("");
   await composer.fill("A separate second-session draft");
   // The recent-session strip also names the (disabled) current session.
   await page
-    .getByRole("list")
+    .locator(".session-list")
     // The placeholder title ("Workbench") is displayed as "새 세션".
-    .getByRole("button", { name: "새 세션", exact: true })
+    .getByRole("button", { name: /^새 세션(?! 세션 작업)/ })
     .click();
   await expect(composer).toHaveValue("Draft stays in this session");
   observations.push(
