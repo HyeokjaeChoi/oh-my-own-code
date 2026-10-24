@@ -10,6 +10,7 @@ const PANELS = [
   ["work", "작업 패널 열기"],
   ["terminal", "터미널 패널 열기"],
   ["preview", "미리보기 패널 열기"],
+  ["plan", "계획 패널 열기"],
 ];
 
 // One definition list shared by the composer `/` menu and the palette so they cannot drift.
