@@ -1009,48 +1009,162 @@ test("reject invalidates all pending permissions even if runtime list is stale",
   assert.equal((await reply("p2", "once")).code, "STALE_PERMISSION");
   assert.equal(f.calls.filter((x) => x.name === "reply").length, 1);
 });
-test("always is session-scoped: refused for external_directory, never forwarded to Native, flags later matches", async (t) => {
-  const f = await fixture(t);
-  const ask = (id, action, save) => ({
+const permissionHelpers = (f) => {
+  const ask = (id, action, save, sessionID = "sdk-default") => ({
     id,
-    sessionID: "sdk-default",
+    sessionID,
     action,
     resources: ["src/a.txt"],
     ...(save && { save }),
   });
-  const reply = (requestId, decision) =>
+  const reply = (requestId, decision, ids = f.ids) =>
     f.service.handle({
       type: "permission.respond",
-      ...f.ids,
+      ...ids,
       requestId,
       decision,
     });
-  const shown = async () =>
-    (await f.service.handle({ type: "snapshot", ...f.ids })).value.permissions;
+  const shown = async (ids = f.ids) =>
+    (await f.service.handle({ type: "snapshot", ...ids })).value.permissions;
+  const replies = () => f.calls.filter((x) => x.name === "reply");
+  // Main answers on its own after the snapshot; wait for it to settle.
+  const settle = async () => {
+    for (let i = 0; i < 20; i++) await new Promise((r) => setTimeout(r, 5));
+  };
+  return { ask, reply, shown, replies, settle };
+};
+test("always is session-scoped: refused in main for external_directory/read/pattern-less, never forwarded to Native", async (t) => {
+  const f = await fixture(t);
+  const { ask, reply, shown, replies } = permissionHelpers(f);
   f.state.permissions = [
     ask("x1", "external_directory", ["/etc/*"]),
     ask("n1", "edit"),
+    ask("n2", "edit", [""]),
+    ask("r1", "read", ["*"]),
   ];
-  assert.equal((await reply("x1", "always")).code, "INVALID_REQUEST");
-  assert.equal((await reply("n1", "always")).code, "INVALID_REQUEST");
-  assert.equal(f.calls.filter((x) => x.name === "reply").length, 0);
+  for (const id of ["x1", "n1", "n2", "r1"])
+    assert.equal((await reply(id, "always")).code, "INVALID_REQUEST");
+  assert.equal(replies().length, 0);
   assert.equal(
     (await shown()).some((p) => "sessionAllow" in p),
     false,
   );
-  f.state.permissions = [ask("e1", "edit", ["src/*"])];
-  assert.equal((await shown())[0].sessionAllow, "src/*");
+  f.state.permissions = [ask("e1", "edit", ["src/*", "", "lib/*"])];
+  assert.deepEqual((await shown())[0].sessionAllow, ["src/*", "lib/*"]);
   assert.equal((await reply("e1", "always")).value.status, "decided");
-  const sent = f.calls.filter((x) => x.name === "reply");
-  assert.equal(sent.length, 1);
-  assert.equal(sent[0].args[0].decision, "once");
+  assert.equal(replies().length, 1);
+  assert.equal(replies()[0].args[0].decision, "once");
+});
+test("main auto-answers matching requests once, also for a non-selected session; others stay manual", async (t) => {
+  const f = await fixture(t);
+  const { ask, reply, shown, replies, settle } = permissionHelpers(f);
+  f.state.permissions = [ask("e1", "edit", ["src/*"])];
+  assert.equal((await reply("e1", "always")).value.status, "decided");
   f.state.permissions = [
     ask("e2", "edit", ["src/*"]),
     ask("e3", "bash", ["src/*"]),
+    ask("e4", "edit", ["lib/*"]),
+    ask("x1", "external_directory", ["src/*"]),
+    ask("r1", "read", ["src/*"]),
   ];
-  const next = await shown();
-  assert.equal(next.find((p) => p.id === "e2").autoAllow, true);
-  assert.equal("autoAllow" in next.find((p) => p.id === "e3"), false);
+  const first = await shown();
+  assert.equal(first.length, 5);
+  assert.equal(
+    first.some((p) => "autoAllow" in p),
+    false,
+  );
+  await settle();
+  assert.deepEqual(
+    replies()
+      .slice(1)
+      .map((c) => [c.args[0].requestID, c.args[0].decision]),
+    [["e2", "once"]],
+  );
+  // Repeated refreshes do not re-answer the same (now handled) request.
+  await shown();
+  await settle();
+  assert.equal(replies().length, 2);
+  // Another session becomes the selected one; the grant holder is refreshed
+  // in the background and its next matching request is still answered by main.
+  const other = (
+    await f.service.handle({
+      type: "session.create",
+      workspaceId: f.ids.workspaceId,
+      title: "New",
+    })
+  ).value;
+  const otherIds = {
+    workspaceId: f.ids.workspaceId,
+    sessionId: other.selectedSessionId,
+  };
+  f.state.permissions = [ask("e5", "edit", ["src/*"])];
+  await shown(otherIds);
+  await settle();
+  assert.equal(replies().length, 3);
+  assert.equal(replies()[2].args[0].requestID, "e5");
+});
+test("a subagent grant never covers the parent or a sibling, and vice versa", async (t) => {
+  const f = await fixture(t);
+  const { ask, reply, shown, replies, settle } = permissionHelpers(f);
+  f.state.sessionList = [
+    ...f.infos.values(),
+    { id: "child-1", parentID: "sdk-default", title: "A" },
+    { id: "child-2", parentID: "sdk-default", title: "B" },
+  ];
+  f.state.permissions = [ask("c1", "edit", ["src/*"], "child-1")];
+  assert.equal((await reply("c1", "always")).value.status, "decided");
+  assert.equal(replies()[0].args[0].sessionID, "child-1");
+  f.state.permissions = [
+    ask("p1", "edit", ["src/*"]),
+    ask("c2", "edit", ["src/*"], "child-2"),
+    ask("c3", "edit", ["src/*"], "child-1"),
+  ];
+  await shown();
+  await settle();
+  assert.deepEqual(
+    replies()
+      .slice(1)
+      .map((c) => c.args[0].requestID),
+    ["c3"],
+  );
+  // A parent grant does not cover its children.
+  f.state.permissions = [ask("p2", "edit", ["lib/*"])];
+  await reply("p2", "always");
+  f.state.permissions = [
+    ask("p3", "edit", ["lib/*"], "child-1"),
+    ask("p4", "edit", ["lib/*"]),
+  ];
+  await shown();
+  await settle();
+  assert.deepEqual(
+    replies()
+      .slice(3)
+      .map((c) => c.args[0].requestID),
+    ["p4"],
+  );
+});
+test("archiving a session ends its always grants", async (t) => {
+  const f = await fixture(t);
+  const { ask, reply, shown, replies, settle } = permissionHelpers(f);
+  f.state.permissions = [ask("e1", "edit", ["src/*"])];
+  await reply("e1", "always");
+  const archive = (archived) =>
+    f.service.handle({
+      type: "session.archive",
+      ...f.ids,
+      requestId: `arch-${archived}`,
+      archived,
+    });
+  assert.equal((await archive(true)).ok, true);
+  assert.equal((await archive(false)).ok, true);
+  f.state.permissions = [ask("e2", "edit", ["src/*"])];
+  await shown();
+  await settle();
+  assert.equal(replies().length, 1);
+  assert.deepEqual(
+    (await shown()).map((p) => p.id),
+    ["e2"],
+  );
 });
 test("owned filesystem preview denies traversal, symlinks, sensitive, binary and oversize files", async (t) => {
   const f = await fixture(t);

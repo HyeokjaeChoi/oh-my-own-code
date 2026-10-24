@@ -190,6 +190,27 @@ function permissionHeading(title: string) {
     ? `${title} 실행 허용이 필요합니다`
     : title;
 }
+const allowsAll = (p: WorkbenchPermission) =>
+  p.sessionAllow?.length === 1 && p.sessionAllow[0] === "*";
+// Plain-text form for the button title; patterns are quoted so lists differ.
+const sessionAllowText = (p: WorkbenchPermission) =>
+  allowsAll(p)
+    ? `이 세션의 모든 ${p.title} 요청`
+    : `이 세션에서 ${(p.sessionAllow ?? []).map((x) => JSON.stringify(x)).join(" ")} 만`;
+function sessionAllowCaption(p: WorkbenchPermission) {
+  if (allowsAll(p)) return `이 세션의 모든 ${p.title} 요청`;
+  return (
+    <>
+      이 세션에서{" "}
+      {(p.sessionAllow ?? []).map((x, i) => (
+        <span key={i}>
+          <code>{x}</code>{" "}
+        </span>
+      ))}
+      만
+    </>
+  );
+}
 function ToolDetail({
   toolName,
   toolCallId,
@@ -760,23 +781,6 @@ export function Conversation(props: Props) {
   const permissions = props.permissions.filter(
     (permission) => permission.sessionId === props.sessionId,
   );
-  // Main flags requests already covered by this session's "항상 허용"; answer
-  // each once (main re-validates and still owns the decision).
-  const autoSent = useRef(new Set<string>());
-  const autoAllow = permissions.find(
-    (p) => p.autoAllow === true && !autoSent.current.has(p.id),
-  );
-  useEffect(() => {
-    if (!autoAllow || props.pending || props.disabled) return;
-    autoSent.current.add(autoAllow.id);
-    void props.mutate({
-      type: "permission.respond",
-      workspaceId: props.workspaceId,
-      sessionId: props.sessionId,
-      requestId: autoAllow.id,
-      decision: "once",
-    });
-  });
   const toolContext = useMemo(
     () => ({
       permissions,
@@ -1178,8 +1182,8 @@ export function Conversation(props: Props) {
                     </p>
                     {permission.sessionAllow !== undefined && (
                       <p className={styles.muted}>
-                        항상 허용: 이 세션에서 {permission.sessionAllow} 만,
-                        앱을 닫으면 해제됩니다.
+                        항상 허용: {sessionAllowCaption(permission)}, 앱을
+                        닫으면 해제됩니다.
                       </p>
                     )}
                     <p className={styles.muted}>
@@ -1206,7 +1210,7 @@ export function Conversation(props: Props) {
                       {permission.sessionAllow !== undefined && (
                         <Button
                           type="button"
-                          title={`이 세션에서 ${permission.sessionAllow}`}
+                          title={sessionAllowText(permission)}
                           disabled={props.pending || props.disabled}
                           onClick={() =>
                             void props.mutate({

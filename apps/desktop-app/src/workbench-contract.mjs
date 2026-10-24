@@ -964,7 +964,7 @@ export function validateSnapshot(value) {
     requiredObject(
       p,
       ["id", "sessionId", "title", "detail"],
-      ["toolId", "childTitle", "sessionAllow", "autoAllow"],
+      ["toolId", "childTitle", "sessionAllow"],
     );
     needDTO(
       (!Object.hasOwn(p, "childTitle") ||
@@ -977,9 +977,10 @@ export function validateSnapshot(value) {
         boundedText(p.title, 128) &&
         boundedText(p.detail, 2000) &&
         (!Object.hasOwn(p, "sessionAllow") ||
-          (boundedText(p.sessionAllow, 512) && p.sessionAllow.length > 0)) &&
-        (!Object.hasOwn(p, "autoAllow") ||
-          (p.autoAllow === true && Object.hasOwn(p, "sessionAllow"))),
+          (Array.isArray(p.sessionAllow) &&
+            p.sessionAllow.length > 0 &&
+            p.sessionAllow.length <= 16 &&
+            p.sessionAllow.every((x) => boundedText(x, 256) && x.length > 0))),
     );
   }
   if (Object.hasOwn(value, "error")) {

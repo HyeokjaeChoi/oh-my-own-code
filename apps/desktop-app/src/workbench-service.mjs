@@ -13,6 +13,7 @@ import {
   bootstrapTaskProof,
 } from "./native-permission-bootstrap-digest.mjs";
 import { projectPermissionPolicy } from "./renderer/shared/configuration-draft/permission-policy.mjs";
+import { redactText } from "./renderer/shared/data-transfer/index.mjs";
 import { createConversationContextIO } from "./host/conversation-context-io.mjs";
 import {
   projectContextInbox,
@@ -3159,16 +3160,60 @@ export function createWorkbenchService({
     }
   }
   // F-09 "always": session-scoped, in-memory only (Native's own `always` would
-  // persist a project rule). Keyed by exact action + offered `save` patterns;
-  // external_directory (the deny floor) and requests without patterns never match.
+  // persist a project rule). app session id -> owning Native session id (the
+  // session or one subagent child) -> exact action + offered `save` patterns.
+  // external_directory (the deny floor), read (the sensitive-file gate: a `*`
+  // save would bypass the .env ask) and requests without patterns never match.
   const sessionAllow = new Map();
-  const allowKey = (p) =>
+  const allowPatterns = (p) =>
     p?.action !== "external_directory" &&
-    Array.isArray(p.save) &&
-    p.save.length > 0 &&
-    p.save.every((x) => typeof x === "string")
-      ? JSON.stringify([p.action, [...p.save].sort()])
+    p?.action !== "read" &&
+    Array.isArray(p?.save) &&
+    p.save.length <= 16 &&
+    p.save.every((x) => typeof x === "string" && x.length <= 256)
+      ? p.save.filter((x) => x !== "")
+      : [];
+  const allowKey = (p) => {
+    const patterns = allowPatterns(p);
+    return patterns.length
+      ? JSON.stringify([p.action, [...patterns].sort()])
       : undefined;
+  };
+  const isAllowed = (appId, p) =>
+    sessionAllow.get(appId)?.get(p.sessionID)?.has(allowKey(p)) === true;
+  // Main answers matched requests itself (a normal permission.respond `once`,
+  // same lock/duplicate handling). A failed or busy reply leaves the manual card.
+  const autoSending = new Set();
+  function autoReply(s, ids) {
+    const todo = ids.filter((id) => !autoSending.has(id));
+    for (const id of todo) autoSending.add(id);
+    if (!todo.length) return;
+    void (async () => {
+      for (const id of todo) {
+        try {
+          await host.handle(
+            {
+              version: 2,
+              runtimeEpoch: host.epoch,
+              operationId: randomUUID(),
+              operation: {
+                type: "permission.respond",
+                workspaceId: s.workspaceId,
+                sessionId: s.id,
+                requestId: id,
+                decision: "once",
+              },
+            },
+            "main:auto-allow",
+          );
+        } catch {
+          // Manual card stays; the next refresh retries.
+        } finally {
+          autoSending.delete(id);
+        }
+      }
+    })();
+  }
   async function refresh(original) {
     const s = {
       ...original,
@@ -3271,35 +3316,44 @@ export function createWorkbenchService({
           ? await olderThanBoundary(s.sdkId, messages, boundary)
           : messages.data;
         s.messages = projectMessages([...visible].reverse());
-        s.permissions = [
+        const shown = [
           ...pending.filter((p) => p.sessionID === s.sdkId),
           ...subagentPending,
         ]
           .filter((p) => opaque(p.id) && !s.invalidPermissions.has(p.id))
-          .slice(0, 100)
-          .map((p) => ({
-            id: p.id,
-            sessionId: s.id,
-            ...(p.childTitle !== undefined && {
-              childTitle: clip(p.childTitle, 128) || "Subagent",
-            }),
-            title: clip(p.action, 128),
-            ...(p.source?.type === "tool" && opaque(p.source.id)
-              ? { toolId: p.source.id }
-              : {}),
-            detail: clip(
-              Array.isArray(p.resources)
-                ? p.resources.filter((x) => typeof x === "string").join("\n")
-                : "",
-              2000,
+          .slice(0, 100);
+        s.permissions = shown.map((p) => ({
+          id: p.id,
+          sessionId: s.id,
+          ...(p.childTitle !== undefined && {
+            childTitle: clip(p.childTitle, 128) || "Subagent",
+          }),
+          title: clip(p.action, 128),
+          ...(p.source?.type === "tool" && opaque(p.source.id)
+            ? { toolId: p.source.id }
+            : {}),
+          detail: clip(
+            Array.isArray(p.resources)
+              ? p.resources.filter((x) => typeof x === "string").join("\n")
+              : "",
+            2000,
+          ),
+          ...(allowKey(p) !== undefined && {
+            sessionAllow: allowPatterns(p).map(
+              (x) => clip(redactText(x).text, 256) || "*",
             ),
-            ...(allowKey(p) !== undefined && {
-              sessionAllow: clip(p.save.join(", "), 512),
-              ...(sessionAllow.get(s.id)?.has(allowKey(p)) && {
-                autoAllow: true,
-              }),
-            }),
-          }));
+          }),
+        }));
+        const matched = shown.filter((p) => isAllowed(s.id, p));
+        if (matched.length)
+          setTimeout(
+            () =>
+              autoReply(
+                s,
+                matched.map((p) => p.id),
+              ),
+            0,
+          );
         const running =
           active[s.sdkId]?.type === "running" ||
           inbox.some(
@@ -5417,6 +5471,8 @@ export function createWorkbenchService({
       } else if (request.type === "session.archive") {
         await markEffect();
         s.archived = request.archived;
+        // Archiving ends the session's "항상 허용" grants.
+        sessionAllow.delete(s.id);
       } else if (request.type === "session.fork") {
         checkBootstrapTaskAuthority();
         if (s.permissionControl) fail("POLICY_UNVERIFIED");
@@ -5861,6 +5917,16 @@ export function createWorkbenchService({
         )
           ? await refresh(selectedS)
           : undefined;
+      // Background sessions holding a "항상 허용" grant are read too, so main
+      // can answer their matching requests while they are not on screen.
+      for (const item of [...tables().sessions.values()])
+        if (
+          item.id !== selectedS?.id &&
+          sessionAllow.has(item.id) &&
+          !item.archived &&
+          !item.unavailable
+        )
+          await refresh(item).catch(() => {});
       return base(selectedW, selectedS, projection);
     }
     if (
@@ -6349,8 +6415,9 @@ export function createWorkbenchService({
             decision: request.decision === "always" ? "once" : request.decision,
           });
           if (request.decision === "always") {
-            if (!sessionAllow.has(s.id)) sessionAllow.set(s.id, new Set());
-            sessionAllow.get(s.id).add(key);
+            const owners = sessionAllow.get(s.id) ?? new Map();
+            sessionAllow.set(s.id, owners);
+            owners.set(ownerId, (owners.get(ownerId) ?? new Set()).add(key));
           }
           return { requestId: request.requestId, status: "decided" };
         } catch {

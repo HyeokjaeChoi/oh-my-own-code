@@ -184,7 +184,14 @@ test("actual assistant-ui transcript dispatches validated LinkPreview and escape
           sessionId: "s",
           title: "Allow tool",
           detail: "Read a file",
-          sessionAllow: "src/*",
+          sessionAllow: ["src/*", "a, b"],
+        },
+        {
+          id: "star",
+          sessionId: "s",
+          title: "edit",
+          detail: "x",
+          sessionAllow: ["*"],
         },
         {
           id: "outside",
@@ -231,7 +238,10 @@ test("actual assistant-ui transcript dispatches validated LinkPreview and escape
   assert.ok(html.includes("메시지 작성"));
   assert.ok(html.includes("이번만 허용"));
   // "항상 허용" only where main offered patterns (never external_directory).
-  assert.equal((html.match(/>항상 허용</g) ?? []).length, 1);
+  assert.equal((html.match(/>항상 허용</g) ?? []).length, 2);
+  assert.ok(html.includes("<code>src/*</code>"));
+  assert.ok(html.includes("<code>a, b</code>"));
+  assert.ok(html.includes("이 세션의 모든 edit 요청"));
   assert.ok(html.includes("다른 대기 중 권한 요청도 취소"));
 });
 
