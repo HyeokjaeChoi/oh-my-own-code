@@ -1009,6 +1009,49 @@ test("reject invalidates all pending permissions even if runtime list is stale",
   assert.equal((await reply("p2", "once")).code, "STALE_PERMISSION");
   assert.equal(f.calls.filter((x) => x.name === "reply").length, 1);
 });
+test("always is session-scoped: refused for external_directory, never forwarded to Native, flags later matches", async (t) => {
+  const f = await fixture(t);
+  const ask = (id, action, save) => ({
+    id,
+    sessionID: "sdk-default",
+    action,
+    resources: ["src/a.txt"],
+    ...(save && { save }),
+  });
+  const reply = (requestId, decision) =>
+    f.service.handle({
+      type: "permission.respond",
+      ...f.ids,
+      requestId,
+      decision,
+    });
+  const shown = async () =>
+    (await f.service.handle({ type: "snapshot", ...f.ids })).value.permissions;
+  f.state.permissions = [
+    ask("x1", "external_directory", ["/etc/*"]),
+    ask("n1", "edit"),
+  ];
+  assert.equal((await reply("x1", "always")).code, "INVALID_REQUEST");
+  assert.equal((await reply("n1", "always")).code, "INVALID_REQUEST");
+  assert.equal(f.calls.filter((x) => x.name === "reply").length, 0);
+  assert.equal(
+    (await shown()).some((p) => "sessionAllow" in p),
+    false,
+  );
+  f.state.permissions = [ask("e1", "edit", ["src/*"])];
+  assert.equal((await shown())[0].sessionAllow, "src/*");
+  assert.equal((await reply("e1", "always")).value.status, "decided");
+  const sent = f.calls.filter((x) => x.name === "reply");
+  assert.equal(sent.length, 1);
+  assert.equal(sent[0].args[0].decision, "once");
+  f.state.permissions = [
+    ask("e2", "edit", ["src/*"]),
+    ask("e3", "bash", ["src/*"]),
+  ];
+  const next = await shown();
+  assert.equal(next.find((p) => p.id === "e2").autoAllow, true);
+  assert.equal("autoAllow" in next.find((p) => p.id === "e3"), false);
+});
 test("owned filesystem preview denies traversal, symlinks, sensitive, binary and oversize files", async (t) => {
   const f = await fixture(t);
   await writeFile(join(f.workspace, "a.txt"), "hello");

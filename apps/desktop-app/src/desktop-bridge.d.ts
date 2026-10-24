@@ -215,6 +215,10 @@ export interface WorkbenchPermission {
   detail: string;
   toolId?: string;
   childTitle?: string;
+  /** Offered pattern(s); present only when "always" (this session) may be chosen. */
+  sessionAllow?: string;
+  /** Main already holds a session allow for this request; the UI answers once. */
+  autoAllow?: true;
 }
 export interface SessionRevert {
   messageId: string;

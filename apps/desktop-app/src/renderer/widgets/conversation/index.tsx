@@ -760,6 +760,23 @@ export function Conversation(props: Props) {
   const permissions = props.permissions.filter(
     (permission) => permission.sessionId === props.sessionId,
   );
+  // Main flags requests already covered by this session's "항상 허용"; answer
+  // each once (main re-validates and still owns the decision).
+  const autoSent = useRef(new Set<string>());
+  const autoAllow = permissions.find(
+    (p) => p.autoAllow === true && !autoSent.current.has(p.id),
+  );
+  useEffect(() => {
+    if (!autoAllow || props.pending || props.disabled) return;
+    autoSent.current.add(autoAllow.id);
+    void props.mutate({
+      type: "permission.respond",
+      workspaceId: props.workspaceId,
+      sessionId: props.sessionId,
+      requestId: autoAllow.id,
+      decision: "once",
+    });
+  });
   const toolContext = useMemo(
     () => ({
       permissions,
@@ -1159,6 +1176,12 @@ export function Conversation(props: Props) {
                     <p className={styles.permissionDetail}>
                       {permission.detail}
                     </p>
+                    {permission.sessionAllow !== undefined && (
+                      <p className={styles.muted}>
+                        항상 허용: 이 세션에서 {permission.sessionAllow} 만,
+                        앱을 닫으면 해제됩니다.
+                      </p>
+                    )}
                     <p className={styles.muted}>
                       거절하면 이 세션의 다른 대기 중 권한 요청도 취소됩니다.
                     </p>
@@ -1180,21 +1203,24 @@ export function Conversation(props: Props) {
                       >
                         이번만 허용
                       </Button>
-                      <Button
-                        type="button"
-                        disabled={props.pending || props.disabled}
-                        onClick={() =>
-                          void props.mutate({
-                            type: "permission.respond",
-                            workspaceId: props.workspaceId,
-                            sessionId: props.sessionId,
-                            requestId: permission.id,
-                            decision: "always",
-                          })
-                        }
-                      >
-                        이 프로젝트에서 항상 허용
-                      </Button>
+                      {permission.sessionAllow !== undefined && (
+                        <Button
+                          type="button"
+                          title={`이 세션에서 ${permission.sessionAllow}`}
+                          disabled={props.pending || props.disabled}
+                          onClick={() =>
+                            void props.mutate({
+                              type: "permission.respond",
+                              workspaceId: props.workspaceId,
+                              sessionId: props.sessionId,
+                              requestId: permission.id,
+                              decision: "always",
+                            })
+                          }
+                        >
+                          항상 허용
+                        </Button>
+                      )}
                       <Button
                         type="button"
                         disabled={props.pending || props.disabled}
