@@ -799,6 +799,7 @@ try {
       "automation",
       "cancelRead",
       "data",
+      "getPathForFile",
       "notify",
       "plans",
       "preview",

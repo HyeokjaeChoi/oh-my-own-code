@@ -13,7 +13,6 @@
 //   turn 5: shell (bash) tool run with a permission prompt
 //   turn 6: interrupt during a streaming reply, then a normal send works
 // OMOC_E2E_CONNECT_TIMEOUT_MS (default 150s) bounds the runtime connect wait.
-import { openSettings } from "./e2e-shell.mjs";
 import assert from "node:assert/strict";
 import { windowsEnv } from "./e2e-env.mjs";
 import { once } from "node:events";
@@ -495,6 +494,10 @@ try {
   const prompt = page.getByRole("region", { name: "실행 권한 요청" });
   await expect(prompt).toBeVisible({ timeout: 90_000 });
   assert.equal(existsSync(written), false, "no write before approval");
+  // F-09: a normal permission (write) offers the session-scoped "항상 허용".
+  await expect(
+    prompt.getByRole("button", { name: "항상 허용", exact: true }),
+  ).toBeVisible();
   await prompt.getByRole("button", { name: "이번만 허용" }).click();
   await expect(page.getByText("Tool result received: write done")).toBeVisible({
     timeout: 90_000,
@@ -521,39 +524,17 @@ try {
   // Turn 3: read tool (also asks in "ask" mode) -> approve -> result -> reply.
   await send(`READ-FIXTURE:${fixtureFile}`);
   await expect(prompt).toBeVisible({ timeout: 90_000 });
-  await prompt
-    .getByRole("button", { name: "이 프로젝트에서 항상 허용" })
-    .click();
+  // read never offers "항상 허용" (sensitive-file gate).
+  await expect(
+    prompt.getByRole("button", { name: "항상 허용", exact: true }),
+  ).toHaveCount(0);
+  await prompt.getByRole("button", { name: "이번만 허용" }).click();
   await expect(
     page.getByText("Tool result received: file read ok"),
   ).toBeVisible({ timeout: 90_000 });
   await idle();
   observations.push(
-    "turn 3: read permission approved (always); result and final reply",
-  );
-
-  // The saved "항상 허용" rule is listed in Settings and can be revoked; the
-  // same read then asks again.
-  await openSettings(page);
-  await page.getByRole("tab", { name: "권한" }).click();
-  const rules = page.getByRole("region", { name: "저장된 허용 규칙" });
-  await expect(
-    rules.getByRole("button", { name: /허용 규칙 삭제/ }),
-  ).toHaveCount(1, { timeout: 30_000 });
-  await rules.getByRole("button", { name: /허용 규칙 삭제/ }).click();
-  await expect(rules.getByText("저장된 규칙이 없습니다.")).toBeVisible({
-    timeout: 30_000,
-  });
-  await page.keyboard.press("Escape");
-  await send(`READ-FIXTURE:${fixtureFile}`);
-  await expect(prompt).toBeVisible({ timeout: 90_000 });
-  await prompt.getByRole("button", { name: "이번만 허용" }).click();
-  await expect(
-    page.getByText("Tool result received: file read ok").nth(1),
-  ).toBeVisible({ timeout: 90_000 });
-  await idle();
-  observations.push(
-    "turn 3b: saved allow rule listed in settings, removed, and the read asks again",
+    "turn 3: read permission approved once; no 항상 허용 offered for read",
   );
 
   // Approves a permission prompt if one appears before `done` is rendered;
@@ -600,11 +581,11 @@ try {
 
   // Turn 5: shell tool with a permission prompt.
   await send("SHELL-FIXTURE");
-  await expect(prompt).toBeVisible({ timeout: 90_000 });
-  await prompt.getByRole("button", { name: "이번만 허용" }).click();
-  await expect(page.getByText("Tool result received: shell ok")).toBeVisible({
-    timeout: 90_000,
-  });
+  // approveUntil tolerates a leftover turn-4 card clearing before this prompt.
+  await approveUntil(
+    page.getByText("Tool result received: shell ok"),
+    /SHELL-OUT-FIXTURE|명령 실행/,
+  );
   await idle();
   observations.push("turn 5: bash tool ran after permission approval");
 
@@ -687,6 +668,10 @@ try {
     const state = await createWorkbenchBridge(page)({ type: "snapshot" });
     const { messages, permissions, sessions, error } = state.value ?? {};
     console.error(
+      "page tail:",
+      (await page.locator("body").innerText()).slice(-1500),
+    );
+    console.error(
       "alerts:",
       await page.getByRole("alert").allInnerTexts(),
       JSON.stringify({
@@ -694,10 +679,10 @@ try {
         recovery: state.value?.recovery,
         retained: state.value?.retainedOperations,
         error,
-        messages,
+        messages: messages?.slice(-4),
         permissions,
         sessions,
-      }).slice(0, 4000),
+      }).slice(0, 6000),
     );
   } catch {
     /* best effort */

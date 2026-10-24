@@ -2719,7 +2719,13 @@ function validProjection(next: WorkbenchSnapshot): boolean {
       return false;
     for (const tool of message.tools) {
       if (
-        !closed(tool, ["id", "name", "status", "input", "output"]) ||
+        !closed(tool, ["id", "name", "status", "input", "output"], ["exit"]) ||
+        (Object.hasOwn(tool, "exit") &&
+          !(
+            Number.isInteger(tool.exit) &&
+            (tool.exit as number) >= 0 &&
+            (tool.exit as number) <= 255
+          )) ||
         !validRuntimeText(tool.id) ||
         typeof tool.name !== "string" ||
         tool.name.length > 128 ||

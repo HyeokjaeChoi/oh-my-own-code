@@ -471,6 +471,7 @@ try {
   );
   await shot("late-copy-after-session-switch");
   await page
+    .locator(".session-list")
     .getByRole("button", { name: /^P6 Session A(?! 세션 작업)/ })
     .click();
   await messages('부분 수신\n\n```js\nconst partial = "아직', "running");
