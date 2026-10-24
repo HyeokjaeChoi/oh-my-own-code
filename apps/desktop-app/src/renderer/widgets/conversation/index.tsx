@@ -391,6 +391,7 @@ function MessageView({
   showRuntime,
   running,
   failure,
+  onRetry,
 }: {
   role: "user" | "assistant";
   messageId: string;
@@ -399,6 +400,7 @@ function MessageView({
   showRuntime: boolean;
   running: boolean;
   failure?: ReactNode;
+  onRetry?: (() => void) | undefined;
 }) {
   const report =
     role === "assistant" && validAssistantRuntime(runtime)
@@ -433,6 +435,16 @@ function MessageView({
           aria-label="메시지 동작"
         >
           {text && <CopyButton text={text} kind="message" />}
+          {onRetry && (
+            <Button
+              size="compact"
+              type="button"
+              data-retry-turn={messageId}
+              onClick={onRetry}
+            >
+              다시 시도
+            </Button>
+          )}
           {original && <ContextMessageActions message={original} />}
         </div>
         {role === "assistant" && showRuntime && (report || !running) && (
@@ -968,6 +980,39 @@ export function Conversation(props: Props) {
                           }
                         />
                       );
+                    })()}
+                    onRetry={(() => {
+                      // Latest finished, non-failed turn on an idle session: the
+                      // old turn is never replayed, the prompt is sent anew.
+                      const index = props.messages.findIndex(
+                        (m) => m.id === message.id,
+                      );
+                      const last = props.messages[index];
+                      const prompt = retryablePrompt(props.messages[index - 1]);
+                      if (
+                        message.role !== "assistant" ||
+                        last?.failure ||
+                        index !== props.messages.length - 1 ||
+                        props.status !== "idle" ||
+                        !prompt ||
+                        !model ||
+                        blocked
+                      )
+                        return undefined;
+                      return () => {
+                        if (retrying.current) return;
+                        retrying.current = true;
+                        void actions
+                          .resendMessage(
+                            prompt,
+                            model,
+                            agent || undefined,
+                            variant || undefined,
+                          )
+                          .finally(() => {
+                            retrying.current = false;
+                          });
+                      };
                     })()}
                     showRuntime={
                       props.messages[

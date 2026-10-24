@@ -1018,6 +1018,7 @@ export function createWindowWorkbench(
     text: string,
     model: string,
     agent?: string,
+    variant?: string,
   ): Promise<boolean> {
     const state = store.getState();
     return submitMutation({
@@ -1028,6 +1029,7 @@ export function createWindowWorkbench(
       text,
       model,
       ...(agent ? { agent } : {}),
+      ...(variant ? { variant } : {}),
     });
   }
   function deliverContextMessage(
