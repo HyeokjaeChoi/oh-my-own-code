@@ -1,9 +1,13 @@
 export {
   PALETTE_SOURCES,
   buildPaletteEntries,
+  buildAppCommands,
+  conflictingNames,
   filterPaletteEntries,
 } from "./index.mjs";
 export type { PaletteAction, PaletteEntry, PaletteContext } from "./index.mjs";
+// Palette/`/` menu -> composer (model/permission popovers, status card).
+export const OPEN_COMPOSER_EVENT = "omoc:open-composer";
 // Palette -> preferences sheet; the sheet owns its own open state.
 export const OPEN_SETTINGS_EVENT = "omoc:open-settings";
 export const OPEN_NOTIFICATIONS_EVENT = "omoc:open-notifications";

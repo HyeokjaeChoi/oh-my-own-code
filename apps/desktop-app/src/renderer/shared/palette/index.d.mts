@@ -1,8 +1,10 @@
 export type PaletteAction =
-  | { type: "settings" }
+  | { type: "settings"; page?: string }
+  | { type: "composer"; target: "model" | "permission" | "status" }
+  | { type: "none" }
   | { type: "notifications" }
   | { type: "automation" }
-  | { type: "extensions" }
+  | { type: "extensions"; sub?: string }
   | {
       type: "panel";
       panel: "files" | "changes" | "work" | "terminal" | "preview";
@@ -37,6 +39,7 @@ export type PaletteContext = {
   scripts?: { name: string; command: string }[] | undefined;
   packageManager?: string | undefined;
   draft?: string | undefined;
+  archived?: boolean | undefined;
 };
 export const PALETTE_SOURCES: Readonly<Record<PaletteEntry["source"], string>>;
 export function buildPaletteEntries(ctx: PaletteContext): PaletteEntry[];
@@ -44,3 +47,13 @@ export function filterPaletteEntries(
   entries: PaletteEntry[],
   query: string,
 ): PaletteEntry[];
+export const APP_COMMAND_NAMES: readonly string[];
+export function buildAppCommands(
+  ctx: {
+    hasWorkspace: boolean;
+    hasSession: boolean;
+    archived?: boolean | undefined;
+  },
+  runtimeNames: Set<string> | null,
+): PaletteEntry[];
+export function conflictingNames(runtimeNames: Set<string> | null): Set<string>;

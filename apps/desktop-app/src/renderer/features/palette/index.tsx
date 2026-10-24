@@ -7,11 +7,15 @@ import {
 } from "../../entities/workbench/index.js";
 import {
   OPEN_AUTOMATION_EVENT,
+  OPEN_COMPOSER_EVENT,
   OPEN_EXTENSIONS_EVENT,
   OPEN_NOTIFICATIONS_EVENT,
   OPEN_SETTINGS_EVENT,
   PALETTE_SOURCES,
   buildPaletteEntries,
+  openExtensionsSub,
+  openSettingsPage,
+  type SettingsPage,
   filterPaletteEntries,
   type PaletteEntry,
 } from "../../shared/palette/index.js";
@@ -102,6 +106,9 @@ export function CommandPalette() {
               (s) => s.workspaceId === workspaceId && !s.archived,
             ),
             currentSessionId: selection.sessionId,
+            archived: lists?.sessions.some(
+              (s) => s.id === selection.sessionId && s.archived,
+            ),
             catalog,
             scripts: project?.scripts,
             packageManager: project?.packageManager,
@@ -152,14 +159,23 @@ export function CommandPalette() {
         );
       actions.openPanel("terminal");
       announceTerminalStarted(workspaceId, r.value.terminalId);
-    } else if (a.type === "settings")
-      window.dispatchEvent(new Event(OPEN_SETTINGS_EVENT));
+    } else if (a.type === "none") return;
+    else if (a.type === "composer")
+      window.dispatchEvent(
+        new CustomEvent(OPEN_COMPOSER_EVENT, { detail: { target: a.target } }),
+      );
+    else if (a.type === "settings")
+      a.page
+        ? openSettingsPage(a.page as SettingsPage)
+        : window.dispatchEvent(new Event(OPEN_SETTINGS_EVENT));
     else if (a.type === "notifications")
       window.dispatchEvent(new Event(OPEN_NOTIFICATIONS_EVENT));
     else if (a.type === "automation")
       window.dispatchEvent(new Event(OPEN_AUTOMATION_EVENT));
     else if (a.type === "extensions")
-      window.dispatchEvent(new Event(OPEN_EXTENSIONS_EVENT));
+      a.sub
+        ? openExtensionsSub(a.sub)
+        : window.dispatchEvent(new Event(OPEN_EXTENSIONS_EVENT));
     else if (a.type === "panel") actions.openPanel(a.panel);
     else if (a.type === "session.create") {
       if (workspaceId)

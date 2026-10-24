@@ -12,6 +12,92 @@ const PANELS = [
   ["preview", "미리보기 패널 열기"],
 ];
 
+// One definition list shared by the composer `/` menu and the palette so they cannot drift.
+// plan/compact have no app operation: they exist only when the runtime offers a command of that name.
+const APP_COMMANDS = [
+  {
+    name: "model",
+    label: "모델 바꾸기",
+    action: { type: "composer", target: "model" },
+    session: true,
+  },
+  {
+    name: "permissions",
+    label: "권한 모드 바꾸기",
+    action: { type: "composer", target: "permission" },
+    session: true,
+  },
+  {
+    name: "status",
+    label: "세션 상태 보기",
+    action: { type: "composer", target: "status" },
+    session: true,
+  },
+  {
+    name: "mcp",
+    label: "MCP 서버 보기",
+    action: { type: "extensions", sub: "mcp" },
+  },
+  {
+    name: "help",
+    label: "도움말·단축키",
+    action: { type: "settings", page: "shortcuts" },
+  },
+  {
+    name: "review",
+    label: "변경 검토 열기",
+    action: { type: "panel", panel: "changes" },
+    workspace: true,
+  },
+  { name: "plan", label: "계획 모드", runtimeOnly: true },
+  { name: "compact", label: "대화 압축", runtimeOnly: true },
+];
+export const APP_COMMAND_NAMES = Object.freeze(APP_COMMANDS.map((c) => c.name));
+
+// runtimeNames: names of the runtime's commands, or null when the catalog is unavailable.
+// ctx: { hasWorkspace, hasSession, archived }
+export function buildAppCommands(ctx, runtimeNames) {
+  const out = [];
+  for (const c of APP_COMMANDS) {
+    const base = {
+      id: `app:cmd:${c.name}`,
+      label: c.label,
+      detail: `/${c.name}`,
+      source: "app",
+    };
+    if (c.runtimeOnly) {
+      if (runtimeNames?.has(c.name)) continue; // the runtime entry is the real command
+      out.push({
+        ...base,
+        action: { type: "none" },
+        disabled: true,
+        reason: runtimeNames
+          ? `런타임이 /${c.name} 명령을 제공하지 않습니다.`
+          : "런타임 명령 목록을 사용할 수 없습니다.",
+      });
+      continue;
+    }
+    const reason =
+      c.workspace && !ctx.hasWorkspace
+        ? "작업 공간을 먼저 선택하세요."
+        : c.session && !ctx.hasSession
+          ? "세션을 먼저 선택하세요."
+          : c.session && c.action.target !== "status" && ctx.archived
+            ? "보관된 세션입니다."
+            : undefined;
+    out.push({
+      ...base,
+      action: c.action,
+      ...(reason ? { disabled: true, reason } : {}),
+    });
+  }
+  return out;
+}
+
+// Runtime command names that also name an app command (both are listed, labelled by source).
+export const conflictingNames = (runtimeNames) =>
+  new Set(APP_COMMAND_NAMES.filter((n) => runtimeNames?.has(n)));
+
 // ctx: { hasWorkspace, hasSession, pending, workspaceBlocked, resourceBlocked, connected,
 //        running, sessions: [{id,title}], currentSessionId, catalog, scripts, packageManager, draft }
 export function buildPaletteEntries(ctx) {
@@ -68,12 +154,30 @@ export function buildPaletteEntries(ctx) {
       });
 
   const c = ctx.catalog;
+  const runtimeNames =
+    c?.commands?.status === "available"
+      ? new Set(c.commands.entries.map((e) => e.name))
+      : null;
+  entries.push(
+    ...buildAppCommands(
+      {
+        hasWorkspace: ctx.hasWorkspace,
+        hasSession: Boolean(ctx.currentSessionId),
+        archived: ctx.archived,
+      },
+      runtimeNames,
+    ),
+  );
+  const clash = conflictingNames(runtimeNames);
   if (c?.commands?.status === "available")
     for (const e of c.commands.entries)
       entries.push({
         id: `runtime:command:${e.id}`,
         label: `/${e.name}`,
-        detail: e.description,
+        detail:
+          [e.description, clash.has(e.name) ? "앱 명령과 이름이 같음" : ""]
+            .filter(Boolean)
+            .join(" · ") || undefined,
         source: "runtime",
         action: { type: "draft", text: `/${e.name} ` },
       });
