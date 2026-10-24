@@ -11,6 +11,8 @@ import {
 } from "./renderer/shared/project-actions/index.mjs";
 import { validateTerminalRequest } from "./renderer/shared/terminal/index.mjs";
 import {
+  buildAppCommands,
+  conflictingNames,
   buildPaletteEntries,
   filterPaletteEntries,
 } from "./renderer/shared/palette/index.mjs";
@@ -236,7 +238,7 @@ test("palette filtering is case-insensitive, multi-term, and matches source/deta
   assert.equal(filterPaletteEntries(entries, "").length, entries.length);
   assert.deepEqual(
     filterPaletteEntries(entries, "REVIEW").map((e) => e.id),
-    ["runtime:command:c1"],
+    ["app:cmd:review", "runtime:command:c1"],
   );
   assert.deepEqual(
     filterPaletteEntries(entries, "node test").map((e) => e.id),
@@ -248,4 +250,54 @@ test("palette filtering is case-insensitive, multi-term, and matches source/deta
     ),
   );
   assert.equal(filterPaletteEntries(entries, "zzz").length, 0);
+});
+
+test("app commands: plan/compact are never faked; same-name runtime commands are listed beside them", () => {
+  const ctx = { hasWorkspace: true, hasSession: true };
+  const find = (list, name) => list.find((e) => e.id === `app:cmd:${name}`);
+  const none = buildAppCommands(ctx, new Set(["review"]));
+  assert.equal(find(none, "plan").disabled, true);
+  assert.match(find(none, "plan").reason, /plan/);
+  assert.equal(find(none, "review").disabled, undefined);
+  const has = buildAppCommands(ctx, new Set(["plan", "compact"]));
+  assert.equal(find(has, "plan"), undefined);
+  assert.equal(find(has, "compact"), undefined);
+  assert.match(
+    find(buildAppCommands(ctx, null), "compact").reason,
+    /사용할 수 없/,
+  );
+  assert.deepEqual([...conflictingNames(new Set(["review", "x"]))], ["review"]);
+
+  const entries = buildPaletteEntries({
+    ...base,
+    catalog: {
+      commands: {
+        status: "available",
+        entries: [{ id: "c9", name: "review", description: "리뷰" }],
+      },
+    },
+  });
+  const app = entries.find((e) => e.id === "app:cmd:review");
+  const rt = entries.find((e) => e.id === "runtime:command:c9");
+  assert.equal(app.source, "app");
+  assert.equal(rt.source, "runtime");
+  assert.match(rt.detail, /앱 명령과 이름이 같음/);
+  assert.deepEqual(
+    filterPaletteEntries(entries, "/review")
+      .map((e) => e.source)
+      .sort(),
+    ["app", "runtime"],
+  );
+});
+
+test("app commands carry disabled reasons for missing workspace, session and archived state", () => {
+  const by = (ctx) => (n) =>
+    buildAppCommands(ctx, new Set()).find((e) => e.id === `app:cmd:${n}`);
+  const empty = by({ hasWorkspace: false, hasSession: false });
+  assert.ok(empty("review").reason);
+  assert.ok(empty("model").reason);
+  assert.equal(empty("help").disabled, undefined);
+  const archived = by({ hasWorkspace: true, hasSession: true, archived: true });
+  assert.ok(archived("permissions").reason);
+  assert.equal(archived("status").disabled, undefined);
 });

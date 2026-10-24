@@ -66,7 +66,15 @@ import {
   useDefaultModel,
 } from "../../features/composer/index.js";
 import type { MutationRequest } from "../../shared/transport/index.js";
-import { openSettingsPage } from "../../shared/palette/index.js";
+import {
+  OPEN_COMPOSER_EVENT,
+  buildAppCommands,
+  conflictingNames,
+  openExtensionsSub,
+  openSettingsPage,
+  PALETTE_SOURCES,
+  type PaletteEntry,
+} from "../../shared/palette/index.js";
 import {
   FirstRunCard,
   useProviderList,
@@ -615,6 +623,8 @@ export function Conversation(props: Props) {
   const inboxId = useId();
   const [modelOpen, setModelOpen] = useState(false);
   const [modeNote, setModeNote] = useState("");
+  const [statusOpen, setStatusOpen] = useState(false);
+  useEffect(() => setStatusOpen(false), [props.sessionId]);
   const permissionId = useId();
   const gitReview = useWorkbenchSelector(currentGitReviewObservation);
   const branchName =
@@ -803,6 +813,61 @@ export function Conversation(props: Props) {
     runtime.thread.composer.setText(text);
     setMenu(false);
     input.current?.focus();
+  };
+  // Shared by the `/` menu and the palette (OPEN_COMPOSER_EVENT).
+  const openComposerTarget = (target: "model" | "permission" | "status") => {
+    if (target === "status") return setStatusOpen(true);
+    const source = input.current;
+    (
+      document.getElementById(target === "model" ? modelId : permissionId) as
+        | (HTMLElement & {
+            showPopover(options?: { source: HTMLElement }): void;
+          })
+        | null
+    )?.showPopover(source ? { source } : undefined);
+  };
+  const composerTarget = useRef(openComposerTarget);
+  composerTarget.current = openComposerTarget;
+  useEffect(() => {
+    const on = (event: Event) =>
+      composerTarget.current(
+        (event as CustomEvent).detail?.target as
+          | "model"
+          | "permission"
+          | "status",
+      );
+    window.addEventListener(OPEN_COMPOSER_EVENT, on);
+    return () => window.removeEventListener(OPEN_COMPOSER_EVENT, on);
+  }, []);
+  const runtimeCommands =
+    props.catalog?.commands.status === "available"
+      ? props.catalog.commands.entries
+      : null;
+  const runtimeNames = runtimeCommands
+    ? new Set(runtimeCommands.map((entry) => entry.name))
+    : null;
+  const appCommands = buildAppCommands(
+    {
+      hasWorkspace: Boolean(props.workspaceId),
+      hasSession: Boolean(props.sessionId),
+      archived: Boolean(props.archived),
+    },
+    runtimeNames,
+  );
+  const nameClash = conflictingNames(runtimeNames);
+  const runAppCommand = (entry: PaletteEntry) => {
+    // Drop the `/` token that opened the menu (and its filter).
+    if (/^\/\S*$/.test(draft)) {
+      actions.draft("");
+      runtime.thread.composer.setText("");
+    }
+    closeMenu();
+    const a = entry.action;
+    if (a.type === "composer") openComposerTarget(a.target);
+    else if (a.type === "extensions" && a.sub) openExtensionsSub(a.sub);
+    else if (a.type === "settings" && a.page)
+      openSettingsPage(a.page as Parameters<typeof openSettingsPage>[0]);
+    else if (a.type === "panel") actions.openPanel(a.panel);
   };
   // Replaces [start, end) of the draft and parks the caret after the new text.
   const replaceRange = (start: number, end: number, text: string) => {
@@ -1261,6 +1326,42 @@ export function Conversation(props: Props) {
                   ? "모델을 바꿔 이전 추론 강도 요청을 지웠습니다."
                   : modeNote}
               </span>
+              {statusOpen && (
+                <div
+                  role="region"
+                  aria-label="세션 상태"
+                  className={styles.statusCard}
+                >
+                  <div className={styles.menuHeading}>
+                    <strong>세션 상태</strong>
+                    <Button
+                      type="button"
+                      onClick={() => setStatusOpen(false)}
+                      aria-label="세션 상태 닫기"
+                    >
+                      <X size={18} aria-hidden="true" />
+                    </Button>
+                  </div>
+                  <dl>
+                    {[
+                      ["실행", progress],
+                      [
+                        "런타임",
+                        props.executionAvailable ? "연결됨" : "확인 불가",
+                      ],
+                      ["에이전트", agentLabel],
+                      ["모델", modelLabel],
+                      ["추론 강도", effortLabel],
+                      ["권한", permissionLabel],
+                    ].map(([term, value]) => (
+                      <div key={term}>
+                        <dt>{term}</dt>
+                        <dd>{value}</dd>
+                      </div>
+                    ))}
+                  </dl>
+                </div>
+              )}
               <ComposerPrimitive.Root
                 className={styles.composer}
                 aria-describedby={hintId}
@@ -1472,6 +1573,22 @@ export function Conversation(props: Props) {
                     >
                       확장 목록 보기
                     </Button>
+                    {appCommands.map((entry) => (
+                      <Button
+                        type="button"
+                        data-command
+                        key={entry.id}
+                        disabled={entry.disabled === true}
+                        title={entry.reason}
+                        onClick={() => runAppCommand(entry)}
+                      >
+                        <span>{entry.label}</span>
+                        <small>
+                          {entry.detail} · {PALETTE_SOURCES.app}
+                          {entry.reason ? ` · ${entry.reason}` : ""}
+                        </small>
+                      </Button>
+                    ))}
                     <strong>런타임 명령</strong>
                     {props.catalog?.commands.status === "available" ? (
                       props.catalog.commands.entries.length ? (
@@ -1488,7 +1605,17 @@ export function Conversation(props: Props) {
                             }
                           >
                             <span>/{entry.name}</span>
-                            <small>{entry.description}</small>
+                            <small>
+                              {[
+                                entry.description,
+                                PALETTE_SOURCES.runtime,
+                                nameClash.has(entry.name)
+                                  ? "앱 명령과 이름이 같음"
+                                  : "",
+                              ]
+                                .filter(Boolean)
+                                .join(" · ")}
+                            </small>
                           </Button>
                         ))
                       ) : (

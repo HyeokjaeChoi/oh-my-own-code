@@ -1416,3 +1416,30 @@ details[open] > .disclosure > .chevron {
     display: none;
   }
 }
+
+.statusCard {
+  margin: 0 0 8px;
+  padding: 8px;
+  border: 1px solid var(--omoc-semantic-color-border-default);
+  border-radius: var(--omoc-semantic-radius-control, 8px);
+  font-size: var(--omoc-semantic-type-size-caption);
+}
+
+.statusCard dl {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 4px 12px;
+  margin: 0;
+}
+
+.statusCard dl > div {
+  display: contents;
+}
+
+.statusCard dt {
+  color: var(--omoc-semantic-color-text-secondary);
+}
+
+.statusCard dd {
+  margin: 0;
+}
