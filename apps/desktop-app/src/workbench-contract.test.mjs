@@ -696,3 +696,17 @@ test("workspace.import path is optional, bounded, non-empty, NUL-free and string
   for (const path of ["", "/a\0b", `/${"a".repeat(2048)}`, 1, null, {}, ["/a"]])
     assert.throws(() => validateRequest({ type: "workspace.import", path }));
 });
+test("retry-turn resend is a plain message.send with agent/model/variant and no attachments", () => {
+  const retry = {
+    type: "message.send",
+    workspaceId: "w",
+    sessionId: "s",
+    requestId: "r",
+    text: "fix it",
+    agent: "build",
+    model: "m",
+    variant: "high",
+  };
+  assert.deepEqual(validateRequest(retry), retry);
+  assert.throws(() => validateRequest({ ...retry, attachments: [] }));
+});
