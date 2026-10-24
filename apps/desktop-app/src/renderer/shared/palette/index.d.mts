@@ -1,6 +1,6 @@
 export type PaletteAction =
   | { type: "settings"; page?: string }
-  | { type: "composer"; target: "model" | "permission" | "status" }
+  | { type: "composer"; target: "model" | "permission" | "status" | "plan" }
   | { type: "none" }
   | { type: "notifications" }
   | { type: "automation" }

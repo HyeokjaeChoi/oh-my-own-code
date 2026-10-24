@@ -815,8 +815,24 @@ export function Conversation(props: Props) {
     input.current?.focus();
   };
   // Shared by the `/` menu and the palette (OPEN_COMPOSER_EVENT).
-  const openComposerTarget = (target: "model" | "permission" | "status") => {
+  const openComposerTarget = (
+    target: "model" | "permission" | "status" | "plan",
+  ) => {
     if (target === "status") return setStatusOpen(true);
+    if (target === "plan") {
+      // The runtime's read-only planning agent, like Claude Code's plan mode.
+      const plan =
+        props.catalog?.agents.status === "available"
+          ? props.catalog.agents.entries.find(
+              (e) => e.id.toLowerCase() === "plan",
+            )
+          : undefined;
+      if (plan) setAgent(plan.id);
+      setModeNote(
+        plan ? `에이전트: ${agentName(plan.id)}` : "Plan 에이전트가 없습니다.",
+      );
+      return;
+    }
     const source = input.current;
     (
       document.getElementById(target === "model" ? modelId : permissionId) as
@@ -834,7 +850,8 @@ export function Conversation(props: Props) {
         (event as CustomEvent).detail?.target as
           | "model"
           | "permission"
-          | "status",
+          | "status"
+          | "plan",
       );
     window.addEventListener(OPEN_COMPOSER_EVENT, on);
     return () => window.removeEventListener(OPEN_COMPOSER_EVENT, on);

@@ -252,15 +252,19 @@ test("palette filtering is case-insensitive, multi-term, and matches source/deta
   assert.equal(filterPaletteEntries(entries, "zzz").length, 0);
 });
 
-test("app commands: plan/compact are never faked; same-name runtime commands are listed beside them", () => {
+test("app commands: compact is never faked; plan switches agent; same-name runtime commands are listed beside them", () => {
   const ctx = { hasWorkspace: true, hasSession: true };
   const find = (list, name) => list.find((e) => e.id === `app:cmd:${name}`);
   const none = buildAppCommands(ctx, new Set(["review"]));
-  assert.equal(find(none, "plan").disabled, true);
-  assert.match(find(none, "plan").reason, /plan/);
+  assert.deepEqual(find(none, "plan").action, {
+    type: "composer",
+    target: "plan",
+  });
+  assert.equal(find(none, "compact").disabled, true);
+  assert.match(find(none, "compact").reason, /compact/);
   assert.equal(find(none, "review").disabled, undefined);
   const has = buildAppCommands(ctx, new Set(["plan", "compact"]));
-  assert.equal(find(has, "plan"), undefined);
+  assert.equal(find(has, "plan").disabled, undefined);
   assert.equal(find(has, "compact"), undefined);
   assert.match(
     find(buildAppCommands(ctx, null), "compact").reason,
