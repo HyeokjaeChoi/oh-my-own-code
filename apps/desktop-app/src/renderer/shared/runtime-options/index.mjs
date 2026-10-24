@@ -46,11 +46,86 @@ export function validRuntimeModel(value) {
     (!own(value, "variant") || validRuntimeText(value.variant))
   );
 }
+const USAGE_MAX = 1e12;
+const USAGE_KEYS = ["input", "output", "reasoning", "cacheRead", "cacheWrite"];
+const count = (v) => Number.isSafeInteger(v) && v >= 0 && v <= USAGE_MAX;
+// Per-turn usage: integer token counts plus optional cost (USD). Absent, never 0, when unknown.
+export function validUsage(value) {
+  return (
+    closed(value, USAGE_KEYS, ["cost"]) &&
+    USAGE_KEYS.every((k) => count(value[k])) &&
+    (!own(value, "cost") ||
+      (Number.isFinite(value.cost) &&
+        value.cost >= 0 &&
+        value.cost <= USAGE_MAX))
+  );
+}
+export function projectUsage(message) {
+  const t = message?.tokens;
+  if (!t || typeof t !== "object" || !t.cache || typeof t.cache !== "object")
+    return undefined;
+  const tokens = {
+    input: t.input,
+    output: t.output,
+    reasoning: t.reasoning,
+    cacheRead: t.cache.read,
+    cacheWrite: t.cache.write,
+  };
+  const usage = {
+    ...tokens,
+    ...(own(message, "cost") ? { cost: message.cost } : {}),
+  };
+  // An invalid cost drops only the cost, not the token counts.
+  return validUsage(usage) ? usage : validUsage(tokens) ? tokens : undefined;
+}
+export function sumUsage(usages) {
+  const list = [...usages];
+  const known = list.filter(validUsage);
+  const total = {
+    input: 0,
+    output: 0,
+    reasoning: 0,
+    cacheRead: 0,
+    cacheWrite: 0,
+    cost: 0,
+  };
+  let costKnown = known.length > 0;
+  for (const u of known) {
+    for (const k of USAGE_KEYS) total[k] += u[k];
+    if (own(u, "cost")) total.cost += u.cost;
+    else costKnown = false;
+  }
+  if (!costKnown) delete total.cost;
+  return {
+    total: known.length ? total : undefined,
+    unknown: list.length - known.length,
+  };
+}
+const compact = (n) =>
+  n >= 1e6
+    ? `${+(n / 1e6).toFixed(1)}M`
+    : n >= 1e3
+      ? `${+(n / 1e3).toFixed(1)}k`
+      : String(n);
+export function formatUsage(usage) {
+  if (!validUsage(usage)) return "확인 불가";
+  const parts = [
+    `입력 ${compact(usage.input)}`,
+    `출력 ${compact(usage.output)}`,
+  ];
+  if (usage.reasoning > 0) parts.push(`추론 ${compact(usage.reasoning)}`);
+  if (usage.cacheRead + usage.cacheWrite > 0)
+    parts.push(`캐시 ${compact(usage.cacheRead + usage.cacheWrite)}`);
+  if (usage.cost > 0)
+    parts.push(`$${usage.cost.toFixed(usage.cost < 0.01 ? 4 : 2)}`);
+  return parts.join(" · ");
+}
 export function validAssistantRuntime(value) {
   return (
-    closed(value, ["agent", "model"]) &&
+    closed(value, ["agent", "model"], ["usage"]) &&
     validRuntimeText(value.agent) &&
-    validRuntimeModel(value.model)
+    validRuntimeModel(value.model) &&
+    (!own(value, "usage") || validUsage(value.usage))
   );
 }
 export function validSessionSelection(value) {
@@ -134,8 +209,9 @@ function projectNativeModel(value) {
 export function projectAssistantRuntime(message) {
   if (message?.type !== "assistant") return undefined;
   const model = projectNativeModel(message.model);
+  const usage = projectUsage(message);
   return model && validRuntimeText(message.agent)
-    ? { agent: message.agent, model }
+    ? { agent: message.agent, model, ...(usage ? { usage } : {}) }
     : undefined;
 }
 export function projectSessionSelection(info, sessionId) {

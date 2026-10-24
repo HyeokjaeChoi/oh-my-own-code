@@ -25,6 +25,9 @@ export function mapMessages(messages) {
                 runtime: {
                   agent: message.runtime.agent,
                   model: { ...message.runtime.model },
+                  ...(message.runtime.usage
+                    ? { usage: { ...message.runtime.usage } }
+                    : {}),
                 },
               },
             },
