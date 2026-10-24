@@ -1570,6 +1570,14 @@ test("reconnect after a lost connection marks a gap after the last seen message,
   seed(store, snapshot(5, "b", { messages: [] }));
   assert.equal(store.getState().reconnectGap, undefined);
 });
+test("reconnect with no new messages shows no gap divider", () => {
+  const store = createWorkbenchStore();
+  const msgs = [{ id: "m1", role: "user", text: "x", tools: [] }];
+  seed(store, snapshot(1, "a", { messages: msgs }));
+  seed(store, snapshot(2, "a", { state: "disconnected", messages: msgs }));
+  seed(store, snapshot(3, "a", { messages: msgs }));
+  assert.equal(store.getState().reconnectGap, undefined);
+});
 test("a new epoch is established by bootstrap only and retired epochs cannot re-enter", () => {
   const store = createWorkbenchStore();
   seed(store, snapshot(10));

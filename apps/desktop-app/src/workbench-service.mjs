@@ -164,6 +164,9 @@ const lifecycleTypes = new Set([
   "session.revert",
   "session.revert.clear",
 ]);
+// Internal sender of main's own auto-answers. Renderer IPC always passes
+// String(event.sender.id) (numeric), so it can never present this value.
+const AUTO_ALLOW_SENDER = "main:auto-allow";
 const mutationTypes = new Set([
   "git.branch.apply",
   "git.restore.apply",
@@ -3165,13 +3168,17 @@ export function createWorkbenchService({
   // external_directory (the deny floor), read (the sensitive-file gate: a `*`
   // save would bypass the .env ask) and requests without patterns never match.
   const sessionAllow = new Map();
+  // Patterns are keyed exactly as offered: any empty pattern makes the request
+  // ineligible (never filtered, so ["", "x"] cannot share a key with ["x"]).
   const allowPatterns = (p) =>
     p?.action !== "external_directory" &&
     p?.action !== "read" &&
     Array.isArray(p?.save) &&
     p.save.length <= 16 &&
-    p.save.every((x) => typeof x === "string" && x.length <= 256)
-      ? p.save.filter((x) => x !== "")
+    p.save.every(
+      (x) => typeof x === "string" && x.length > 0 && x.length <= 256,
+    )
+      ? p.save
       : [];
   const allowKey = (p) => {
     const patterns = allowPatterns(p);
@@ -3181,17 +3188,38 @@ export function createWorkbenchService({
   };
   const isAllowed = (appId, p) =>
     sessionAllow.get(appId)?.get(p.sessionID)?.has(allowKey(p)) === true;
-  // Main answers matched requests itself (a normal permission.respond `once`,
-  // same lock/duplicate handling). A failed or busy reply leaves the manual card.
-  const autoSending = new Set();
+  // Main answers matched requests itself (a normal permission.respond `once`
+  // from sender main:auto-allow, which re-checks the grant under the lock).
+  // One reply in flight app-wide; skipped while a user mutation runs; at most
+  // autoMaxTries attempts per request and none after a non-BUSY failure, so a
+  // request that cannot be answered stays a manual card and cannot drain the
+  // epoch ledger.
+  const autoMaxTries = 3;
+  const autoTries = new Map();
+  const autoQueued = new Set();
+  const autoQueue = [];
+  let autoRunning = false;
   function autoReply(s, ids) {
-    const todo = ids.filter((id) => !autoSending.has(id));
-    for (const id of todo) autoSending.add(id);
-    if (!todo.length) return;
-    void (async () => {
-      for (const id of todo) {
+    for (const id of ids) {
+      if (autoQueued.has(id) || (autoTries.get(id) ?? 0) >= autoMaxTries)
+        continue;
+      autoQueued.add(id);
+      autoQueue.push({ s, id });
+    }
+    if (!autoRunning && autoQueue.length) void drainAutoReplies();
+  }
+  async function drainAutoReplies() {
+    autoRunning = true;
+    try {
+      for (let item; (item = autoQueue.shift()); ) {
+        const { s, id } = item;
         try {
-          await host.handle(
+          const current = committed.sessions.get(s.id);
+          if (!current || current.lock || host.mutationActive()) continue;
+          if (autoTries.size >= 512)
+            autoTries.delete(autoTries.keys().next().value);
+          autoTries.set(id, (autoTries.get(id) ?? 0) + 1);
+          const result = await host.handle(
             {
               version: 2,
               runtimeEpoch: host.epoch,
@@ -3204,15 +3232,70 @@ export function createWorkbenchService({
                 decision: "once",
               },
             },
-            "main:auto-allow",
+            AUTO_ALLOW_SENDER,
           );
+          if (!result?.ok && result?.code !== "BUSY")
+            autoTries.set(id, autoMaxTries);
         } catch {
-          // Manual card stays; the next refresh retries.
+          autoTries.set(id, autoMaxTries);
         } finally {
-          autoSending.delete(id);
+          autoQueued.delete(id);
         }
       }
-    })();
+    } finally {
+      autoRunning = false;
+    }
+  }
+  // Light check for sessions that are not on screen: list only the pending
+  // permissions of the owners holding a grant (no transcript read) and feed
+  // matches to the same serialized auto-reply. Never awaited by a snapshot.
+  let sweeping = false;
+  let sweepCursor = 0;
+  async function sweepAllowed(selectedId) {
+    if (sweeping) return;
+    sweeping = true;
+    try {
+      const sessions = [...committed.sessions.values()].filter(
+        (item) =>
+          item.id !== selectedId &&
+          sessionAllow.has(item.id) &&
+          !item.archived &&
+          !item.unavailable &&
+          !item.lock &&
+          !recoveryDTO().resources.some(
+            (r) => r.workspaceId === item.workspaceId,
+          ),
+      );
+      for (let i = 0; i < Math.min(sessions.length, 4); i++) {
+        const item = sessions[(sweepCursor + i) % sessions.length];
+        const matched = [];
+        try {
+          for (const owner of [...sessionAllow.get(item.id).keys()].slice(
+            0,
+            4,
+          )) {
+            const list = await call(client.permission.list, {
+              sessionID: owner,
+            });
+            if (!Array.isArray(list)) continue;
+            for (const p of list)
+              if (
+                p?.sessionID === owner &&
+                opaque(p.id) &&
+                !item.invalidPermissions.has(p.id) &&
+                isAllowed(item.id, p)
+              )
+                matched.push(p.id);
+          }
+        } catch {
+          continue;
+        }
+        if (matched.length) autoReply(item, matched);
+      }
+      sweepCursor += 4;
+    } finally {
+      sweeping = false;
+    }
   }
   async function refresh(original) {
     const s = {
@@ -3232,6 +3315,7 @@ export function createWorkbenchService({
         current.generation === original.generation
       );
     };
+    let matchedIds = [];
     const read = (async () => {
       try {
         const info = await call(client.session.get, { sessionID: s.sdkId });
@@ -3344,16 +3428,7 @@ export function createWorkbenchService({
             ),
           }),
         }));
-        const matched = shown.filter((p) => isAllowed(s.id, p));
-        if (matched.length)
-          setTimeout(
-            () =>
-              autoReply(
-                s,
-                matched.map((p) => p.id),
-              ),
-            0,
-          );
+        matchedIds = shown.filter((p) => isAllowed(s.id, p)).map((p) => p.id);
         const running =
           active[s.sdkId]?.type === "running" ||
           inbox.some(
@@ -3393,6 +3468,7 @@ export function createWorkbenchService({
             ? { code: "UNAVAILABLE", message: ERRORS.UNAVAILABLE }
             : undefined;
       } catch {
+        matchedIds = [];
         delete s.sessionSelection;
         delete s.revert;
         delete s.permissionsUnavailable;
@@ -3415,6 +3491,8 @@ export function createWorkbenchService({
       )
         fail("READ_BUSY");
       nativeProjections.set(s.id, s);
+      // Scheduled only now: a discarded read never answers anything.
+      if (matchedIds.length) autoReply(s, matchedIds);
       return s;
     })().finally(() => reads.delete(s.id));
     reads.set(s.id, read);
@@ -5917,16 +5995,9 @@ export function createWorkbenchService({
         )
           ? await refresh(selectedS)
           : undefined;
-      // Background sessions holding a "항상 허용" grant are read too, so main
-      // can answer their matching requests while they are not on screen.
-      for (const item of [...tables().sessions.values()])
-        if (
-          item.id !== selectedS?.id &&
-          sessionAllow.has(item.id) &&
-          !item.archived &&
-          !item.unavailable
-        )
-          await refresh(item).catch(() => {});
+      // Grant holders that are not on screen: a light, un-awaited permission
+      // check (never part of this snapshot's deadline).
+      if (sessionAllow.size) void sweepAllowed(selectedS?.id);
       return base(selectedW, selectedS, projection);
     }
     if (
@@ -6399,6 +6470,12 @@ export function createWorkbenchService({
         const key = allowKey(asked);
         if (request.decision === "always" && key === undefined)
           fail("INVALID_REQUEST");
+        // Main's own auto-answer is valid only while the grant still stands.
+        if (
+          currentScope().sender === AUTO_ALLOW_SENDER &&
+          (request.decision !== "once" || !isAllowed(s.id, asked))
+        )
+          fail("STALE_PERMISSION");
         await markEffect();
         for (const p of pending)
           if (
@@ -6442,7 +6519,9 @@ export function createWorkbenchService({
     try {
       request = validateRequest(value);
       userMutation =
-        mutationTypes.has(request.type) && !titleSyncOps.has(request.requestId);
+        mutationTypes.has(request.type) &&
+        !titleSyncOps.has(request.requestId) &&
+        currentScope().sender !== AUTO_ALLOW_SENDER;
       if (userMutation) lastUserMutationAt = performance.now();
       if (request.type !== "snapshot" && request.type !== "diagnostics.list")
         await waitForReady(ready, currentScope().signal);

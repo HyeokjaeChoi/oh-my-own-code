@@ -9820,7 +9820,15 @@ function reconnectGapOf(
   if (!sessionId || epochChanged) return undefined;
   if (next.state === "connected" && state.connection === "disconnected") {
     const last = state.snapshot?.messages.at(-1);
-    if (last && state.snapshot?.selectedSessionId === sessionId)
+    // Only a gap when the reconnect snapshot holds messages after the last
+    // one seen; an unchanged conversation gets no divider.
+    const at = last ? next.messages.findIndex((m) => m.id === last.id) : -1;
+    if (
+      last &&
+      state.snapshot?.selectedSessionId === sessionId &&
+      at >= 0 &&
+      at < next.messages.length - 1
+    )
       return { sessionId, afterMessageId: last.id };
   }
   return prev?.sessionId === sessionId &&
