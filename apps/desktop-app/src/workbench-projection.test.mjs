@@ -184,6 +184,13 @@ test("actual assistant-ui transcript dispatches validated LinkPreview and escape
           sessionId: "s",
           title: "Allow tool",
           detail: "Read a file",
+          sessionAllow: "src/*",
+        },
+        {
+          id: "outside",
+          sessionId: "s",
+          title: "external_directory",
+          detail: "/etc",
         },
       ],
     },
@@ -223,6 +230,8 @@ test("actual assistant-ui transcript dispatches validated LinkPreview and escape
   assert.ok(!html.includes('href="javascript:'));
   assert.ok(html.includes("메시지 작성"));
   assert.ok(html.includes("이번만 허용"));
+  // "항상 허용" only where main offered patterns (never external_directory).
+  assert.equal((html.match(/>항상 허용</g) ?? []).length, 1);
   assert.ok(html.includes("다른 대기 중 권한 요청도 취소"));
 });
 

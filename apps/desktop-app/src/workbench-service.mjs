@@ -3158,6 +3158,17 @@ export function createWorkbenchService({
       next = more.data.length ? more.cursor?.next : undefined;
     }
   }
+  // F-09 "always": session-scoped, in-memory only (Native's own `always` would
+  // persist a project rule). Keyed by exact action + offered `save` patterns;
+  // external_directory (the deny floor) and requests without patterns never match.
+  const sessionAllow = new Map();
+  const allowKey = (p) =>
+    p?.action !== "external_directory" &&
+    Array.isArray(p.save) &&
+    p.save.length > 0 &&
+    p.save.every((x) => typeof x === "string")
+      ? JSON.stringify([p.action, [...p.save].sort()])
+      : undefined;
   async function refresh(original) {
     const s = {
       ...original,
@@ -3282,6 +3293,12 @@ export function createWorkbenchService({
                 : "",
               2000,
             ),
+            ...(allowKey(p) !== undefined && {
+              sessionAllow: clip(p.save.join(", "), 512),
+              ...(sessionAllow.get(s.id)?.has(allowKey(p)) && {
+                autoAllow: true,
+              }),
+            }),
           }));
         const running =
           active[s.sdkId]?.type === "running" ||
@@ -5545,6 +5562,7 @@ export function createWorkbenchService({
         await call(client.session.remove, { sessionID: s.sdkId });
         await verifyRemoved(s);
         tables().sessions.delete(s.id);
+        sessionAllow.delete(s.id);
         void checkpoints?.dropSession(w.id, s.id).catch(() => {});
       } else if (
         request.type === "session.revert" ||
@@ -5991,6 +6009,7 @@ export function createWorkbenchService({
       for (const item of tables().sessions.values())
         if (item.workspaceId === w.id) {
           tables().sessions.delete(item.id);
+          sessionAllow.delete(item.id);
           item.generation++;
         }
       tables().workspaces.delete(w.id);
@@ -6306,6 +6325,14 @@ export function createWorkbenchService({
           fail("STALE_PERMISSION");
         if (s.invalidPermissions.size + pending.length > 2048)
           fail("LIMIT_REACHED");
+        const asked = pending.find(
+          (p) => p.id === request.requestId && p.sessionID === ownerId,
+        );
+        // Main decides: "always" is refused for external_directory and for
+        // requests that offered no patterns, whatever the renderer sent.
+        const key = allowKey(asked);
+        if (request.decision === "always" && key === undefined)
+          fail("INVALID_REQUEST");
         await markEffect();
         for (const p of pending)
           if (
@@ -6318,8 +6345,13 @@ export function createWorkbenchService({
           await call(client.permission.reply, {
             sessionID: ownerId,
             requestID: request.requestId,
-            decision: request.decision,
+            // Never forward `always`: Native would persist a project rule.
+            decision: request.decision === "always" ? "once" : request.decision,
           });
+          if (request.decision === "always") {
+            if (!sessionAllow.has(s.id)) sessionAllow.set(s.id, new Set());
+            sessionAllow.get(s.id).add(key);
+          }
           return { requestId: request.requestId, status: "decided" };
         } catch {
           s.unknown = true;
