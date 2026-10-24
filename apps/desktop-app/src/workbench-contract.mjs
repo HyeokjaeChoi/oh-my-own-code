@@ -2,6 +2,7 @@ import { isAbsolute } from "node:path";
 import { validWireId } from "./wire-id.mjs";
 export { validWireId } from "./wire-id.mjs";
 import {
+  CONTEXT_LIMITS,
   validContextList,
   validContextSelection,
   validHistoricalContext,
@@ -162,6 +163,8 @@ const schemas = {
   "context.observe": [["workspaceId", "path"], ["selection"]],
   "context.pick": [["workspaceId"], ["kind"]],
   "context.resolve": [["workspaceId", "paths"], []],
+  "context.stage": [["workspaceId", "mime", "bytes"], []],
+  "context.release": [["workspaceId", "capabilityId"], []],
   "session.inbox": [["workspaceId", "sessionId"], []],
   "session.inbox.cancel": [
     ["workspaceId", "sessionId", "requestId", "inboxId"],
@@ -266,6 +269,17 @@ export function validateRequest(value) {
       if (!validContextSelection(entry)) fail("INVALID_REQUEST");
       continue;
     }
+    if (key === "bytes") {
+      // Pasted clipboard image: a plain Uint8Array only (not a Buffer/view
+      // subclass); main re-checks the magic bytes against `mime`.
+      if (
+        Object.getPrototypeOf(entry) !== Uint8Array.prototype ||
+        entry.byteLength < 1 ||
+        entry.byteLength > CONTEXT_LIMITS.fileBytes
+      )
+        fail("INVALID_REQUEST");
+      continue;
+    }
     if (key === "paths") {
       // Absolute paths from drag-and-drop; main canonicalizes and contains them.
       if (
@@ -330,6 +344,11 @@ export function validateRequest(value) {
     value.type === "context.pick" &&
     Object.hasOwn(value, "kind") &&
     !["file", "folder"].includes(value.kind)
+  )
+    fail("INVALID_REQUEST");
+  if (
+    value.type === "context.stage" &&
+    !["image/png", "image/jpeg", "image/gif", "image/webp"].includes(value.mime)
   )
     fail("INVALID_REQUEST");
   if (value.type === "workspace.import" && value.path === "")
@@ -555,6 +574,8 @@ export const READ_TYPES = Object.freeze([
   "context.observe",
   "context.pick",
   "context.resolve",
+  "context.stage",
+  "context.release",
   "session.inbox",
   "git.commit.preview.read",
   "git.branch.preview.read",

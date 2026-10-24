@@ -3217,6 +3217,13 @@ export function createFixtureTransport(
             request.type === "context.pick" ? "CANCELLED" : "FILE_DENIED",
           );
     }
+    // Clipboard-image paste is validated by the contract but not synthesized.
+    if (request.type === "context.stage") return failure("UNAVAILABLE");
+    if (request.type === "context.release")
+      return {
+        ok: true,
+        value: { workspaceId: request.workspaceId, released: false },
+      };
     // `@` mention search: a fixed synthetic tree, filtered by name.
     if (request.type === "file.search")
       return {

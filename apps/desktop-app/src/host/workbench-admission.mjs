@@ -48,7 +48,13 @@ const digest = (value) =>
       JSON.stringify(
         Object.keys(value)
           .sort()
-          .map((k) => [k, value[k]]),
+          .map((k) => [
+            k,
+            // Pasted image bytes: hash them instead of JSON-expanding 8 MiB.
+            value[k] instanceof Uint8Array
+              ? createHash("sha256").update(value[k]).digest("hex")
+              : value[k],
+          ]),
       ),
     )
     .digest("hex");
@@ -61,6 +67,7 @@ const PICK_DEADLINE_MS = 120000;
 function readClass(type) {
   if (type === "operation.lookup") return "lookup";
   if (type === "context.pick") return "pick";
+  if (type === "context.stage" || type === "context.release") return "stage";
   if (type === "catalog.list") return "catalog";
   if (
     type === "permission.policy.read" ||

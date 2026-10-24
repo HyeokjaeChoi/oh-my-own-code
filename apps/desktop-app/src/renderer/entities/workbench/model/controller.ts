@@ -22,8 +22,13 @@ import {
   validContextBranchSnapshot,
   type ContextReadIdentity,
 } from "./store.js";
+const isContextRead = (type: string) =>
+  type === "context.observe" ||
+  type === "context.stage" ||
+  type === "session.inbox";
 function freezeContextBody<T>(value: T): T {
-  if (value && typeof value === "object") {
+  // Pasted image bytes cannot be frozen (typed arrays with elements throw).
+  if (value && typeof value === "object" && !ArrayBuffer.isView(value)) {
     for (const child of Object.values(value)) freezeContextBody(child);
     Object.freeze(value);
   }
@@ -282,7 +287,7 @@ export function createWindowWorkbench(
           const type = envelope.operation.type;
           const conversationDispatchCurrent = () => {
             const state = store.getState();
-            if (type === "context.observe" || type === "session.inbox") {
+            if (isContextRead(type)) {
               const f = contextFlight;
               const view = {
                 ...state,
@@ -567,14 +572,14 @@ export function createWindowWorkbench(
                     "configuration.mcp.read",
                     "file.edit.read",
                     "context.observe",
+                    "context.stage",
                     "session.inbox",
                     "file.read",
                     "file.list",
                   ].includes(type)
                 ? "reads"
                 : undefined;
-          if (type === "context.observe" || type === "session.inbox")
-            contextIOActive = true;
+          if (isContextRead(type)) contextIOActive = true;
           if (lane) dispatch({ type: "configuration.io", lane, delta: 1 });
           const fileIOIdentity =
             type === "file.save" &&
@@ -661,8 +666,7 @@ export function createWindowWorkbench(
                 identity: fileIOIdentity,
                 active: false,
               });
-            if (type === "context.observe" || type === "session.inbox")
-              contextIOActive = false;
+            if (isContextRead(type)) contextIOActive = false;
             if (lane) dispatch({ type: "configuration.io", lane, delta: -1 });
           }
         },
@@ -677,7 +681,7 @@ export function createWindowWorkbench(
         identity: ContextReadIdentity;
         operation: Extract<
           ReadRequest,
-          { type: "context.observe" | "session.inbox" }
+          { type: "context.observe" | "context.stage" | "session.inbox" }
         >;
         inbox: boolean;
         abort: AbortController;
@@ -730,9 +734,13 @@ export function createWindowWorkbench(
   async function observeConversation(
     path?: string,
     selection?: ContextSelection,
+    paste?: {
+      mime: "image/png" | "image/jpeg" | "image/gif" | "image/webp";
+      bytes: Uint8Array;
+    },
   ): Promise<boolean> {
     const state = store.getState(),
-      inbox = path === undefined;
+      inbox = path === undefined && !paste;
     if (
       disposed ||
       contextFlight ||
@@ -760,21 +768,29 @@ export function createWindowWorkbench(
       scope: scopeOf(state),
       token: state.conversationContext.generation + 1,
       ...(path !== undefined ? { path } : {}),
+      ...(paste ? { paste: true as const } : {}),
       ...(selection ? { selection: structuredClone(selection) } : {}),
     });
     const operation = freezeContextBody(
-      inbox
+      paste
         ? {
-            type: "session.inbox" as const,
+            type: "context.stage" as const,
             workspaceId: state.selection.workspaceId!,
-            sessionId: state.selection.sessionId!,
+            mime: paste.mime,
+            bytes: paste.bytes,
           }
-        : {
-            type: "context.observe" as const,
-            workspaceId: state.selection.workspaceId!,
-            path: path!,
-            ...(selection ? { selection: identity.selection! } : {}),
-          },
+        : inbox
+          ? {
+              type: "session.inbox" as const,
+              workspaceId: state.selection.workspaceId!,
+              sessionId: state.selection.sessionId!,
+            }
+          : {
+              type: "context.observe" as const,
+              workspaceId: state.selection.workspaceId!,
+              path: path!,
+              ...(selection ? { selection: identity.selection! } : {}),
+            },
     );
     const flight = { identity, operation, inbox, abort: new AbortController() };
     contextFlight = flight;
@@ -805,7 +821,34 @@ export function createWindowWorkbench(
       currentRuntimeRequestScope(store.getState(), identity.scope) &&
       !store.getState().conversationContext.error;
     if (added && !inbox) pinReportedModel();
+    // Staged but not kept (limits, stale scope): drop the staged copy now.
+    if (paste && !added && result.ok) {
+      const staged = result.value as ContextObservation;
+      if (staged.status === "available")
+        releaseStaged(staged.descriptor.capabilityId);
+    }
     return added;
+  }
+  function releaseStaged(capabilityId: string) {
+    const state = store.getState();
+    if (disposed || !state.epoch || !state.selection.workspaceId) return;
+    void transport
+      .read(
+        {
+          type: "context.release",
+          workspaceId: state.selection.workspaceId,
+          capabilityId,
+        },
+        state.epoch,
+      )
+      .catch(() => {});
+  }
+  function removeContext(capabilityId: string) {
+    const item = selectedContextDraft(store.getState()).items.find(
+      (x) => x.capabilityId === capabilityId,
+    );
+    dispatch({ type: "context.remove", capabilityId });
+    if (item?.source === "paste") releaseStaged(capabilityId);
   }
   // Attachments need an explicit model: with the session default selected,
   // pin the model the session reports (when the catalog lists it).
@@ -4779,8 +4822,15 @@ export function createWindowWorkbench(
     attachContextFiles,
     searchMentions,
     cancelContextObservation,
-    removeContext: (capabilityId: string) =>
-      dispatch({ type: "context.remove", capabilityId }),
+    removeContext,
+    droppedFileHasPath: (file: File) => {
+      const path = bridge.getPathForFile?.(file) ?? "";
+      return path.startsWith("/") || /^[A-Za-z]:[\\/]/.test(path);
+    },
+    pasteContextImage: (paste: {
+      mime: "image/png" | "image/jpeg" | "image/gif" | "image/webp";
+      bytes: Uint8Array;
+    }) => observeConversation(undefined, undefined, paste),
     closeContextPreview: () => dispatch({ type: "context.preview.close" }),
     clearNotice: () => dispatch({ type: "notice.clear" }),
     clearError: () => dispatch({ type: "error.clear" }),

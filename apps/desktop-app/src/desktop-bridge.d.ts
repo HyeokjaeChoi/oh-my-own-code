@@ -812,6 +812,13 @@ export type WorkbenchRequest =
     }
   | { type: "context.pick"; workspaceId: string; kind?: "file" | "folder" }
   | { type: "context.resolve"; workspaceId: string; paths: string[] }
+  | {
+      type: "context.stage";
+      workspaceId: string;
+      mime: "image/png" | "image/jpeg" | "image/gif" | "image/webp";
+      bytes: Uint8Array;
+    }
+  | { type: "context.release"; workspaceId: string; capabilityId: string }
   | { type: "session.inbox"; workspaceId: string; sessionId: string }
   | ({ type: "session.inbox.cancel"; inboxId: string } & SessionLifecycleTarget)
   | { type: "diagnostics.list"; workspaceId?: string; sessionId?: string }
@@ -908,157 +915,159 @@ export type WorkbenchResponse<R extends WorkbenchRequest> = R extends {
 }
   ? WorkbenchPermissionPolicyObservation
   : R extends {
-        type: "context.observe";
+        type: "context.observe" | "context.stage";
       }
     ? ContextObservation
-    : R extends { type: "context.pick" | "context.resolve" }
-      ? ContextPathSet
-      : R extends { type: "session.inbox" }
-        ? WorkbenchInbox
-        : R extends { type: "session.inbox.cancel" }
-          ? WorkbenchReceipt
-          : R extends {
-                type: "git.branch.preview.read" | "git.restore.preview.read";
-              }
-            ? WorkbenchGitBranchRestorePreview
-            : R extends { type: "git.branch.apply" | "git.restore.apply" }
-              ? WorkbenchGitBranchRestoreApply
-              : R extends {
-                    type: "git.commit.preview.read";
-                  }
-                ? WorkbenchGitCommitPreview
-                : R extends { type: "git.commit.apply" }
-                  ? WorkbenchGitCommitApply
-                  : R extends {
-                        type: "git.index.preview.read";
-                      }
-                    ? WorkbenchGitIndexPreview
-                    : R extends { type: "git.index.apply" }
-                      ? WorkbenchGitIndexApply
-                      : R extends {
-                            type: "git.review.read";
-                          }
-                        ? WorkbenchGitReview
-                        : R extends { type: "git.diff.read" }
-                          ? WorkbenchGitDiff
-                          : R extends {
-                                type: "file.edit.read";
-                              }
-                            ? WorkbenchFileObservation
-                            : R extends { type: "file.save" }
-                              ? WorkbenchFileSave
-                              : R extends {
-                                    type: "configuration.extensions.read";
-                                  }
-                                ? WorkbenchExtensionsObservation
+    : R extends { type: "context.release" }
+      ? { workspaceId: string; released: boolean }
+      : R extends { type: "context.pick" | "context.resolve" }
+        ? ContextPathSet
+        : R extends { type: "session.inbox" }
+          ? WorkbenchInbox
+          : R extends { type: "session.inbox.cancel" }
+            ? WorkbenchReceipt
+            : R extends {
+                  type: "git.branch.preview.read" | "git.restore.preview.read";
+                }
+              ? WorkbenchGitBranchRestorePreview
+              : R extends { type: "git.branch.apply" | "git.restore.apply" }
+                ? WorkbenchGitBranchRestoreApply
+                : R extends {
+                      type: "git.commit.preview.read";
+                    }
+                  ? WorkbenchGitCommitPreview
+                  : R extends { type: "git.commit.apply" }
+                    ? WorkbenchGitCommitApply
+                    : R extends {
+                          type: "git.index.preview.read";
+                        }
+                      ? WorkbenchGitIndexPreview
+                      : R extends { type: "git.index.apply" }
+                        ? WorkbenchGitIndexApply
+                        : R extends {
+                              type: "git.review.read";
+                            }
+                          ? WorkbenchGitReview
+                          : R extends { type: "git.diff.read" }
+                            ? WorkbenchGitDiff
+                            : R extends {
+                                  type: "file.edit.read";
+                                }
+                              ? WorkbenchFileObservation
+                              : R extends { type: "file.save" }
+                                ? WorkbenchFileSave
                                 : R extends {
-                                      type: "configuration.agent.runtime.read";
+                                      type: "configuration.extensions.read";
                                     }
-                                  ? WorkbenchAgentRuntimeObservation
+                                  ? WorkbenchExtensionsObservation
                                   : R extends {
-                                        type:
-                                          | "configuration.agent.register"
-                                          | "configuration.agent.remove";
+                                        type: "configuration.agent.runtime.read";
                                       }
-                                    ? WorkbenchAgentRuntimeMutation
+                                    ? WorkbenchAgentRuntimeObservation
                                     : R extends {
-                                          type: "configuration.agent.list";
+                                          type:
+                                            | "configuration.agent.register"
+                                            | "configuration.agent.remove";
                                         }
-                                      ? WorkbenchAgentFiles
+                                      ? WorkbenchAgentRuntimeMutation
                                       : R extends {
-                                            type: "configuration.agent.read";
+                                            type: "configuration.agent.list";
                                           }
-                                        ? WorkbenchAgentFile
+                                        ? WorkbenchAgentFiles
                                         : R extends {
-                                              type: "configuration.agent.save";
+                                              type: "configuration.agent.read";
                                             }
-                                          ? WorkbenchConfigurationSave
+                                          ? WorkbenchAgentFile
                                           : R extends {
-                                                type: "configuration.skill.runtime.read";
+                                                type: "configuration.agent.save";
                                               }
-                                            ? WorkbenchSkillRuntimeObservation
+                                            ? WorkbenchConfigurationSave
                                             : R extends {
-                                                  type:
-                                                    | "configuration.skill.register"
-                                                    | "configuration.skill.remove"
-                                                    | "configuration.skill.apply";
+                                                  type: "configuration.skill.runtime.read";
                                                 }
-                                              ? WorkbenchSkillRuntimeMutation
+                                              ? WorkbenchSkillRuntimeObservation
                                               : R extends {
-                                                    type: "operation.lookup";
+                                                    type:
+                                                      | "configuration.skill.register"
+                                                      | "configuration.skill.remove"
+                                                      | "configuration.skill.apply";
                                                   }
-                                                ? OperationLookup
+                                                ? WorkbenchSkillRuntimeMutation
                                                 : R extends {
-                                                      type: "catalog.list";
+                                                      type: "operation.lookup";
                                                     }
-                                                  ? WorkbenchCatalog
+                                                  ? OperationLookup
                                                   : R extends {
-                                                        type: "configuration.mcp.read";
+                                                        type: "catalog.list";
                                                       }
-                                                    ? WorkbenchMcpObservation
+                                                    ? WorkbenchCatalog
                                                     : R extends {
-                                                          type:
-                                                            | "configuration.mcp.register"
-                                                            | "configuration.mcp.connect"
-                                                            | "configuration.mcp.disconnect"
-                                                            | "configuration.mcp.remove";
+                                                          type: "configuration.mcp.read";
                                                         }
-                                                      ? WorkbenchMcpMutation
+                                                      ? WorkbenchMcpObservation
                                                       : R extends {
-                                                            type: "configuration.instructions.read";
+                                                            type:
+                                                              | "configuration.mcp.register"
+                                                              | "configuration.mcp.connect"
+                                                              | "configuration.mcp.disconnect"
+                                                              | "configuration.mcp.remove";
                                                           }
-                                                        ? WorkbenchInstructionObservation
+                                                        ? WorkbenchMcpMutation
                                                         : R extends {
-                                                              type:
-                                                                | "configuration.instructions.apply"
-                                                                | "configuration.instructions.remove";
+                                                              type: "configuration.instructions.read";
                                                             }
-                                                          ? WorkbenchInstructionMutation
+                                                          ? WorkbenchInstructionObservation
                                                           : R extends {
-                                                                type: "configuration.skill.list";
+                                                                type:
+                                                                  | "configuration.instructions.apply"
+                                                                  | "configuration.instructions.remove";
                                                               }
-                                                            ? WorkbenchSkillFiles
+                                                            ? WorkbenchInstructionMutation
                                                             : R extends {
-                                                                  type: "configuration.skill.read";
+                                                                  type: "configuration.skill.list";
                                                                 }
-                                                              ? WorkbenchSkillFile
+                                                              ? WorkbenchSkillFiles
                                                               : R extends {
-                                                                    type: "configuration.skill.save";
+                                                                    type: "configuration.skill.read";
                                                                   }
-                                                                ? WorkbenchConfigurationSave
+                                                                ? WorkbenchSkillFile
                                                                 : R extends {
-                                                                      type: "configuration.read";
+                                                                      type: "configuration.skill.save";
                                                                     }
-                                                                  ? WorkbenchConfigurationFile
+                                                                  ? WorkbenchConfigurationSave
                                                                   : R extends {
-                                                                        type: "configuration.save";
+                                                                        type: "configuration.read";
                                                                       }
-                                                                    ? WorkbenchConfigurationSave
+                                                                    ? WorkbenchConfigurationFile
                                                                     : R extends {
-                                                                          type: "diagnostics.list";
+                                                                          type: "configuration.save";
                                                                         }
-                                                                      ? WorkbenchDiagnostics
+                                                                      ? WorkbenchConfigurationSave
                                                                       : R extends {
-                                                                            type: "file.list";
+                                                                            type: "diagnostics.list";
                                                                           }
-                                                                        ? WorkbenchFileList
+                                                                        ? WorkbenchDiagnostics
                                                                         : R extends {
-                                                                              type: "file.read";
+                                                                              type: "file.list";
                                                                             }
-                                                                          ? WorkbenchFileRead
+                                                                          ? WorkbenchFileList
                                                                           : R extends {
-                                                                                type: "file.search";
+                                                                                type: "file.read";
                                                                               }
-                                                                            ? WorkbenchFileSearch
+                                                                            ? WorkbenchFileRead
                                                                             : R extends {
-                                                                                  type:
-                                                                                    | "message.send"
-                                                                                    | "session.interrupt"
-                                                                                    | "permission.respond"
-                                                                                    | "command.run";
+                                                                                  type: "file.search";
                                                                                 }
-                                                                              ? WorkbenchReceipt
-                                                                              : WorkbenchSnapshot;
+                                                                              ? WorkbenchFileSearch
+                                                                              : R extends {
+                                                                                    type:
+                                                                                      | "message.send"
+                                                                                      | "session.interrupt"
+                                                                                      | "permission.respond"
+                                                                                      | "command.run";
+                                                                                  }
+                                                                                ? WorkbenchReceipt
+                                                                                : WorkbenchSnapshot;
 declare global {
   interface Window {
     desktopBridge: {
@@ -1150,6 +1159,8 @@ export type ReadType =
   | "context.observe"
   | "context.pick"
   | "context.resolve"
+  | "context.stage"
+  | "context.release"
   | "session.inbox"
   | "git.commit.preview.read"
   | "git.branch.preview.read"

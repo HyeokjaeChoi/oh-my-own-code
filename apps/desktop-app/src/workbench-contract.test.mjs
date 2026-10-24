@@ -710,3 +710,54 @@ test("retry-turn resend is a plain message.send with agent/model/variant and no 
   assert.deepEqual(validateRequest(retry), retry);
   assert.throws(() => validateRequest({ ...retry, attachments: [] }));
 });
+test("context.stage is a closed read carrying a plain Uint8Array image", () => {
+  const png = new Uint8Array([137, 80, 78, 71, 13, 10, 26, 10, 1]);
+  const operation = {
+    type: "context.stage",
+    workspaceId: "workspace",
+    mime: "image/png",
+    bytes: png,
+  };
+  const envelope = { version: 2, runtimeEpoch: "e", readId: "r", operation };
+  assert.ok(READ_TYPES.includes("context.stage"));
+  assert.ok(READ_TYPES.includes("context.release"));
+  assert.equal(validateEnvelope(envelope).operation.bytes, png);
+  const bad = (patch) =>
+    assert.throws(() =>
+      validateEnvelope({ ...envelope, operation: { ...operation, ...patch } }),
+    );
+  bad({ mime: "image/bmp" });
+  bad({ mime: "application/pdf" });
+  bad({ mime: "text/plain" });
+  bad({ bytes: new Uint8Array(0) });
+  bad({ bytes: new Uint8Array(8 * 1024 * 1024 + 1) });
+  bad({ bytes: Buffer.from(png) });
+  bad({ bytes: png.buffer });
+  bad({ bytes: new Uint16Array(4) });
+  bad({ bytes: [137, 80] });
+  bad({ bytes: "iVBOR" });
+  bad({ path: "a.png" });
+  bad({ extra: 1 });
+  assert.throws(() =>
+    validateEnvelope({
+      ...envelope,
+      operation: { type: "context.stage", workspaceId: "w", mime: "image/png" },
+    }),
+  );
+  assert.throws(() => validateEnvelope({ ...envelope, operationId: "op" }));
+  const release = {
+    type: "context.release",
+    workspaceId: "workspace",
+    capabilityId: "tok.1",
+  };
+  assert.deepEqual(
+    validateEnvelope({ ...envelope, operation: release }).operation,
+    release,
+  );
+  assert.throws(() =>
+    validateEnvelope({
+      ...envelope,
+      operation: { ...release, path: "/etc/passwd" },
+    }),
+  );
+});

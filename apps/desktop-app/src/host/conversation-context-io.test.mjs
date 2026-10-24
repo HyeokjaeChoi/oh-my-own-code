@@ -4,7 +4,10 @@ import * as fs from "node:fs/promises";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { createHash } from "node:crypto";
-import { createConversationContextIO } from "./conversation-context-io.mjs";
+import {
+  createConversationContextIO,
+  wipeStagedRoot,
+} from "./conversation-context-io.mjs";
 import { readWorkspaceFile } from "./workbench-file-edit.mjs";
 import { validateContextObservation } from "../renderer/shared/conversation-context/index.mjs";
 
@@ -760,4 +763,266 @@ test("reentrant check cannot replace admitted descriptors with an accessor or ne
   held.release();
   assert.equal(accessed, false);
   io.close();
+});
+
+// Clipboard-image staging: bytes only ever land in the app-owned staged root.
+const jpeg = Buffer.concat([
+  Buffer.from([255, 216, 255, 224]),
+  Buffer.alloc(8),
+]);
+async function staged(t, extra = {}) {
+  const base = await fs.realpath(
+    await fs.mkdtemp(join(tmpdir(), "omoc-stage-")),
+  );
+  t.after(() => fs.rm(base, { recursive: true, force: true }));
+  const stageRoot = join(base, "staged");
+  const io = createConversationContextIO({ stageRoot, ...extra });
+  t.after(() => io.close());
+  const workspace = { id: "synthetic", path: join(base, "ws") };
+  await fs.mkdir(workspace.path);
+  return { base, stageRoot, io, workspace };
+}
+const stage = (f, bytes = png, mime = "image/png", s = scope()) =>
+  f.io.stage(f.workspace, { mime, bytes: new Uint8Array(bytes) }, s);
+const stagedFiles = async (f) =>
+  (await fs.readdir(join(f.stageRoot, "epoch")).catch(() => [])).sort();
+
+test("stage writes a 0600 file in a 0700 staged dir and returns a paste descriptor", async (t) => {
+  const f = await staged(t);
+  const result = await stage(f);
+  assert.equal(result.status, "available");
+  validateContextObservation({
+    runtimeEpoch: "epoch",
+    revision: 1,
+    workspaceId: f.workspace.id,
+    workspacePath: f.workspace.path,
+    path: result.descriptor.path,
+    ...result,
+  });
+  const d = result.descriptor;
+  assert.equal(d.source, "paste");
+  assert.match(d.path, /^pasted-[a-f0-9]{8}\.png$/u);
+  assert.equal(d.digest, digest(png));
+  assert.ok(!JSON.stringify(result).includes(f.stageRoot));
+  const [name] = await stagedFiles(f);
+  assert.equal(name.slice(0, 8), d.path.slice(7, 15));
+  const dir = join(f.stageRoot, "epoch");
+  assert.equal((await fs.stat(dir)).mode & 0o777, 0o700);
+  assert.equal((await fs.stat(f.stageRoot)).mode & 0o777, 0o700);
+  assert.equal((await fs.stat(join(dir, name))).mode & 0o777, 0o600);
+  assert.deepEqual(await fs.readFile(join(dir, name)), png);
+  assert.deepEqual(await fs.readdir(f.workspace.path), []);
+});
+
+test("stage refuses wrong magic bytes, bad mime and oversize without writing", async (t) => {
+  const f = await staged(t);
+  assert.equal((await stage(f, png, "image/jpeg")).status, "unsupported");
+  assert.equal((await stage(f, jpeg, "image/png")).status, "unsupported");
+  assert.equal(
+    (await stage(f, Buffer.from("not an image"))).status,
+    "unsupported",
+  );
+  for (const mime of ["image/bmp", "application/pdf", "text/plain"])
+    await assert.rejects(stage(f, png, mime), { appCode: "INVALID_REQUEST" });
+  await assert.rejects(stage(f, Buffer.alloc(0)), {
+    appCode: "INVALID_REQUEST",
+  });
+  await assert.rejects(
+    stage(f, Buffer.concat([png, Buffer.alloc(8 * 1024 * 1024)])),
+    { appCode: "INVALID_REQUEST" },
+  );
+  await assert.rejects(
+    f.io.stage(f.workspace, { mime: "image/png", bytes: png }, scope()),
+    { appCode: "INVALID_REQUEST" },
+  );
+  await assert.rejects(
+    f.io.stage(f.workspace, { mime: "image/png", bytes: "x" }, scope()),
+    { appCode: "INVALID_REQUEST" },
+  );
+  assert.deepEqual(await stagedFiles(f), []);
+});
+
+test("stage caps staged items at 8 and total bytes at 16 MiB per sender", async (t) => {
+  const f = await staged(t);
+  for (let i = 0; i < 8; i++)
+    assert.equal((await stage(f)).status, "available");
+  const over = await stage(f);
+  assert.deepEqual(over, {
+    status: "unavailable",
+    reason: "capacity_exceeded",
+  });
+  assert.equal((await stagedFiles(f)).length, 8);
+  // Another window is counted separately.
+  assert.equal(
+    (await stage(f, png, "image/png", scope({ sender: "other" }))).status,
+    "available",
+  );
+  const g = await staged(t);
+  const big = Buffer.concat([png, Buffer.alloc(8 * 1024 * 1024 - png.length)]);
+  assert.equal((await stage(g, big)).status, "available");
+  assert.equal((await stage(g, big)).status, "available");
+  assert.equal((await stage(g)).reason, "capacity_exceeded");
+});
+
+test("stage allows one in-flight stage per window", async (t) => {
+  let release;
+  const gate = new Promise((r) => (release = r));
+  const f = await staged(t, { validateImage: () => gate.then(() => true) });
+  const first = stage(f);
+  await new Promise((r) => setImmediate(r));
+  await assert.rejects(stage(f), { appCode: "READ_BUSY" });
+  release();
+  assert.equal((await first).status, "available");
+  assert.equal((await stage(f)).status, "available");
+});
+
+test("stage fails closed without a staged root or after the window closes", async (t) => {
+  const io = createConversationContextIO();
+  t.after(() => io.close());
+  await assert.rejects(
+    io.stage(
+      { id: "w", path: "/tmp" },
+      { mime: "image/png", bytes: new Uint8Array(png) },
+      scope(),
+    ),
+    { appCode: "UNAVAILABLE" },
+  );
+  const f = await staged(t);
+  f.io.closeSender("sender");
+  await assert.rejects(stage(f), { appCode: "INVALID_SELECTION" });
+});
+
+test("acquire sends staged bytes; release deletes the file once unpinned", async (t) => {
+  const f = await staged(t);
+  const { descriptor } = await stage(f);
+  await f.io.verifyStaged([descriptor], f.workspace, scope());
+  const lease = f.io.acquire([descriptor], f.workspace, scope());
+  assert.equal(lease.files.length, 1);
+  assert.equal(
+    lease.files[0].uri,
+    `data:image/png;base64,${png.toString("base64")}`,
+  );
+  assert.equal(lease.files[0].name, descriptor.name);
+  // Releasing while pinned keeps the bytes for the in-flight send.
+  assert.equal(f.io.release(descriptor.capabilityId, scope()), true);
+  assert.equal((await stagedFiles(f)).length, 1);
+  lease.release();
+  assert.deepEqual(await stagedFiles(f), []);
+  assert.equal(f.io.release(descriptor.capabilityId, scope()), false);
+  assert.throws(() => acquire(f.io, f, [descriptor]), {
+    appCode: "INVALID_SELECTION",
+  });
+});
+
+test("release is limited to the owning window and runtime epoch", async (t) => {
+  const f = await staged(t);
+  const { descriptor } = await stage(f);
+  assert.equal(
+    f.io.release(descriptor.capabilityId, scope({ sender: "other" })),
+    false,
+  );
+  assert.equal(
+    f.io.release(descriptor.capabilityId, scope({ runtimeEpoch: "later" })),
+    false,
+  );
+  assert.equal((await stagedFiles(f)).length, 1);
+  assert.equal(f.io.release(descriptor.capabilityId, scope()), true);
+  assert.deepEqual(await stagedFiles(f), []);
+});
+
+test("verifyStaged refuses symlinks, outside targets, swaps, hardlinks and tampering", async (t) => {
+  const f = await staged(t);
+  const outside = join(f.base, "outside.png");
+  await fs.writeFile(outside, png);
+  const attempt = async (mutate) => {
+    const { descriptor } = await stage(f);
+    const dir = join(f.stageRoot, "epoch");
+    const [name] = (await fs.readdir(dir)).filter((n) =>
+      n.startsWith(descriptor.path.slice(7, 15)),
+    );
+    await mutate(join(dir, name));
+    await assert.rejects(
+      f.io.verifyStaged([descriptor], f.workspace, scope()),
+      { appCode: "INVALID_SELECTION" },
+    );
+    f.io.release(descriptor.capabilityId, scope());
+  };
+  await attempt(async (p) => {
+    await fs.rm(p);
+    await fs.symlink(outside, p);
+  });
+  await attempt(async (p) => {
+    await fs.rm(p);
+    await fs.writeFile(p, jpeg);
+  });
+  await attempt(async (p) => fs.writeFile(p, Buffer.concat([png, png])));
+  await attempt(async (p) => fs.link(p, join(f.base, "second-link.png")));
+  await attempt(async (p) => fs.rm(p));
+  // The epoch dir itself replaced by a symlink to elsewhere.
+  const { descriptor } = await stage(f);
+  const dir = join(f.stageRoot, "epoch");
+  const moved = join(f.base, "moved");
+  await fs.rename(dir, moved);
+  await fs.symlink(moved, dir);
+  await assert.rejects(f.io.verifyStaged([descriptor], f.workspace, scope()), {
+    appCode: "INVALID_SELECTION",
+  });
+});
+
+test("verifyStaged refuses forged or mismatched paste descriptors", async (t) => {
+  const f = await staged(t);
+  const { descriptor } = await stage(f);
+  for (const patch of [
+    { capabilityId: "forged.1" },
+    { digest: "0".repeat(64) },
+    { size: descriptor.size + 1 },
+    { path: "pasted-00000000.png", name: "pasted-00000000.png" },
+  ])
+    await assert.rejects(
+      f.io.verifyStaged([{ ...descriptor, ...patch }], f.workspace, scope()),
+      { appCode: "INVALID_SELECTION" },
+    );
+  await assert.rejects(
+    f.io.verifyStaged([descriptor], f.workspace, scope({ sender: "other" })),
+    { appCode: "INVALID_SELECTION" },
+  );
+  await assert.rejects(
+    f.io.verifyStaged(
+      [descriptor],
+      { ...f.workspace, id: "elsewhere" },
+      scope(),
+    ),
+    { appCode: "INVALID_SELECTION" },
+  );
+  // Non-paste descriptors are not this branch's concern.
+  await f.io.verifyStaged(
+    [{ ...descriptor, source: "file" }],
+    f.workspace,
+    scope(),
+  );
+});
+
+test("closeSender, TTL expiry and close remove staged files", async (t) => {
+  let clock = 0;
+  const f = await staged(t, { now: () => clock });
+  await stage(f);
+  await stage(f, png, "image/png", scope({ sender: "other" }));
+  assert.equal((await stagedFiles(f)).length, 2);
+  f.io.closeSender("other");
+  assert.equal((await stagedFiles(f)).length, 1);
+  clock = 10 * 60 * 1000;
+  // Any later stage expires the stale capability and deletes its file.
+  await stage(f, png, "image/png", scope({ sender: "third" }));
+  assert.equal((await stagedFiles(f)).length, 1);
+  f.io.close();
+  await assert.rejects(fs.stat(f.stageRoot));
+});
+
+test("wipeStagedRoot removes leftovers from a previous run", async (t) => {
+  const f = await staged(t);
+  await fs.mkdir(join(f.stageRoot, "old-epoch"), { recursive: true });
+  await fs.writeFile(join(f.stageRoot, "old-epoch", "a.png"), png);
+  wipeStagedRoot(f.stageRoot);
+  await assert.rejects(fs.stat(f.stageRoot));
+  wipeStagedRoot(f.stageRoot);
 });

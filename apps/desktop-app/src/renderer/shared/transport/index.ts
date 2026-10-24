@@ -13,6 +13,8 @@ const readTypes = new Set([
   "context.observe",
   "context.pick",
   "context.resolve",
+  "context.stage",
+  "context.release",
   "session.inbox",
   "git.branch.preview.read",
   "git.restore.preview.read",
@@ -57,33 +59,36 @@ const lane = (operation: ReadRequest) =>
     ? "lookup"
     : operation.type === "context.pick"
       ? "pick"
-      : operation.type === "file.search"
-        ? "search"
-        : operation.type === "permission.policy.read" ||
-            operation.type === "git.branch.preview.read" ||
-            operation.type === "git.restore.preview.read" ||
-            operation.type === "git.commit.preview.read" ||
-            operation.type === "git.index.preview.read" ||
-            operation.type === "git.review.read" ||
-            operation.type === "git.diff.read" ||
-            operation.type.startsWith("file.") ||
-            operation.type === "context.observe" ||
-            operation.type === "context.resolve" ||
-            operation.type === "session.inbox" ||
-            operation.type === "configuration.read" ||
-            operation.type === "configuration.skill.runtime.read" ||
-            operation.type === "configuration.agent.runtime.read" ||
-            operation.type === "configuration.extensions.read" ||
-            operation.type === "configuration.agent.list" ||
-            operation.type === "configuration.agent.read" ||
-            operation.type === "configuration.skill.list" ||
-            operation.type === "configuration.skill.read" ||
-            operation.type === "configuration.instructions.read" ||
-            operation.type === "configuration.mcp.read"
-          ? "files"
-          : operation.type === "catalog.list"
-            ? "catalog"
-            : "snapshot";
+      : operation.type === "context.stage" ||
+          operation.type === "context.release"
+        ? "stage"
+        : operation.type === "file.search"
+          ? "search"
+          : operation.type === "permission.policy.read" ||
+              operation.type === "git.branch.preview.read" ||
+              operation.type === "git.restore.preview.read" ||
+              operation.type === "git.commit.preview.read" ||
+              operation.type === "git.index.preview.read" ||
+              operation.type === "git.review.read" ||
+              operation.type === "git.diff.read" ||
+              operation.type.startsWith("file.") ||
+              operation.type === "context.observe" ||
+              operation.type === "context.resolve" ||
+              operation.type === "session.inbox" ||
+              operation.type === "configuration.read" ||
+              operation.type === "configuration.skill.runtime.read" ||
+              operation.type === "configuration.agent.runtime.read" ||
+              operation.type === "configuration.extensions.read" ||
+              operation.type === "configuration.agent.list" ||
+              operation.type === "configuration.agent.read" ||
+              operation.type === "configuration.skill.list" ||
+              operation.type === "configuration.skill.read" ||
+              operation.type === "configuration.instructions.read" ||
+              operation.type === "configuration.mcp.read"
+            ? "files"
+            : operation.type === "catalog.list"
+              ? "catalog"
+              : "snapshot";
 export function createTransport(
   bridge: Bridge,
   {
@@ -128,7 +133,12 @@ export function createTransport(
     if (!epoch && operation.type !== "snapshot")
       return Promise.resolve(fail("STALE_EPOCH"));
     const group = lane(operation),
-      key = `${epoch ?? "bootstrap"}:${canonical(operation)}`;
+      // The canonical key skips nested values: two different pasted images must
+      // never share one read, so a stage read is keyed by its own readId.
+      key =
+        operation.type === "context.stage"
+          ? `${epoch}:stage:${id()}`
+          : `${epoch ?? "bootstrap"}:${canonical(operation)}`;
     let task = tasks.get(group);
     if (task && (!task.open || task.key !== key || task.subscribers.size >= 8))
       return Promise.resolve(fail("READ_BUSY"));

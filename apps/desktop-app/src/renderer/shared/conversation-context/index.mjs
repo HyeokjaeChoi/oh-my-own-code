@@ -76,7 +76,7 @@ export function validContextDescriptor(v) {
     validWorkspaceFileRoot(v.workspacePath) &&
     !workspaceFilePathReason(v.path) &&
     v.name === v.path.split("/").at(-1) &&
-    ["file", "selection"].includes(v.source) &&
+    ["file", "selection", "paste"].includes(v.source) &&
     hex(v.version) &&
     hex(v.digest) &&
     mimeTypes.includes(v.mime) &&
@@ -91,7 +91,11 @@ export function validContextDescriptor(v) {
         uint(v.range.start) &&
         uint(v.range.end) &&
         v.range.start < v.range.end
-      : !own(v, "range"))
+      : !own(v, "range") &&
+        (v.source !== "paste" ||
+          ["image/png", "image/jpeg", "image/gif", "image/webp"].includes(
+            v.mime,
+          )))
   );
 }
 function array(v) {

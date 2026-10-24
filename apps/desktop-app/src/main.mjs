@@ -1,5 +1,8 @@
 import { probeWorkspaceMeta } from "./host/workspace-meta.mjs";
-import { createConversationContextIO } from "./host/conversation-context-io.mjs";
+import {
+  createConversationContextIO,
+  wipeStagedRoot,
+} from "./host/conversation-context-io.mjs";
 import {
   app,
   BrowserWindow,
@@ -942,6 +945,11 @@ app.whenReady().then(async () => {
         : undefined,
     )
     .catch(() => {});
+  try {
+    wipeStagedRoot(stagedRoot());
+  } catch {
+    // Best effort: staging fails closed if the directory cannot be recreated.
+  }
   workbench = createWorkbenchService({
     // App-owned file checkpoints for per-turn revert (private git dirs under app data).
     ...(namespace && {
@@ -951,6 +959,7 @@ app.whenReady().then(async () => {
     }),
     contextIO: createConversationContextIO({
       validateImage: (bytes) => !nativeImage.createFromBuffer(bytes).isEmpty(),
+      stageRoot: stagedRoot(),
     }),
     registry: registryPromise,
     runtimeReady: startupPromise,
@@ -1302,8 +1311,15 @@ app.on("window-all-closed", () => {
   if (process.platform !== "darwin") app.quit();
 });
 
+// Pasted clipboard images live only here; wiped on every start and quit.
+const stagedRoot = () => join(app.getPath("userData"), "staged");
 app.on("will-quit", () => {
   terminals.killAllSync();
+  try {
+    wipeStagedRoot(stagedRoot());
+  } catch {
+    // Best effort: the next start wipes it again.
+  }
   if (wipeOnQuit) {
     let result = { ok: false, reason: "STORAGE_NOT_RELEASED" };
     try {
