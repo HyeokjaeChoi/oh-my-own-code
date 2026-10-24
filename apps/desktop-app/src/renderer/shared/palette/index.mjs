@@ -13,7 +13,7 @@ const PANELS = [
 ];
 
 // One definition list shared by the composer `/` menu and the palette so they cannot drift.
-// plan/compact have no app operation: they exist only when the runtime offers a command of that name.
+// compact has no app operation: it exists only when the runtime offers a command of that name.
 const APP_COMMANDS = [
   {
     name: "model",
@@ -49,7 +49,12 @@ const APP_COMMANDS = [
     action: { type: "panel", panel: "changes" },
     workspace: true,
   },
-  { name: "plan", label: "계획 모드", runtimeOnly: true },
+  {
+    name: "plan",
+    label: "계획 모드 (Plan 에이전트)",
+    action: { type: "composer", target: "plan" },
+    session: true,
+  },
   { name: "compact", label: "대화 압축", runtimeOnly: true },
 ];
 export const APP_COMMAND_NAMES = Object.freeze(APP_COMMANDS.map((c) => c.name));
