@@ -1,11 +1,16 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   useWorkbenchSelector,
   useWindowWorkbench,
 } from "../../entities/workbench/index.js";
 import { Timeline } from "./timeline.js";
 import { SubagentPanel } from "../../features/subagents/index.js";
-import { operationLabels } from "./labels.js";
+import {
+  activityFilters,
+  activityMatches,
+  operationLabels,
+  type ActivityFilter,
+} from "./labels.js";
 import { relativeTime } from "../../shared/panel-text/index.js";
 import styles from "./activity.module.css";
 import {
@@ -41,6 +46,7 @@ export function ActivityPanel({
   const data = useWorkbenchSelector((s) => s.diagnostics);
   const error = useWorkbenchSelector((s) => s.diagnosticsError);
   const { actions } = useWindowWorkbench();
+  const [filter, setFilter] = useState<ActivityFilter>("all");
   useEffect(() => {
     actions.diagnostics(false);
     return () => actions.closeDiagnostics();
@@ -85,12 +91,25 @@ export function ActivityPanel({
           <h4 className={styles.group}>
             {filtered && sessionId ? "선택한 세션의 기록" : "앱 전체 기록"}
           </h4>
+          <div role="group" aria-label="활동 종류" className={styles.head}>
+            {activityFilters.map(([id, label]) => (
+              <Button
+                key={id}
+                size="compact"
+                intent="quiet"
+                aria-pressed={filter === id}
+                onClick={() => setFilter(id)}
+              >
+                {label}
+              </Button>
+            ))}
+          </div>
           {data.events.length === 0 ? (
             <p className={styles.muted}>아직 활동 기록이 없습니다.</p>
           ) : (
             <ol className={styles.events}>
               {data.events
-                .slice()
+                .filter((event) => activityMatches(filter, event))
                 .reverse()
                 .map((event) => {
                   const Icon = statusIcons[event.status];
@@ -139,6 +158,20 @@ export function ActivityPanel({
                               <dt>세션 ID</dt>
                               <dd>{event.sessionId}</dd>
                             </>
+                          )}
+                          {event.workspaceId && event.sessionId && (
+                            <Button
+                              size="compact"
+                              intent="quiet"
+                              onClick={() =>
+                                actions.select(
+                                  event.workspaceId!,
+                                  event.sessionId!,
+                                )
+                              }
+                            >
+                              이 세션으로 이동
+                            </Button>
                           )}
                           {event.code && (
                             <>

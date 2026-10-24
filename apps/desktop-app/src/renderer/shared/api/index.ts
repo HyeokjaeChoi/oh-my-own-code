@@ -158,6 +158,8 @@ export type {
 export {
   validRuntimeText,
   validAssistantRuntime,
+  formatUsage,
+  sumUsage,
   validSessionSelection,
   validModelOptions,
   variantForModel,

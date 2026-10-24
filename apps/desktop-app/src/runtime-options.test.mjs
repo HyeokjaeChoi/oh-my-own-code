@@ -337,3 +337,98 @@ test('reasoning levels read in Korean and "(free)" is not repeated beside the ba
   assert.equal(modelDisplayName("(free)"), "(free)");
   assert.equal(modelDisplayName("Freedom model"), "Freedom model");
 });
+
+import {
+  projectUsage,
+  validUsage,
+  sumUsage,
+  formatUsage,
+  validAssistantRuntime,
+} from "./renderer/shared/runtime-options/index.mjs";
+import { activityMatches } from "./renderer/widgets/activity/labels.ts";
+
+const nativeTurn = (extra) => ({
+  id: "a",
+  type: "assistant",
+  agent: "build",
+  model: { providerID: "p", id: "m" },
+  content: [],
+  ...extra,
+});
+test("usage projects tokens and cost from the native assistant message", () => {
+  const projected = projectMessages([
+    nativeTurn({
+      tokens: {
+        input: 1200,
+        output: 340,
+        reasoning: 0,
+        cache: { read: 8000, write: 5 },
+      },
+      cost: 0.0123,
+    }),
+  ])[0];
+  assert.deepEqual(projected.runtime.usage, {
+    input: 1200,
+    output: 340,
+    reasoning: 0,
+    cacheRead: 8000,
+    cacheWrite: 5,
+    cost: 0.0123,
+  });
+  assert.ok(validAssistantRuntime(projected.runtime));
+  assert.equal(
+    formatUsage(projected.runtime.usage),
+    "입력 1.2k · 출력 340 · 캐시 8k · $0.01",
+  );
+});
+test("usage missing or invalid is absent, never zero", () => {
+  assert.equal(projectMessages([nativeTurn({})])[0].runtime.usage, undefined);
+  for (const bad of [-1, 1.5, NaN, Infinity, "3"])
+    assert.equal(
+      projectUsage({
+        tokens: {
+          input: bad,
+          output: 1,
+          reasoning: 0,
+          cache: { read: 0, write: 0 },
+        },
+      }),
+      undefined,
+    );
+  assert.equal(
+    projectUsage({ tokens: { input: 1, output: 1, reasoning: 0 } }),
+    undefined,
+  );
+  const noCost = projectUsage({
+    tokens: { input: 1, output: 1, reasoning: 0, cache: { read: 0, write: 0 } },
+    cost: -2,
+  });
+  assert.ok(noCost && !("cost" in noCost));
+  assert.equal(validUsage({ ...noCost, extra: 1 }), false);
+  assert.equal(formatUsage(undefined), "확인 불가");
+});
+test("usage sum counts unknown turns separately", () => {
+  const u = {
+    input: 10,
+    output: 5,
+    reasoning: 0,
+    cacheRead: 0,
+    cacheWrite: 0,
+    cost: 0.5,
+  };
+  const { total, unknown } = sumUsage([u, undefined, u]);
+  assert.equal(total.input, 20);
+  assert.equal(total.cost, 1);
+  assert.equal(unknown, 1);
+  assert.equal(sumUsage([undefined]).total, undefined);
+});
+test("activity filters bucket known operations only", () => {
+  const ev = (operation, status = "ok") => ({ operation, status });
+  assert.ok(activityMatches("chat", ev("message.send")));
+  assert.ok(activityMatches("files", ev("file.save")));
+  assert.ok(activityMatches("config", ev("configuration.mcp.connect")));
+  assert.ok(!activityMatches("chat", ev("mystery.op")));
+  assert.ok(activityMatches("all", ev("mystery.op")));
+  assert.ok(activityMatches("failed", ev("x", "error")));
+  assert.ok(!activityMatches("failed", ev("x", "ok")));
+});

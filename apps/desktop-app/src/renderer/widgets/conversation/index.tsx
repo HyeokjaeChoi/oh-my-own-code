@@ -103,6 +103,8 @@ import {
   type WorkbenchMessage,
   type WorkbenchPermission,
   validAssistantRuntime,
+  formatUsage,
+  sumUsage,
   variantLabel,
   defaultModelText,
 } from "../../shared/api/index.js";
@@ -467,7 +469,7 @@ function MessageView({
             }
           >
             {report
-              ? `${report.agent} · ${report.model.id}${report.model.variant ? ` · ${report.model.variant}` : ""}`
+              ? `${report.agent} · ${report.model.id}${report.model.variant ? ` · ${report.model.variant}` : ""} · ${formatUsage(report.usage)}`
               : "실행 정보 없음"}
           </span>
         )}
@@ -724,6 +726,16 @@ export function Conversation(props: Props) {
     !props.archived &&
     !props.pending &&
     props.status === "running";
+  const usageLabel = useMemo(() => {
+    const { total, unknown } = sumUsage(
+      props.messages
+        .filter((m) => m.role === "assistant")
+        .map((m) => m.runtime?.usage),
+    );
+    return total
+      ? `${formatUsage(total)}${unknown ? " · 일부 미확인" : ""}`
+      : "확인 불가";
+  }, [props.messages]);
   const progress = !props.executionAvailable
     ? "현재 세션 실행 상태를 확인할 수 없습니다."
     : props.archived
@@ -1370,6 +1382,7 @@ export function Conversation(props: Props) {
                       ["모델", modelLabel],
                       ["추론 강도", effortLabel],
                       ["권한", permissionLabel],
+                      ["사용량", usageLabel],
                     ].map(([term, value]) => (
                       <div key={term}>
                         <dt>{term}</dt>

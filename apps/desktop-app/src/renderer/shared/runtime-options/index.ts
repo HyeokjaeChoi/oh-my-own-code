@@ -14,11 +14,16 @@ export {
   modelDisplayName,
   defaultModelText,
   projectAssistantRuntime,
+  validUsage,
+  projectUsage,
+  sumUsage,
+  formatUsage,
   projectSessionSelection,
 } from "./index.mjs";
 export type {
   RuntimeModel,
   AssistantRuntime,
+  Usage,
   SessionSelection,
   ModelOptions,
 } from "./index.mjs";

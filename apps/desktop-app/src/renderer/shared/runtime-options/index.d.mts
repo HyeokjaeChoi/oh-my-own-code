@@ -3,10 +3,26 @@ export interface RuntimeModel {
   id: string;
   variant?: string;
 }
+export interface Usage {
+  input: number;
+  output: number;
+  reasoning: number;
+  cacheRead: number;
+  cacheWrite: number;
+  cost?: number;
+}
 export interface AssistantRuntime {
   agent: string;
   model: RuntimeModel;
+  usage?: Usage;
 }
+export function validUsage(value: unknown): value is Usage;
+export function projectUsage(message: unknown): Usage | undefined;
+export function sumUsage(usages: Iterable<unknown>): {
+  total: Usage | undefined;
+  unknown: number;
+};
+export function formatUsage(usage: unknown): string;
 export interface SessionSelection {
   sessionId: string;
   agent?: string;

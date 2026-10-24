@@ -16,3 +16,33 @@ export const operationLabels: Record<string, string> = {
   "session.interrupt": "실행 중단 요청",
   "permission.respond": "권한 요청 응답",
 };
+
+export const activityFilters = [
+  ["all", "전체"],
+  ["chat", "대화"],
+  ["files", "파일·Git"],
+  ["config", "설정"],
+  ["failed", "실패만"],
+] as const;
+export type ActivityFilter = (typeof activityFilters)[number][0];
+// Unknown operations match only "전체" (and "실패만" by status), never a guessed bucket.
+export function activityMatches(
+  filter: ActivityFilter,
+  event: { operation: string; status: string },
+): boolean {
+  const op = event.operation;
+  switch (filter) {
+    case "all":
+      return true;
+    case "failed":
+      return event.status === "error" || event.status === "unknown";
+    case "chat":
+      return /^(message\.|command\.|session\.(interrupt|fork|revert)|permission\.respond)/.test(
+        op,
+      );
+    case "files":
+      return /^(file\.|git\.|workspace\.)/.test(op);
+    case "config":
+      return /^(configuration\.|permission\.mode)/.test(op);
+  }
+}

@@ -176,11 +176,11 @@ Model-initiated `subagent` works in the real app (2026-10-13/14): `OMOC_E2E_STRI
 
 ## F-16 History/usage
 
-| Clause                                        | Status  | Evidence                                                      |
-| --------------------------------------------- | ------- | ------------------------------------------------------------- |
-| Timeline w/ filters + navigate                | partial | `widgets/activity/index.tsx` lists ops, no filters/navigation |
-| Context/token/usage, unknown shown as unknown | missing | no usage field                                                |
-| Setting comparison, learning mode             | missing | none                                                          |
+| Clause                                        | Status  | Evidence                                                                                                                                                                                                                         |
+| --------------------------------------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Timeline w/ filters + navigate                | done    | 2026-10-24 `widgets/activity/index.tsx` filters (전체/대화/파일·Git/설정/실패만, `labels.ts` `activityMatches`) + "이 세션으로 이동" (`actions.select`)                                                                          |
+| Context/token/usage, unknown shown as unknown | partial | 2026-10-24 per-turn tokens+cost: `projectUsage` -> `runtime.usage` (turn meta) + session sum in `/status` card, unknown = "확인 불가"/"일부 미확인". Context-window % not done: model `limit.context` is not in catalog contract |
+| Setting comparison, learning mode             | missing | none                                                                                                                                                                                                                             |
 
 ## F-17 Recovery/data
 
