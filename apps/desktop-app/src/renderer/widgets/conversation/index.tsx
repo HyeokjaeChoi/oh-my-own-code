@@ -995,7 +995,6 @@ export function Conversation(props: Props) {
                         index !== props.messages.length - 1 ||
                         props.status !== "idle" ||
                         !prompt ||
-                        !model ||
                         blocked
                       )
                         return undefined;
@@ -1005,7 +1004,7 @@ export function Conversation(props: Props) {
                         void actions
                           .resendMessage(
                             prompt,
-                            model,
+                            model || undefined,
                             agent || undefined,
                             variant || undefined,
                           )

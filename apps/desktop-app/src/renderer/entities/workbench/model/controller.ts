@@ -1012,11 +1012,12 @@ export function createWindowWorkbench(
       text,
     });
   }
-  // Resends one prompt on an explicit model for the selected session. It never
-  // reads or clears the composer draft or its staged attachments.
+  // Resends one prompt for the selected session (the runtime default model
+  // when none is given; a variant needs a model). It never reads or clears the
+  // composer draft or its staged attachments.
   function resendMessage(
     text: string,
-    model: string,
+    model?: string,
     agent?: string,
     variant?: string,
   ): Promise<boolean> {
@@ -1027,9 +1028,9 @@ export function createWindowWorkbench(
       sessionId: state.selection.sessionId!,
       requestId: id(),
       text,
-      model,
+      ...(model ? { model } : {}),
       ...(agent ? { agent } : {}),
-      ...(variant ? { variant } : {}),
+      ...(model && variant ? { variant } : {}),
     });
   }
   function deliverContextMessage(
