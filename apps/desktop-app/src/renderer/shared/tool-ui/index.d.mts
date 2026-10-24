@@ -52,6 +52,7 @@ export function deriveToolView(tool: {
   input: string;
   output: string;
   status: string;
+  exit?: number;
 }): ToolView;
 export function permissionsForTool<P extends { toolId?: string }>(
   permissions: P[],

@@ -132,3 +132,12 @@ export function parseSubagentResult(output) {
     );
   return m ? { sessionId: m[1], state: m[2], text: m[3] } : null;
 }
+
+// Child permission mode: never broader than the parent. A reviewer asks for read_plan, but a
+// parent in `ask` keeps `ask`; an unknown parent mode yields undefined (nothing is sent).
+export const childMode = (requested, parentMode) =>
+  !parentMode
+    ? undefined
+    : requested === "read_plan" && parentMode !== "ask"
+      ? "read_plan"
+      : parentMode;

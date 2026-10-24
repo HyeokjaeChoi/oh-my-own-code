@@ -278,6 +278,7 @@ export function activityTime(time) {
   const t = time?.idle ?? time?.created;
   return Number.isSafeInteger(t) && t > 0 ? t : undefined;
 }
+const validExit = (v) => Number.isInteger(v) && v >= 0 && v <= 255;
 export function projectMessages(data) {
   if (!Array.isArray(data)) fail("RUNTIME_ERROR");
   return data
@@ -337,6 +338,11 @@ export function projectMessages(data) {
                     ? part.state.input
                     : JSON.stringify(part.state?.input ?? {}),
                 ),
+                // Structured process exit status from the runtime's bash tool metadata
+                // (never parsed from model-visible output); absent when unknown/invalid.
+                ...(validExit(part.state?.metadata?.exit) && {
+                  exit: part.state.metadata.exit,
+                }),
                 output: !["streaming", "running", "completed"].includes(
                   part.state?.status,
                 )

@@ -49,7 +49,7 @@ export function navigationDecision(mode, url, origin = "") {
   return "deny";
 }
 // Network allowlist for the preview sessions (webRequest.onBeforeRequest): loopback http/ws and
-// inline data:/blob: only; the file view additionally gets its own `omoc-preview:` scheme.
+// inline data:/blob:; the file view gets only its own `omoc-preview:` scheme (no loopback).
 export function previewRequestAllowed(raw, mode) {
   let u;
   try {
@@ -58,10 +58,13 @@ export function previewRequestAllowed(raw, mode) {
     return false;
   }
   if (u.protocol === "data:" || u.protocol === "blob:") return true;
-  if (mode === "file" && u.protocol === `${PREVIEW_SCHEME}:`) return true;
-  // Chromium's built-in PDF viewer (fixed extension id) renders PDF files in the file view.
-  if (mode === "file" && u.protocol === "chrome-extension:")
-    return u.hostname === PDF_VIEWER_ID;
+  // File mode never reaches loopback or anything else: only its own scheme and the PDF viewer
+  // (Chromium's built-in viewer, fixed extension id).
+  if (mode === "file")
+    return (
+      u.protocol === `${PREVIEW_SCHEME}:` ||
+      (u.protocol === "chrome-extension:" && u.hostname === PDF_VIEWER_ID)
+    );
   if (u.protocol !== "http:" && u.protocol !== "ws:") return false;
   return !u.username && !u.password && LOOPBACK.has(u.hostname);
 }

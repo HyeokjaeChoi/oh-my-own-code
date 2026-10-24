@@ -15,6 +15,7 @@ const TEXT_BYTES = 65536;
 const MEDIA_BYTES = 8 * 1024 * 1024;
 const SEND_BYTES = 16 * 1024 * 1024;
 const CACHE_BYTES = 64 * 1024 * 1024;
+// Staged entries expire lazily: checked on the next context call, not by a timer.
 const TTL = 10 * 60 * 1000;
 const PASTE_EXT = {
   "image/png": "png",
@@ -28,7 +29,11 @@ const STAGED_ITEMS = 8;
 export function wipeStagedRoot(root) {
   rmSync(root, { recursive: true, force: true });
 }
-const id = (v) => typeof v === "string" && /^[A-Za-z0-9_.:-]{1,128}$/u.test(v);
+const id = (v) =>
+  typeof v === "string" &&
+  v !== "." &&
+  v !== ".." &&
+  /^[A-Za-z0-9_.:-]{1,128}$/u.test(v);
 const hex = (v) => typeof v === "string" && /^[a-f0-9]{64}$/u.test(v);
 const data = (v) =>
   Boolean(

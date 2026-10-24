@@ -44,6 +44,7 @@ export function mapMessages(messages) {
                 input: bounded(tool.input, 8192),
                 output: bounded(tool.output),
                 state: tool.status,
+                ...(Number.isInteger(tool.exit) && { exit: tool.exit }),
               },
               argsText: bounded(tool.input, 8192),
               ...(tool.status === "completed" || tool.status === "error"

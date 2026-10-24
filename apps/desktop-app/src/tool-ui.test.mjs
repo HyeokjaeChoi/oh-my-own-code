@@ -28,10 +28,14 @@ test("registry selects renderer by name and aliases", () => {
       .range,
     { start: 5, end: 14 },
   );
-  assert.equal(
-    deriveToolView(tool("bash", { command: "ls" }, "exit code: 2")).exitCode,
-    2,
-  );
+  const shell = (exit) => ({
+    ...tool("bash", { command: "ls" }, "exit code: 2"),
+    ...(exit !== undefined && { exit }),
+  });
+  assert.equal(deriveToolView(shell()).exitCode, null); // text is never parsed
+  assert.equal(deriveToolView(shell(2)).exitCode, 2);
+  assert.equal(deriveToolView(shell(-1)).exitCode, null);
+  assert.equal(deriveToolView(shell(1.5)).exitCode, null);
   assert.equal(
     deriveToolView(tool("apply_patch", { patchText: "+a\n-b" })).kind,
     "diff",

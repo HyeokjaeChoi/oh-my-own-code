@@ -41,7 +41,7 @@ export function approvedPlans(messages) {
   const found = [];
   messages.forEach((m, index) => {
     const hit = m.role === "user" ? APPROVED_MARKER.exec(m.text) : null;
-    if (hit) found.push({ version: Number(hit[1]), messageId: m.id, index });
+    if (hit) found.push({ version: found.length + 1, messageId: m.id, index });
   });
   return found.map((p, n) => {
     const end = found[n + 1]?.index ?? messages.length;
@@ -53,27 +53,68 @@ export function approvedPlans(messages) {
 }
 export const nextVersion = (messages) => approvedPlans(messages).length + 1;
 
-const CHECKS = [
-  ["typecheck", /\b(tsc|typecheck|check-types|mypy|pyright)\b/],
-  ["lint", /\b(eslint|lint)\b/],
-  [
-    "test",
-    /\b(vitest|jest|pytest)\b|\bcargo test\b|\bgo test\b|\bnode\b[^|;&\n]*--test\b|\b(npm|pnpm|yarn|bun|npx|nx|turbo|make|just)\b[^|;&\n]*\btest\b/,
-  ],
-];
+// Command-shape classifier: only the runner/first token decides, never words elsewhere in the
+// command. Any pipe, redirect, chain, substitution or newline => unknown (null).
+const kindOfWord = (w = "") =>
+  /(^|[:_-])(typecheck|check-types|tsc|mypy|pyright)($|[:_-])/.test(w)
+    ? "typecheck"
+    : /(^|[:_-])(lint|eslint)($|[:_-])/.test(w)
+      ? "lint"
+      : /(^|[:_-])(test|tests|vitest|jest|pytest)($|[:_-])/.test(w)
+        ? "test"
+        : null;
+const DIRECT = {
+  tsc: "typecheck",
+  mypy: "typecheck",
+  pyright: "typecheck",
+  eslint: "lint",
+  vitest: "test",
+  jest: "test",
+  pytest: "test",
+};
 export function checkKind(command) {
-  for (const [kind, re] of CHECKS) if (re.test(command)) return kind;
+  if (typeof command !== "string") return null;
+  const cmd = command.replace(/^\s*cd\s+[^\s&|;<>`$]+\s*&&\s*/, "");
+  if (/[|;&<>`\n\r]|\$\(/.test(cmd)) return null;
+  const t = cmd.trim().split(/\s+/);
+  while (/^[A-Za-z_]\w*=/.test(t[0] ?? "")) t.shift();
+  t[0] = (t[0] ?? "").split("/").at(-1);
+  const [bin, a1, a2] = t;
+  const flagless = t.slice(1).filter((x) => !x.startsWith("-"));
+  if (bin in DIRECT) return DIRECT[bin];
+  if (bin === "cargo" || bin === "go") return a1 === "test" ? "test" : null;
+  if (bin === "node") return t.slice(1, 3).includes("--test") ? "test" : null;
+  if (["npm", "pnpm", "yarn", "bun"].includes(bin)) {
+    if (a1 === "test" || a1 === "t") return "test";
+    if (a1 === "run" || a1 === "run-script") return kindOfWord(a2);
+    if (a1 === "exec" || (bin === "yarn" && a1 === "dlx"))
+      return DIRECT[flagless[1]] ?? null;
+    return bin === "bun" ? null : kindOfWord(a1);
+  }
+  if (bin === "npx" || bin === "bunx" || bin === "pnpx")
+    return DIRECT[flagless[0]] ?? null;
+  if (["nx", "turbo", "make", "just"].includes(bin)) {
+    const w = flagless.find((x) => !["run", "run-many"].includes(x));
+    return kindOfWord(w?.split(":").at(-1));
+  }
   return null;
 }
 
-// Status comes only from the tool part: "error" = the tool failed, a parsed exit
-// code decides completed shell calls, otherwise "unknown" (never guessed).
+// Status comes only from the tool part: "error" = the tool failed, the runtime's structured
+// exit status decides completed shell calls, otherwise "unknown" (never guessed or text-parsed).
 export function checkStatus(tool, view) {
   if (tool.status === "error") return "failed";
   if (tool.status !== "completed") return "running";
   if (view.exitCode === null) return "unknown";
   return view.exitCode === 0 ? "passed" : "failed";
 }
+
+// Completed shell calls that write files count as edits (conservative: false positives only
+// ask for a re-run).
+const SHELL_EDIT =
+  /\bsed\s+(-\w*i|--in-place)|\b(tee|mv|cp|rm|patch)\b|\bgit\s+(apply|checkout|restore)\b|>/;
+export const shellEdits = (command) =>
+  SHELL_EDIT.test(command.replace(/\d*>&\d+|\d*>\s*\/dev\/null/g, ""));
 
 export function verifiedChecks(messages) {
   const checks = [];
@@ -86,6 +127,8 @@ export function verifiedChecks(messages) {
       const view = deriveToolView(t);
       if (view.kind === "diff" && t.status === "completed") lastEdit = order;
       if (view.kind !== "shell") continue;
+      if (t.status === "completed" && shellEdits(view.command))
+        lastEdit = order;
       const kind = checkKind(view.command);
       if (!kind) continue;
       const status = checkStatus(t, view);

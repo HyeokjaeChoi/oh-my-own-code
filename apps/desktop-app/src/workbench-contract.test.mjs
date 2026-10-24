@@ -733,6 +733,8 @@ test("context.stage is a closed read carrying a plain Uint8Array image", () => {
   bad({ bytes: new Uint8Array(8 * 1024 * 1024 + 1) });
   bad({ bytes: Buffer.from(png) });
   bad({ bytes: png.buffer });
+  bad({ bytes: new Uint8Array(new ArrayBuffer(16), 4, 9) }); // view into a larger buffer
+  bad({ bytes: png.subarray(1) });
   bad({ bytes: new Uint16Array(4) });
   bad({ bytes: [137, 80] });
   bad({ bytes: "iVBOR" });

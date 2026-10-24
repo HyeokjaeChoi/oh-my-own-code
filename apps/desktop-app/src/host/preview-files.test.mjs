@@ -4,6 +4,7 @@ import {
   mkdirSync,
   mkdtempSync,
   realpathSync,
+  linkSync as link,
   symlinkSync,
   writeFileSync,
 } from "node:fs";
@@ -43,6 +44,10 @@ test("served files: content types, CSP, markdown escaped", async () => {
   assert.match(html.headers["content-type"], /text\/html/);
   assert.match(html.headers["content-security-policy"], /script-src 'self'/);
   assert.match(html.headers["content-security-policy"], /object-src 'none'/);
+  assert.doesNotMatch(
+    html.headers["content-security-policy"],
+    /localhost|127\.0\.0\.1/,
+  );
   assert.equal(html.headers["x-content-type-options"], "nosniff");
   const js = await files.serve(`${origin}app.js?v=1`);
   assert.match(js.headers["content-type"], /javascript/);
@@ -58,7 +63,7 @@ test("served files: content types, CSP, markdown escaped", async () => {
 });
 
 test("served files: traversal, encodings, symlinks, absolute, types", async () => {
-  const { files, origin, token } = await site();
+  const { files, origin, token, root } = await site();
   const deny = async (path, status) =>
     assert.equal((await files.serve(origin + path)).status, status, path);
   await deny("../../etc/passwd", 403); // URL parser collapses to etc/passwd: no allowed type
@@ -71,6 +76,11 @@ test("served files: traversal, encodings, symlinks, absolute, types", async () =
   await deny("dir/o.html", 403); // symlinked directory
   await deny("secret.env", 403); // type not allowed
   await deny(".git/c.json", 403);
+  await deny(".GIT/c.json", 403);
+  await deny("sub/.Git/c.json", 403);
+  link(join(root, "app.js"), join(root, "hard.js"));
+  await deny("hard.js", 403); // hardlink (nlink > 1)
+  await deny("app.js", 403); // the other name of the same inode
   await deny("missing.html", 404);
   await deny("%00.html", 403);
   assert.equal(
@@ -112,7 +122,7 @@ test("network allowlist for preview sessions", () => {
   const ok = [
     ["http://localhost:3000/a", "url"],
     ["http://127.0.0.1/", "url"],
-    ["http://[::1]:5173/x", "file"],
+    ["http://[::1]:5173/x", "url"],
     ["ws://localhost:5173/", "url"],
     ["data:image/png;base64,AA", "file"],
     ["omoc-preview://abc/x.html", "file"],
@@ -124,6 +134,9 @@ test("network allowlist for preview sessions", () => {
     ["http://localhost@evil.com/", "url"],
     ["http://user:pw@localhost/", "url"],
     ["http://localhost.evil.com/", "url"],
+    ["http://localhost:3000/", "file"],
+    ["http://127.0.0.1:5173/", "file"],
+    ["ws://localhost:5173/", "file"],
     ["http://evil.com/", "file"],
     ["https://evil.com/", "file"],
     ["wss://localhost/", "url"],

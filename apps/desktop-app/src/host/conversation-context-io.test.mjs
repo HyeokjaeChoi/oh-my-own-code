@@ -787,6 +787,14 @@ const stage = (f, bytes = png, mime = "image/png", s = scope()) =>
 const stagedFiles = async (f) =>
   (await fs.readdir(join(f.stageRoot, "epoch")).catch(() => [])).sort();
 
+test("stage refuses '.' and '..' as the epoch directory name", async (t) => {
+  const f = await staged(t);
+  for (const runtimeEpoch of [".", ".."])
+    await assert.rejects(stage(f, png, "image/png", scope({ runtimeEpoch })), {
+      appCode: "INVALID_REQUEST",
+    });
+});
+
 test("stage writes a 0600 file in a 0700 staged dir and returns a paste descriptor", async (t) => {
   const f = await staged(t);
   const result = await stage(f);

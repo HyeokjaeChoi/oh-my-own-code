@@ -195,6 +195,8 @@ export interface WorkbenchTool {
   status: "pending" | "running" | "completed" | "error";
   input: string;
   output: string;
+  /** Structured process exit status (0-255); absent when unknown. */
+  exit?: number;
 }
 export interface WorkbenchMessage {
   context?: HistoricalContext;

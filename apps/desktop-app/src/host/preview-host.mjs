@@ -111,6 +111,7 @@ export function createPreviewHost({
       if (!local) throw fail("URL_DENIED");
       const e = ensure(owner, "url", workspaceId);
       e.error = null;
+      await e.view.ready; // session lockdown (proxy) applied; rejects => open fails closed
       try {
         await e.view.webContents.loadURL(local);
       } catch {
@@ -127,6 +128,13 @@ export function createPreviewHost({
       try {
         e = ensure(owner, "file", workspaceId, site);
       } catch (err) {
+        files.revoke(site.token);
+        throw err;
+      }
+      try {
+        await e.view.ready;
+      } catch (err) {
+        destroy(owner);
         files.revoke(site.token);
         throw err;
       }
