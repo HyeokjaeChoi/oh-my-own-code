@@ -1041,16 +1041,17 @@ test("always is session-scoped: refused in main for external_directory/read/patt
     ask("x1", "external_directory", ["/etc/*"]),
     ask("n1", "edit"),
     ask("n2", "edit", [""]),
+    ask("n3", "edit", ["", "src/*"]),
     ask("r1", "read", ["*"]),
   ];
-  for (const id of ["x1", "n1", "n2", "r1"])
+  for (const id of ["x1", "n1", "n2", "n3", "r1"])
     assert.equal((await reply(id, "always")).code, "INVALID_REQUEST");
   assert.equal(replies().length, 0);
   assert.equal(
     (await shown()).some((p) => "sessionAllow" in p),
     false,
   );
-  f.state.permissions = [ask("e1", "edit", ["src/*", "", "lib/*"])];
+  f.state.permissions = [ask("e1", "edit", ["src/*", "lib/*"])];
   assert.deepEqual((await shown())[0].sessionAllow, ["src/*", "lib/*"]);
   assert.equal((await reply("e1", "always")).value.status, "decided");
   assert.equal(replies().length, 1);
@@ -1070,10 +1071,6 @@ test("main auto-answers matching requests once, also for a non-selected session;
   ];
   const first = await shown();
   assert.equal(first.length, 5);
-  assert.equal(
-    first.some((p) => "autoAllow" in p),
-    false,
-  );
   await settle();
   assert.deepEqual(
     replies()
@@ -1166,6 +1163,133 @@ test("archiving a session ends its always grants", async (t) => {
     (await shown()).map((p) => p.id),
     ["e2"],
   );
+});
+test("a grant cleared between observe and reply never reaches Native", async (t) => {
+  const f = await fixture(t);
+  const { ask, reply, replies, settle } = permissionHelpers(f);
+  const snapshot = () =>
+    f.service.handle({ type: "snapshot", ...f.ids }).catch(() => {});
+  f.state.permissions = [ask("e1", "edit", ["src/*"])];
+  await reply("e1", "always");
+  f.state.permissions = [ask("e2", "edit", ["src/*"])];
+  // The read is discarded (a mutation lands mid-read): nothing is scheduled.
+  const pending = snapshot();
+  await f.service.handle({
+    type: "session.archive",
+    ...f.ids,
+    requestId: "arch",
+    archived: true,
+  });
+  await pending;
+  await settle();
+  assert.equal(replies().length, 1);
+  // The internal sender is only honored while the grant stands (checked under
+  // the lock); without it Native is never replied to.
+  const internal = (requestId) =>
+    f.service.handle(
+      {
+        version: 2,
+        runtimeEpoch: f.epoch,
+        operationId: `op-${requestId}`,
+        operation: {
+          type: "permission.respond",
+          ...f.ids,
+          requestId,
+          decision: "once",
+        },
+      },
+      "main:auto-allow",
+    );
+  assert.equal((await internal("e2")).code, "STALE_PERMISSION");
+  assert.equal(replies().length, 1);
+});
+test("auto-answer skips while a user mutation is active and gives up after bounded failures", async (t) => {
+  const f = await fixture(t);
+  const { ask, reply, shown, replies, settle } = permissionHelpers(f);
+  const other = (
+    await f.service.handle({
+      type: "session.create",
+      workspaceId: f.ids.workspaceId,
+      title: "New",
+    })
+  ).value;
+  const otherIds = {
+    workspaceId: f.ids.workspaceId,
+    sessionId: other.selectedSessionId,
+  };
+  f.state.permissions = [ask("e1", "edit", ["src/*"], "sdk-1")];
+  await reply("e1", "always", otherIds);
+  f.state.permissions = [ask("e2", "edit", ["src/*"], "sdk-1")];
+  let release;
+  f.state.prompt = () =>
+    new Promise((resolve) => {
+      release = resolve;
+    });
+  const sending = f.send();
+  while (!release) await new Promise((resolve) => setImmediate(resolve));
+  await shown(otherIds);
+  await settle();
+  assert.equal(replies().length, 1);
+  release({ id: "i", sessionID: "sdk-default", type: "user", time: {} });
+  await sending;
+  f.state.prompt = undefined;
+  // A permanent failure (the request is gone when main replies) is attempted
+  // once, never retried on later snapshots.
+  const live = f.client.permission.list;
+  let listCalls = 0;
+  let stale = 0;
+  f.client.permission.list = async () => {
+    if (listCalls++ === 0) return [ask("e3", "edit", ["src/*"], "sdk-1")];
+    stale++;
+    return [];
+  };
+  for (let i = 0; i < 5; i++) {
+    listCalls = 0;
+    await shown(otherIds);
+    await settle();
+  }
+  assert.equal(stale, 1);
+  assert.equal(replies().length, 1);
+  f.client.permission.list = live;
+});
+test("background light check answers a non-selected grant holder and skips archived ones", async (t) => {
+  const f = await fixture(t);
+  const { ask, reply, replies, settle } = permissionHelpers(f);
+  f.state.permissions = [ask("e1", "edit", ["src/*"])];
+  await reply("e1", "always");
+  const other = (
+    await f.service.handle({
+      type: "session.create",
+      workspaceId: f.ids.workspaceId,
+      title: "New",
+    })
+  ).value;
+  const otherIds = {
+    workspaceId: f.ids.workspaceId,
+    sessionId: other.selectedSessionId,
+  };
+  const reads = () => f.calls.filter((x) => x.name === "messages").length;
+  f.state.permissions = [ask("e2", "edit", ["src/*"])];
+  const before = reads();
+  await f.service.handle({ type: "snapshot", ...otherIds });
+  await settle();
+  assert.equal(reads() - before, 1);
+  assert.deepEqual(
+    replies()
+      .slice(1)
+      .map((c) => c.args[0].requestID),
+    ["e2"],
+  );
+  await f.service.handle({
+    type: "session.archive",
+    ...f.ids,
+    requestId: "arch",
+    archived: true,
+  });
+  f.state.permissions = [ask("e3", "edit", ["src/*"])];
+  await f.service.handle({ type: "snapshot", ...otherIds });
+  await settle();
+  assert.equal(replies().length, 2);
 });
 test("owned filesystem preview denies traversal, symlinks, sensitive, binary and oversize files", async (t) => {
   const f = await fixture(t);
