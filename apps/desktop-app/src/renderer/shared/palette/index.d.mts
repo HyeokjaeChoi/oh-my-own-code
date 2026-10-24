@@ -7,7 +7,7 @@ export type PaletteAction =
   | { type: "extensions"; sub?: string }
   | {
       type: "panel";
-      panel: "files" | "changes" | "work" | "terminal" | "preview";
+      panel: "files" | "changes" | "work" | "terminal" | "preview" | "plan";
     }
   | { type: "session.create" }
   | { type: "workspace.import" }
