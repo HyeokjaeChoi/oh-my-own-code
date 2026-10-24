@@ -415,18 +415,63 @@ try {
       .click();
   }
 
+  // Turn 1a: a dropped workspace file attaches on the DEFAULT model (the
+  // reported model is pinned for the send) and the chip clears after sending.
+  await writeFile(join(workspace.path, "attached.txt"), "ATTACHED-FIXTURE\n");
+  await page.evaluate(() => {
+    const input = globalThis.document.createElement("input");
+    input.type = "file";
+    input.id = "e2e-drop-source";
+    globalThis.document.body.append(input);
+  });
+  await page.setInputFiles(
+    "#e2e-drop-source",
+    join(workspace.path, "attached.txt"),
+  );
+  const dropOnCard = (type) =>
+    page.evaluate((type) => {
+      const card = globalThis.document.querySelector("[class*=composerCard]");
+      const transfer = new globalThis.DataTransfer();
+      for (const file of globalThis.document.querySelector("#e2e-drop-source")
+        .files)
+        transfer.items.add(file);
+      card.dispatchEvent(
+        new globalThis.DragEvent(type, {
+          bubbles: true,
+          cancelable: true,
+          dataTransfer: transfer,
+        }),
+      );
+    }, type);
+  await dropOnCard("dragover");
+  await dropOnCard("drop");
+  const chip = page.locator("[data-context-item]");
+  await expect(chip).toHaveCount(1, { timeout: 30_000 });
+  await expect(chip).toContainText("attached.txt");
+  await expect(page.locator("[data-context-reason]")).toHaveCount(0);
+  const before = requests.length;
+  await send("describe the attachment");
+  await expect.poll(() => requests.length).toBeGreaterThan(before);
+  await idle();
+  await expect(page.locator("[data-context-item]")).toHaveCount(0);
+  observations.push(
+    "turn 1a: dropped file attached on the default model, sent, chip cleared",
+  );
+
   // Turn 1b: choose agent and model explicitly in the composer.
   await openComposerPopover(page, "agent");
-  const agentSelect = page.getByRole("combobox", { name: "Agent 요청" });
-  const agentValues = await agentSelect
-    .locator("option")
-    .evaluateAll((o) => o.map((x) => x.value).filter(Boolean));
+  const agentRadios = page.locator(
+    '[role="radiogroup"][aria-label="에이전트"] input[type="radio"]',
+  );
+  const agentValues = await agentRadios.evaluateAll((o) =>
+    o.map((x) => x.value).filter(Boolean),
+  );
   assert.ok(agentValues.length > 0, "catalog lists at least one agent");
   // Native injects a plan-mode reminder into requests made under plan.
   const chosenAgent = agentValues.includes("plan")
     ? "plan"
     : agentValues.at(-1);
-  await agentSelect.selectOption(chosenAgent);
+  await agentRadios.and(page.locator(`[value="${chosenAgent}"]`)).check();
   await pickModel(page, "Mock Model Two");
   await closeComposerPopovers(page);
   await send("hello explicit");
@@ -528,7 +573,9 @@ try {
 
   // Turn 4: subagent (subagent tool) delegation round-trip.
   await openComposerPopover(page, "agent");
-  await agentSelect.selectOption("build");
+  await page
+    .locator('[role="radiogroup"][aria-label="에이전트"] input[value="build"]')
+    .check();
   await closeComposerPopovers(page);
   await send("SUBAGENT-FIXTURE");
   await approveUntil(
@@ -568,7 +615,7 @@ try {
   await expect.poll(() => slowClosed, { timeout: 60_000 }).toBe(true);
   await idle();
   await send("hello after interrupt");
-  await expect(page.getByText("Hello from the mock model.")).toHaveCount(3, {
+  await expect(page.getByText("Hello from the mock model.")).toHaveCount(4, {
     timeout: 90_000,
   });
   await idle();

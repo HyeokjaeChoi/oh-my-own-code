@@ -11,6 +11,8 @@ export type Clock = Pick<typeof globalThis, "setTimeout" | "clearTimeout">;
 const readTypes = new Set([
   "permission.policy.read",
   "context.observe",
+  "context.pick",
+  "context.resolve",
   "session.inbox",
   "git.branch.preview.read",
   "git.restore.preview.read",
@@ -37,6 +39,8 @@ const readTypes = new Set([
   "configuration.mcp.read",
   "operation.lookup",
 ]);
+// The native file dialog waits on the user; main enforces its own matching deadline.
+const PICK_TIMEOUT_MS = 120000;
 export const isRead = (operation: WorkbenchRequest) =>
   readTypes.has(operation.type);
 export type ReadRequest = Extract<WorkbenchRequest, { type: ReadType }>;
@@ -51,32 +55,35 @@ const canonical = (value: object) =>
 const lane = (operation: ReadRequest) =>
   operation.type === "operation.lookup"
     ? "lookup"
-    : operation.type === "file.search"
-      ? "search"
-      : operation.type === "permission.policy.read" ||
-          operation.type === "git.branch.preview.read" ||
-          operation.type === "git.restore.preview.read" ||
-          operation.type === "git.commit.preview.read" ||
-          operation.type === "git.index.preview.read" ||
-          operation.type === "git.review.read" ||
-          operation.type === "git.diff.read" ||
-          operation.type.startsWith("file.") ||
-          operation.type === "context.observe" ||
-          operation.type === "session.inbox" ||
-          operation.type === "configuration.read" ||
-          operation.type === "configuration.skill.runtime.read" ||
-          operation.type === "configuration.agent.runtime.read" ||
-          operation.type === "configuration.extensions.read" ||
-          operation.type === "configuration.agent.list" ||
-          operation.type === "configuration.agent.read" ||
-          operation.type === "configuration.skill.list" ||
-          operation.type === "configuration.skill.read" ||
-          operation.type === "configuration.instructions.read" ||
-          operation.type === "configuration.mcp.read"
-        ? "files"
-        : operation.type === "catalog.list"
-          ? "catalog"
-          : "snapshot";
+    : operation.type === "context.pick"
+      ? "pick"
+      : operation.type === "file.search"
+        ? "search"
+        : operation.type === "permission.policy.read" ||
+            operation.type === "git.branch.preview.read" ||
+            operation.type === "git.restore.preview.read" ||
+            operation.type === "git.commit.preview.read" ||
+            operation.type === "git.index.preview.read" ||
+            operation.type === "git.review.read" ||
+            operation.type === "git.diff.read" ||
+            operation.type.startsWith("file.") ||
+            operation.type === "context.observe" ||
+            operation.type === "context.resolve" ||
+            operation.type === "session.inbox" ||
+            operation.type === "configuration.read" ||
+            operation.type === "configuration.skill.runtime.read" ||
+            operation.type === "configuration.agent.runtime.read" ||
+            operation.type === "configuration.extensions.read" ||
+            operation.type === "configuration.agent.list" ||
+            operation.type === "configuration.agent.read" ||
+            operation.type === "configuration.skill.list" ||
+            operation.type === "configuration.skill.read" ||
+            operation.type === "configuration.instructions.read" ||
+            operation.type === "configuration.mcp.read"
+          ? "files"
+          : operation.type === "catalog.list"
+            ? "catalog"
+            : "snapshot";
 export function createTransport(
   bridge: Bridge,
   {
@@ -150,11 +157,14 @@ export function createTransport(
       signal?.addEventListener("abort", abort, { once: true });
     });
     if (fresh) {
-      current.timer = clock.setTimeout(() => {
-        for (const item of [...current.subscribers])
-          item.finish(fail("READ_TIMEOUT"));
-        cancel(current);
-      }, timeoutMs);
+      current.timer = clock.setTimeout(
+        () => {
+          for (const item of [...current.subscribers])
+            item.finish(fail("READ_TIMEOUT"));
+          cancel(current);
+        },
+        operation.type === "context.pick" ? PICK_TIMEOUT_MS : timeoutMs,
+      );
       const envelope = {
         version: 2,
         operation,

@@ -958,6 +958,17 @@ app.whenReady().then(async () => {
       });
       return result.canceled ? undefined : result.filePaths[0];
     },
+    async pickFile(defaultPath, kind) {
+      const folder = kind === "folder";
+      const result = await dialog.showOpenDialog(mainWindow, {
+        title: folder ? "추가할 폴더 선택" : "첨부할 파일 선택",
+        defaultPath,
+        properties: folder
+          ? ["openDirectory"]
+          : ["openFile", "multiSelections"],
+      });
+      return result.canceled ? undefined : result.filePaths;
+    },
     async confirmAgentRuntime({
       action,
       workspacePath,

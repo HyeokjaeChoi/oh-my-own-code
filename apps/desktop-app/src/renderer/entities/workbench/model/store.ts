@@ -251,6 +251,21 @@ export function currentGitReviewScope(s: State, i: GitReviewIdentity): boolean {
       s.gitReview.generation === i.generation,
   );
 }
+// A composer send still waiting for its ACK while the draft still holds the
+// sent text (option changes bump the revision, not the text). The composer
+// shows empty meanwhile; acceptance clears the draft, failure keeps it.
+export function sendInFlight(s: State, key: string): boolean {
+  const text = s.drafts[key]?.text;
+  return Object.values(s.operations).some(
+    (i) =>
+      i.key === key &&
+      i.status === "pending" &&
+      (i.operation.type === "message.send" ||
+        i.operation.type === "command.run") &&
+      i.submitted?.revision != null &&
+      i.submitted.text === text,
+  );
+}
 export function currentGitReviewObservation(
   s: State,
 ): WorkbenchGitReview | undefined {
@@ -8983,6 +8998,12 @@ function reduceWorkbench(state: State, event: Event): State {
       const runtimeCurrent =
         !intent.runtimeScope ||
         currentRuntimeRequestScope(state, intent.runtimeScope);
+      // An accepted send is final: clearing the sent draft does not need the
+      // revision floor (a fresher snapshot may land before the ACK); the draft
+      // revision checks below still keep newer edits.
+      const sentScopeCurrent =
+        !intent.runtimeScope ||
+        currentRuntimeRequestScope(state, intent.runtimeScope, false);
       let next: State = {
         ...state,
         revision:
@@ -9215,9 +9236,17 @@ function reduceWorkbench(state: State, event: Event): State {
         // Configuration saves do not reload previews, clear messages, or imply runtime activation.
         return next;
       }
-      if (intent.conversation && runtimeCurrent && !intent.lookupOnly) {
+      if (
+        intent.conversation &&
+        (runtimeCurrent || sentScopeCurrent) &&
+        !intent.lookupOnly
+      ) {
         const c = next.conversationContext;
-        if (accepted && intent.operation.type === "message.send") {
+        if (
+          accepted &&
+          sentScopeCurrent &&
+          intent.operation.type === "message.send"
+        ) {
           const d = c.drafts[intent.key];
           next = {
             ...next,
@@ -9243,7 +9272,11 @@ function reduceWorkbench(state: State, event: Event): State {
             },
           };
         }
-        if (accepted && intent.operation.type === "session.inbox.cancel")
+        if (
+          accepted &&
+          runtimeCurrent &&
+          intent.operation.type === "session.inbox.cancel"
+        )
           next = {
             ...next,
             conversationContext: {
@@ -9255,6 +9288,7 @@ function reduceWorkbench(state: State, event: Event): State {
           };
         if (
           confirmed &&
+          runtimeCurrent &&
           intent.conversation.branch &&
           receipt.result?.kind === "forked"
         ) {
@@ -9284,8 +9318,11 @@ function reduceWorkbench(state: State, event: Event): State {
         accepted &&
         !intent.lookupOnly &&
         intent.submitted &&
-        runtimeCurrent &&
-        next.drafts[intent.key]?.revision === intent.submitted.revision
+        intent.submitted.revision !== null &&
+        sentScopeCurrent &&
+        // An option change during the send bumps the revision, not the text.
+        (next.drafts[intent.key]?.revision === intent.submitted.revision ||
+          next.drafts[intent.key]?.text === intent.submitted.text)
       )
         next = {
           ...next,
@@ -9294,7 +9331,11 @@ function reduceWorkbench(state: State, event: Event): State {
             [intent.key]: {
               ...next.drafts[intent.key]!,
               text: "",
-              revision: intent.submitted.revision + 1,
+              revision:
+                Math.max(
+                  next.drafts[intent.key]!.revision,
+                  intent.submitted.revision,
+                ) + 1,
             },
           },
         };

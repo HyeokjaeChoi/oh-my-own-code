@@ -3204,6 +3204,40 @@ export function createFixtureTransport(
   function readResult(request) {
     if (request.type === "permission.policy.read")
       return readPermissionPolicyFixture(fixture, request);
+    // Synthetic Main: tests set fixture.contextPick / contextResolve to
+    // {files, folders, refused}; unset means a cancelled dialog / no result.
+    if (request.type === "context.pick" || request.type === "context.resolve") {
+      const result =
+        request.type === "context.pick"
+          ? fixture.contextPick
+          : fixture.contextResolve;
+      return result
+        ? { ok: true, value: clone(result) }
+        : failure(
+            request.type === "context.pick" ? "CANCELLED" : "FILE_DENIED",
+          );
+    }
+    // `@` mention search: a fixed synthetic tree, filtered by name.
+    if (request.type === "file.search")
+      return {
+        ok: true,
+        value: {
+          query: request.query,
+          mode: request.mode,
+          truncated: false,
+          results: [
+            "src/app.ts",
+            "src/lib/app-state.ts",
+            "docs/app-guide.md",
+            "README.md",
+            ...(fixture.syntheticContextFiles?.keys() ?? []),
+          ]
+            .filter((path) =>
+              path.toLowerCase().includes(request.query.toLowerCase()),
+            )
+            .map((path) => ({ path })),
+        },
+      };
     if (["context.observe", "session.inbox"].includes(request.type))
       return readContextFixture(fixture, request, gitSender);
     if (

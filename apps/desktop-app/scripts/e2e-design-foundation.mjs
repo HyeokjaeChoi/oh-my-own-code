@@ -21,6 +21,7 @@ import {
   modelOption,
   openCommandMenu,
   openCommandMenuShortcut,
+  openComposerPopover,
   pickModel,
   pickVariant,
 } from "./e2e-composer.mjs";
@@ -382,8 +383,18 @@ const popover = async (kind) =>
   page.locator(`[id="${await chip(kind).getAttribute("popovertarget")}"]`);
 const field = (name) =>
   page.getByRole("combobox", { name, exact: true, includeHidden: true });
+// Agent rows are radios: values are agent ids, labels are display names.
+const agentRadio = (id) =>
+  page.locator(
+    `[role="radiogroup"][aria-label="에이전트"] input[value="${id}"]`,
+  );
+const checkedAgent = () =>
+  page.locator('[role="radiogroup"][aria-label="에이전트"] input:checked');
 // Opens via the keyboard (Enter/Space on the chip) when it is closed.
 async function expandPopover(kind, key = "Enter") {
+  // Default agent mode has no chip: the `/` menu entry opens its popover.
+  if (kind === "agent" && !(await chip("agent").count()))
+    return openComposerPopover(page, "agent");
   const panel = await popover(kind);
   if (!(await panel.evaluate((el) => el.matches(":popover-open")))) {
     await reveal(chip(kind));
@@ -436,15 +447,45 @@ async function recordValue(locator, label) {
 }
 async function choose(scope) {
   await expandPopover("agent");
-  await field("Agent 요청").selectOption(scope.agent);
+  await agentRadio(scope.agent).check();
   await pickModel(page, scope.model);
   await pickVariant(page, scope.variant);
 }
-async function observe(scope) {
+// The native dialog is synthetic: the fixture answers with the contained result.
+async function pickFiles(scope) {
+  await application.evaluate(
+    (_electron, files) => {
+      globalThis.__omocUiFixture.contextPick = {
+        files,
+        folders: [],
+        refused: 0,
+      };
+    },
+    [scope.path],
+  );
   await expandPopover("attach");
-  await hook("path").fill(scope.path);
-  await hook("observe").click();
+  await page.getByRole("menuitem", { name: /^파일 추가/ }).click();
+}
+async function observe(scope) {
+  await pickFiles(scope);
   await expect(hook("item")).toHaveCount(1);
+}
+// A chip opens its preview popover; Esc closes it and returns focus to the chip.
+async function openChipPreview() {
+  await reveal(hook("open"));
+  await hook("open").click();
+  await expect(hook("preview")).toBeVisible();
+}
+async function closeChipPreview() {
+  const baseline = await counters();
+  await page.keyboard.press("Escape");
+  await expect(hook("preview")).toBeHidden();
+  await expect(hook("open")).toBeFocused();
+  assert.deepEqual(
+    await counters(),
+    baseline,
+    "Closing must not read or mutate",
+  );
 }
 async function criticalOutsideTask(locator) {
   await expect(locator).toBeVisible();
@@ -601,7 +642,7 @@ async function exerciseFoundation() {
         "SYNTHETIC Foundation · 긴 한국어 입력 · 다음 요청을 편집합니다.",
       );
       // With no explicit request, the chips name what the session reports.
-      await expect(chip("agent")).toContainText("session-agent");
+      await expect(chip("agent")).toHaveCount(0);
       await expect(chip("model")).toContainText("session-model");
       await expect(send()).toHaveAttribute(
         "title",
@@ -619,21 +660,33 @@ async function exerciseFoundation() {
         await expect(
           page.getByRole("switch", { name: "무료만" }),
         ).toBeFocused();
-        await page.keyboard.press("Tab");
+        await reveal(
+          page
+            .locator('[data-runtime-source="requested"]')
+            .filter({ has: page.locator("[data-model-picker]") }),
+        );
+        await shot(`${prefix}-expanded-requested`);
+        await recordValue(modelOption(page, scope.model), `${prefix}-모델`);
+        await closePopover(
+          "model",
+          page.getByRole("switch", { name: "무료만" }),
+        );
+        // Reasoning levels are their own chip; opening it focuses the checked level.
+        await expandPopover("effort");
         const variantRadio = page.getByRole("radio", {
           name: scope.variant,
           exact: true,
         });
         await expect(variantRadio).toBeFocused();
-        await reveal(page.locator('[data-runtime-source="requested"]').last());
-        await shot(`${prefix}-expanded-requested`);
-        await recordValue(modelOption(page, scope.model), `${prefix}-모델`);
         await recordValue(variantRadio.locator(".."), `${prefix}-추론 강도`);
-        await closePopover("model", variantRadio);
-        await expect(chip("model")).toContainText(scope.variant);
+        await closePopover("effort", variantRadio);
+        await expect(chip("effort")).toContainText(scope.variant);
         await expandPopover("agent");
-        await recordValue(field("Agent 요청"), `${prefix}-Agent 요청`);
-        await closePopover("agent", field("Agent 요청"));
+        await recordValue(
+          checkedAgent().locator("xpath=.."),
+          `${prefix}-에이전트`,
+        );
+        await closePopover("agent", checkedAgent());
         await reveal(send());
         await send().focus();
         await expect(send()).toBeFocused();
@@ -645,6 +698,8 @@ async function exerciseFoundation() {
         await chip("agent").focus();
         await page.keyboard.press("Tab");
         await expect(chip("model")).toBeFocused();
+        await page.keyboard.press("Tab");
+        await expect(chip("effort")).toBeFocused();
         await page.keyboard.press("Tab");
         await expect(chip("permission")).toBeFocused();
         await page.keyboard.press("Tab");
@@ -658,52 +713,54 @@ async function exerciseFoundation() {
   await composer().fill("SYNTHETIC attachment draft stays editable");
   await stagedOnly("attachment-keyboard-open", async () => {
     await expandPopover("attach", "Space");
-    await hook("path").fill(scope.path);
-    await hook("path").focus();
-    await page.keyboard.press("Tab");
-    await expect(hook("observe")).toBeFocused();
-    await page.keyboard.press("Shift+Tab");
-    await expect(hook("path")).toBeFocused();
+    const items = page.getByRole("menuitem");
+    await expect(items.first()).toBeFocused();
+    await page.keyboard.press("ArrowDown");
+    await expect(items.nth(1)).toBeFocused();
+    await page.keyboard.press("Escape");
+    await expect(await popover("attach")).toBeHidden();
+    await expect(chip("attach")).toBeFocused();
   });
   await observe(scope);
+  await openChipPreview();
   await expect(hook("text")).toHaveText(scope.text);
-  await closePopover("attach", hook("path"));
-  await expect(hook("summary")).toBeVisible();
+  await closeChipPreview();
+  await expect(hook("chips")).toBeVisible();
   await reveal(hook("item"));
   await shot("attachment-compact-collapsed");
+  await openChipPreview();
   await stagedOnly("attachment-metadata-disclosure", async () => {
-    await expand(hook("item").locator("details"));
-    await reveal(hook("item").locator("dl"));
+    await expand(hook("preview").locator("details"));
+    await reveal(hook("preview").locator("dl"));
     await shot("attachment-expanded-original-metadata");
     await recordValue(
-      hook("item").locator("dl"),
+      hook("preview").locator("dl"),
       "original-path-size-source-version-hash",
     );
     await display("dark", 760, 2);
     for (const [index, label] of [
       [0, "long-source-path"],
-      [4, "original-sha256"],
+      [3, "original-sha256"],
     ]) {
-      const value = hook("item").locator("dd").nth(index);
+      const value = hook("preview").locator("dd").nth(index);
       await reveal(value);
       await shot(`attachment-200-${label}`);
       await recordValue(value, label);
     }
   });
   await display("light", 1440);
-  await hook("reobserve").click();
   await expect(hook("text")).toHaveText(scope.text);
   await reveal(hook("text"));
   await shot("attachment-explicit-reobserve-preview");
   await stagedOnly("preview-close-restores-origin", async () => {
     await hook("close-preview").click();
     await expect(hook("preview")).toHaveCount(0);
-    await expect(hook("reobserve")).toBeFocused();
+    await expect(hook("open")).toBeFocused();
   });
   assert.equal(
     (await counters()).contextReads,
-    2,
-    "Only the two explicit file requests are permitted",
+    3,
+    "Only the attach and two explicit chip-open requests are permitted",
   );
 
   scope = await scenario("ready");
@@ -769,34 +826,28 @@ async function exerciseFoundation() {
     await expect(chip("model").locator("[data-runtime-mismatch]")).toHaveCount(
       1,
     );
-    await expect(chip("model")).toHaveAttribute("title", /session\.variant/);
+    await expect(chip("effort")).toHaveAttribute("title", /session\.variant/);
     await shot("running-native-report-separate-from-request");
     await closePopover(
-      "model",
+      "effort",
       page.getByRole("radio", { name: "other.variant", exact: true }),
     );
-    await expect(chip("model")).toContainText("other.variant");
-    // The run strip appears only while a run is active.
+    await expect(chip("effort")).toContainText("other.variant");
+    // The run strip appears only while a run is active and owns the run controls.
     await expect(page.locator("[data-run-strip]")).toBeVisible();
-    await expandPopover("run", "Space");
-    await expect(hook("running")).toContainText("현재 실행 설정을 사용합니다");
     await expect(hook("steer")).toBeEnabled();
     await expect(hook("queue")).toBeEnabled();
-    await reveal(hook("running"));
+    await reveal(hook("steer"));
     await shot("running-current-run-task");
-    await closePopover("run", hook("queue"));
   });
 
   scope = await scenario("unsupported");
   await display("light", 320);
-  await expandPopover("attach");
-  await hook("path").fill(scope.path);
-  await hook("observe").click();
+  await pickFiles(scope);
   await expect(hook("error")).toHaveAttribute(
     "data-context-error",
     "unsupported_content",
   );
-  await closePopover("attach", hook("path"));
   await criticalOutsideTask(hook("error"));
   await reveal(hook("error"));
   await shot("unsupported-outside-closed-task");
@@ -806,19 +857,19 @@ async function exerciseFoundation() {
   await expandPopover("model");
   await pickModel(page, scope.model);
   await closeComposerPopovers(page);
-  await expandPopover("attach");
-  await closePopover("attach", hook("path"));
   await composer().fill("SYNTHETIC unsupported model input stays editable");
   await expect(send()).toBeDisabled();
-  await criticalOutsideTask(hook("send-blocked"));
-  await reveal(hook("send-blocked"));
+  await expect(hook("reason")).toContainText(
+    "현재 모델은 이 형식을 지원하지 않습니다",
+  );
+  await criticalOutsideTask(hook("reason"));
+  await reveal(hook("reason"));
   await shot("unsupported-model-outside-closed-task");
 
   scope = await scenario("ready");
   await display("light", 760, 2);
   await page.clock.install();
   await observe(scope);
-  await closePopover("attach", hook("path"));
   await application.evaluate(() =>
     globalThis.__omocUiFixture.expireContextCapabilities(),
   );

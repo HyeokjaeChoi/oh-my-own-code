@@ -11,7 +11,6 @@
 }
 
 .section > [role="alert"],
-.section > [data-context-send-blocked],
 .section > [data-context-held] {
   padding: 8px 12px;
   border-radius: var(--omoc-component-size-control-radius);
@@ -231,4 +230,292 @@
   color: var(--omoc-semantic-color-text-secondary);
   font-size: var(--omoc-semantic-type-size-caption);
   line-height: var(--omoc-semantic-type-line-caption);
+}
+
+.body > .pickError,
+.body > .reason,
+.controls > .reason {
+  margin: 0;
+  font-size: var(--omoc-semantic-type-size-caption);
+  line-height: var(--omoc-semantic-type-line-caption);
+}
+
+.body > .pickError {
+  color: var(--omoc-semantic-color-danger-foreground);
+}
+
+.reason,
+.hint {
+  color: var(--omoc-semantic-color-text-secondary);
+}
+
+.body > .hint {
+  margin: 0;
+  font-size: var(--omoc-semantic-type-size-caption);
+  line-height: var(--omoc-semantic-type-line-caption);
+}
+
+.pathRow {
+  display: flex;
+  gap: 8px;
+  min-width: 0;
+}
+
+.pathRow > input {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+/* Run controls inside the composer's run strip. */
+.stripActions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+  min-width: 0;
+}
+
+.stripActions .reason {
+  font-size: var(--omoc-semantic-type-size-caption);
+  line-height: var(--omoc-semantic-type-line-caption);
+}
+
+/* Attach menu (inside a popover) */
+.menu {
+  display: grid;
+  gap: 2px;
+}
+
+.menuItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: var(--omoc-component-size-control-hit-target);
+  padding: 6px 8px;
+  border: 0;
+  border-radius: var(--omoc-primitive-radius-sm);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+
+.menuItem > span {
+  flex: 1;
+  min-width: 0;
+}
+
+.menuItem small {
+  display: block;
+  color: var(--omoc-semantic-color-text-secondary);
+  font-size: var(--omoc-semantic-type-size-caption);
+}
+
+.menuItem kbd {
+  padding: 0 6px;
+  border: 1px solid var(--omoc-component-color-input-border);
+  border-radius: var(--omoc-primitive-radius-sm);
+  color: var(--omoc-semantic-color-text-secondary);
+  font: inherit;
+  font-size: var(--omoc-semantic-type-size-caption);
+}
+
+.menuItem:hover:not(:disabled),
+.menuItem:focus-visible {
+  background: var(--omoc-semantic-color-surface-subtle);
+}
+
+.menuItem:focus-visible {
+  outline: 2px solid var(--omoc-semantic-color-focus);
+  outline-offset: -2px;
+}
+
+.menuItem:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+
+/* Attachment chips inside the composer card */
+.chipRow {
+  anchor-name: --chips;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-width: 0;
+  margin: 0;
+  padding: 8px 12px 0;
+  list-style: none;
+}
+
+.attChip {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  max-width: 100%;
+  min-width: 0;
+  border: 1px solid var(--omoc-component-color-input-border);
+  border-radius: var(--omoc-primitive-radius-md);
+  background: var(--omoc-semantic-color-surface-subtle);
+  font-size: var(--omoc-semantic-type-size-caption);
+  line-height: 18px;
+}
+
+.attChip[data-state="warn"] {
+  border-color: var(--omoc-semantic-color-warning-foreground);
+}
+
+.attMain,
+.attRemove {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.attMain {
+  max-width: 100%;
+  min-height: 32px;
+  padding: 2px 4px 2px 8px;
+  border-radius: var(--omoc-primitive-radius-md);
+}
+
+.attMain svg {
+  flex: none;
+}
+
+.attName {
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.attSize {
+  flex: none;
+  color: var(--omoc-semantic-color-text-secondary);
+}
+
+.attThumb {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  object-fit: cover;
+}
+
+.attRemove {
+  flex: none;
+  justify-content: center;
+  width: 32px;
+  min-height: 32px;
+  border-radius: var(--omoc-primitive-radius-md);
+  color: var(--omoc-semantic-color-text-secondary);
+}
+
+.attMain:hover,
+.attRemove:hover {
+  background: color-mix(in srgb, currentcolor 8%, transparent);
+}
+
+.attMain:focus-visible,
+.attRemove:focus-visible,
+.attReason button:focus-visible {
+  outline: 2px solid var(--omoc-semantic-color-focus);
+  outline-offset: -2px;
+}
+
+.attReason {
+  grid-column: 1 / -1;
+  padding: 0 8px 6px;
+  color: var(--omoc-semantic-color-warning-foreground);
+  overflow-wrap: anywhere;
+}
+
+.attReason button {
+  margin-inline-start: 6px;
+  padding: 0 4px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* `@` mention list: a listbox above the composer card, like the popovers */
+.mention {
+  position: fixed;
+  inset: auto;
+  top: 8px;
+  bottom: max(8px, calc(anchor(--composer top) + 8px));
+  left: clamp(8px, anchor(--composer left), calc(100vw - 440px - 8px));
+  align-self: end;
+  box-sizing: border-box;
+  margin: 0;
+  width: min(440px, calc(100vw - 16px));
+  height: fit-content;
+  max-height: min(320px, stretch);
+  padding: 4px;
+  overflow: auto;
+  overscroll-behavior: contain;
+  border: 1px solid transparent;
+  border-radius: var(--omoc-primitive-radius-md);
+  background: var(--omoc-semantic-color-surface-raised);
+  color: var(--omoc-semantic-color-text-primary);
+  box-shadow: var(--omoc-semantic-shadow-overlay);
+  font-size: var(--omoc-semantic-type-size-label);
+  line-height: 20px;
+}
+
+.mention:not(:popover-open) {
+  display: none;
+}
+
+.mention ul {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mention li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 32px;
+  padding: 4px 8px;
+  border-radius: var(--omoc-primitive-radius-sm);
+  cursor: pointer;
+}
+
+.mention li svg {
+  flex: none;
+}
+
+.mention li span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mention li[aria-selected="true"] {
+  background: var(--omoc-semantic-color-surface-subtle);
+  outline: 2px solid var(--omoc-semantic-color-focus);
+  outline-offset: -2px;
+}
+
+.mentionHint {
+  margin: 0;
+  padding: 6px 8px;
+  color: var(--omoc-semantic-color-text-secondary);
 }

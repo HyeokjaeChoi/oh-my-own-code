@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { createHash } from "node:crypto";
+import { createHash, randomUUID } from "node:crypto";
 import {
   mkdtemp,
   rm,
@@ -206,6 +206,11 @@ async function fixture(
     ...(contextIO && { contextIO }),
     runtime,
     pickDirectory: async () => state.pick,
+    pickFile: async (dir, kind) => {
+      state.pickedFrom = dir;
+      state.pickedKind = kind;
+      return state.pickFile;
+    },
     probeWorkspace: async (path) => ({
       branch: "main",
       writable: path !== "x",
@@ -245,6 +250,147 @@ async function fixture(
       }),
   };
 }
+test("context.pick and context.resolve contain every path in the workspace", async (t) => {
+  const f = await fixture(t);
+  const read = (operation) =>
+    f.service.handle(
+      {
+        version: 2,
+        runtimeEpoch: f.epoch,
+        readId: randomUUID(),
+        operation: { workspaceId: f.ids.workspaceId, ...operation },
+      },
+      "pick-sender",
+    );
+  const pick = (kind) => read({ type: "context.pick", ...(kind && { kind }) });
+  const resolve = (paths) => read({ type: "context.resolve", paths });
+  await mkdir(join(f.workspace, "src"));
+  await writeFile(join(f.workspace, "src", "app.ts"), "x");
+  await writeFile(join(f.workspace, "b.txt"), "x");
+  await writeFile(join(f.root, "outside.txt"), "x");
+  await mkdir(join(f.root, "outside-dir"));
+  await symlink(join(f.root, "outside.txt"), join(f.workspace, "link.txt"));
+  await symlink(join(f.root, "outside-dir"), join(f.workspace, "dirlink"));
+  const rootReal = await realpath(f.workspace);
+
+  // File pick: multi-select, each canonicalized; outside entries are counted.
+  f.state.pickFile = [
+    join(f.workspace, "src", "app.ts"),
+    join(f.workspace, "b.txt"),
+    join(f.root, "outside.txt"),
+    join(f.workspace, "link.txt"),
+    join(f.workspace, "missing.txt"),
+  ];
+  assert.deepEqual(await pick(), {
+    ok: true,
+    value: { files: ["src/app.ts", "b.txt"], folders: [], refused: 3 },
+  });
+  assert.equal(f.state.pickedFrom, rootReal);
+  assert.equal(f.state.pickedKind, "file");
+  // A directory in a file pick is not a file.
+  f.state.pickFile = [join(f.workspace, "src")];
+  assert.deepEqual((await pick()).value, {
+    files: [],
+    folders: [],
+    refused: 1,
+  });
+  // Folder pick: workspace root maps to "", subfolders to their relative path.
+  f.state.pickFile = [f.workspace];
+  assert.deepEqual((await pick("folder")).value, {
+    files: [],
+    folders: [""],
+    refused: 0,
+  });
+  f.state.pickFile = [join(f.workspace, "src")];
+  assert.deepEqual((await pick("folder")).value.folders, ["src"]);
+  assert.equal(f.state.pickedKind, "folder");
+  for (const outside of [
+    f.root,
+    join(f.root, "outside-dir"),
+    join(f.workspace, "dirlink"),
+  ]) {
+    f.state.pickFile = [outside];
+    assert.deepEqual((await pick("folder")).value, {
+      files: [],
+      folders: [],
+      refused: 1,
+    });
+  }
+  // Cancel and caps.
+  f.state.pickFile = undefined;
+  assert.equal((await pick()).code, "CANCELLED");
+  f.state.pickFile = Array.from({ length: 20 }, () =>
+    join(f.workspace, "b.txt"),
+  );
+  const capped = (await pick()).value;
+  assert.equal(capped.files.length, 16);
+  assert.equal(capped.refused, 4);
+  assert.notEqual(
+    (await read({ type: "context.pick", workspaceId: "nope" })).ok,
+    true,
+  );
+
+  // Drag-and-drop resolution uses the same containment.
+  assert.deepEqual(
+    (
+      await resolve([
+        join(f.workspace, "b.txt"),
+        join(f.workspace, "src"),
+        join(f.root, "outside.txt"),
+        join(f.workspace, "link.txt"),
+        join(f.workspace, "dirlink"),
+        join(f.workspace, "nope"),
+      ])
+    ).value,
+    { files: ["b.txt"], folders: ["src"], refused: 4 },
+  );
+  assert.equal((await resolve(["relative/path.txt"])).code, "INVALID_REQUEST");
+  assert.equal((await resolve([])).code, "INVALID_REQUEST");
+  assert.equal(
+    (
+      await resolve(
+        Array.from({ length: 17 }, () => join(f.workspace, "b.txt")),
+      )
+    ).code,
+    "INVALID_REQUEST",
+  );
+  assert.equal(
+    (await resolve(["/" + "a".repeat(2050)])).code,
+    "INVALID_REQUEST",
+  );
+  assert.equal(
+    (await read({ type: "context.pick", kind: "other" })).code,
+    "INVALID_REQUEST",
+  );
+});
+test("context.resolve refuses lexically outside paths without touching the filesystem", async (t) => {
+  const f = await fixture(t);
+  await writeFile(join(f.workspace, "in.txt"), "x");
+  // Outside the workspace, but its realpath is inside: only a lexical
+  // pre-filter (before any realpath) refuses it.
+  await symlink(join(f.workspace, "in.txt"), join(f.root, "alias-in.txt"));
+  const result = await f.service.handle(
+    {
+      version: 2,
+      runtimeEpoch: f.epoch,
+      readId: randomUUID(),
+      operation: {
+        workspaceId: f.ids.workspaceId,
+        type: "context.resolve",
+        paths: [
+          join(f.root, "alias-in.txt"),
+          join(f.workspace, "..", "alias-in.txt"),
+          join(f.workspace, "in.txt"),
+        ],
+      },
+    },
+    "resolve-sender",
+  );
+  assert.deepEqual(result, {
+    ok: true,
+    value: { files: ["in.txt"], folders: [], refused: 2 },
+  });
+});
 test("explicit extension read has exact scope/clocks and no session/configuration effects", async (t) => {
   const f = await fixture(t);
   const before = await f.service.handle({ type: "snapshot" });

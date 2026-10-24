@@ -1,12 +1,11 @@
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { Check } from "lucide-react";
-import { Input, Segmented, Switch } from "@workbench/ui";
+import { Input, Switch } from "@workbench/ui";
 import {
   defaultFreeOnly,
   defaultModelText,
   groupModels,
   modelDisplayName,
-  variantLabel,
   type WorkbenchCatalog,
 } from "../../shared/api/index.js";
 import {
@@ -29,15 +28,12 @@ type Row = {
 type Props = {
   entries: Entry[];
   model: string;
-  variant: string;
-  variantCleared: boolean;
   // Name the session reports, shown on the default row.
   reportedName?: string | undefined;
   disabled: boolean;
   // Catalog ids that answered "not available for free"; still selectable.
   unavailable: readonly string[];
   onModel(_id: string): void;
-  onVariant(_variant: string): void;
   close(): void;
 };
 
@@ -45,7 +41,7 @@ type Props = {
 // search field keeps focus and points at the active row, so typing, arrows,
 // Enter and Esc all work from one place.
 export function ModelPicker(props: Props) {
-  const { entries, model, variant } = props;
+  const { entries, model } = props;
   const base = useId();
   const search = useRef<HTMLInputElement>(null);
   const list = useRef<HTMLDivElement>(null);
@@ -89,8 +85,6 @@ export function ModelPicker(props: Props) {
   const rows: Row[] = [...lead, ...groupRows.flatMap((group) => group.rows)];
   const optionId = (index: number) => `${base}-option-${index}`;
   const selectedIndex = rows.findIndex((row) => row.id === model);
-  const variants = selected?.variants;
-  const variantIds = variants?.status === "available" ? variants.ids : [];
 
   // Mounted only while the popover is open: every opening starts a fresh
   // search with the selected row active.
@@ -119,12 +113,7 @@ export function ModelPicker(props: Props) {
           entries.map((entry) => entry.id),
         ),
       );
-    const chosen = entries.find((entry) => entry.id === row.id);
-    // A model with reasoning levels keeps the picker open for them.
-    if (
-      !(chosen?.variants?.status === "available" && chosen.variants.ids.length)
-    )
-      props.close();
+    props.close();
   };
   let index = -1;
   const option = (row: Row) => {
@@ -245,49 +234,7 @@ export function ModelPicker(props: Props) {
           </p>
         )}
       </div>
-      {((model && variantIds.length > 0) || variant) && (
-        <div className={styles.modelVariant}>
-          <span id={`${base}-variant`}>추론 강도</span>
-          <Segmented
-            aria-labelledby={`${base}-variant`}
-            name={`${base}-variant`}
-            value={variant}
-            disabled={props.disabled}
-            onChange={props.onVariant}
-            options={[
-              { value: "", label: "기본" },
-              ...(variant && !variantIds.includes(variant)
-                ? [
-                    {
-                      value: variant,
-                      label: `${variantLabel(variant)} (사용 불가)`,
-                    },
-                  ]
-                : []),
-              ...variantIds.map((id) => ({
-                value: id,
-                label: variantLabel(id),
-              })),
-            ]}
-          />
-        </div>
-      )}
-      {model && variants?.status !== "available" && (
-        <p className={styles.runtimeHint}>
-          추론 강도 목록을 확인할 수 없습니다. 요청 없이 모델을 사용할 수
-          있습니다.
-        </p>
-      )}
       <p className={styles.runtimeHint}>선택은 다음 전송부터 적용됩니다.</p>
-      {props.variantCleared && (
-        <p
-          className={styles.runtimeHint}
-          role="status"
-          data-variant-cleared="true"
-        >
-          모델을 바꿔 이전 추론 강도 요청을 지웠습니다.
-        </p>
-      )}
     </div>
   );
 }

@@ -108,6 +108,7 @@ export {
   currentGitReviewObservation,
   currentGitDiffObservation,
   gitReviewHeld,
+  sendInFlight,
 } from "./model/store.js";
 export type {
   GitReview,

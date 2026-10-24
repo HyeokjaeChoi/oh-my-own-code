@@ -1,14 +1,19 @@
 // Composer controls live in native popovers anchored to footer chips
-// (파일 첨부 "+", Agent, 모델, 권한 모드). Open one before touching its fields.
+// (첨부 및 추가 "+", 에이전트, 모델, 추론 강도, 권한 모드) and to the run strip
+// (대기열). Open one before touching its fields.
 import { expect } from "@playwright/test";
 
 export const COMPOSER_POPOVERS = {
-  attach: "파일 첨부와 미리보기",
-  agent: "Agent:",
+  attach: "첨부 및 추가",
+  agent: "에이전트 모드:",
   model: "모델:",
+  effort: "추론 강도:",
   permission: "권한 모드:",
-  run: "현재 실행 · 추가 지시와 대기열",
 };
+
+// The queue trigger lives in the run strip (visible only while running or
+// with a queue), and its name overlaps the "대기열에 추가" button.
+const inboxTrigger = (page) => page.locator("[data-context-inbox-trigger]");
 
 /**
  * Opens (if closed) the popover behind the named trigger and returns its panel.
@@ -16,9 +21,23 @@ export const COMPOSER_POPOVERS = {
  * click-if-closed + visible check is retried until it holds.
  */
 export async function openComposerPopover(page, kind) {
-  const trigger = page
-    .getByRole("button", { name: COMPOSER_POPOVERS[kind] })
-    .first();
+  // The agent indicator exists only for a non-default requested agent; the
+  // default mode is reached through the `/` menu entry.
+  if (
+    kind === "agent" &&
+    !(await page.getByRole("button", { name: COMPOSER_POPOVERS.agent }).count())
+  ) {
+    await closeComposerPopovers(page);
+    await openCommandMenuShortcut(page);
+    await page.getByRole("button", { name: "에이전트 모드 바꾸기" }).click();
+    const panel = page.getByRole("group", { name: "에이전트", exact: true });
+    await expect(panel).toBeVisible();
+    return panel;
+  }
+  const trigger =
+    kind === "inbox"
+      ? inboxTrigger(page)
+      : page.getByRole("button", { name: COMPOSER_POPOVERS[kind] }).first();
   const id = await trigger.getAttribute("popovertarget");
   const panel = page.locator(`[id="${id}"]`);
   await expect(async () => {
@@ -63,16 +82,31 @@ export async function pickModel(page, key) {
   return panel;
 }
 
-/** Picks a reasoning level ("" = 기본) in the open or reopened model popover. */
+/**
+ * Picks a reasoning level ("" = 기본) in the effort popover. The effort chip
+ * only exists while the model offers levels or one is requested.
+ */
 export async function pickVariant(page, value) {
-  const panel = await openComposerPopover(page, "model");
-  await expect(panel.getByRole("listbox", { name: "모델" })).toBeVisible();
-  // No reasoning levels listed: nothing to clear.
-  if (!value && !(await panel.getByRole("radiogroup").count())) return panel;
+  const chip = page.getByRole("button", { name: COMPOSER_POPOVERS.effort });
+  // No chip: no reasoning levels listed, nothing to clear.
+  if (!value && !(await chip.count())) return undefined;
+  const panel = await openComposerPopover(page, "effort");
   await panel
-    .getByRole("radio", { name: value || "기본", exact: true })
+    .getByRole("radio", {
+      name: value || "기본 (모델 기본값)",
+      exact: true,
+    })
     .check();
   return panel;
+}
+
+/** Native popovers must sit above the composer card, never over the input. */
+export async function expectAboveComposer(page, panel) {
+  const gap = await panel.evaluate((el) => {
+    const card = el.ownerDocument.querySelector("[class*=composerCard]");
+    return card.getBoundingClientRect().top - el.getBoundingClientRect().bottom;
+  });
+  expect(gap).toBeGreaterThanOrEqual(-0.5);
 }
 
 /** Opens the command menu the way a user does: "/" in an empty composer. */

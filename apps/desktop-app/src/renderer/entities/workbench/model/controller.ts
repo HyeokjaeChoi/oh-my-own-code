@@ -800,11 +800,155 @@ export function createWindowWorkbench(
       inbox,
       ...(result.ok ? { value: result.value } : { error: result.code }),
     });
-    return (
+    const added =
       result.ok &&
       currentRuntimeRequestScope(store.getState(), identity.scope) &&
-      !store.getState().conversationContext.error
-    );
+      !store.getState().conversationContext.error;
+    if (added && !inbox) pinReportedModel();
+    return added;
+  }
+  // Attachments need an explicit model: with the session default selected,
+  // pin the model the session reports (when the catalog lists it).
+  function pinReportedModel() {
+    const state = store.getState();
+    if (selectors.draft(state).model) return;
+    // The session's own report, else what the latest reply ran on.
+    const reported =
+      selectors.currentSessionSetting(state)?.model ??
+      (state.snapshot?.selectedSessionId === state.selection.sessionId
+        ? state.snapshot?.messages.filter((m) => m.role === "assistant").at(-1)
+            ?.runtime?.model
+        : undefined);
+    const entries =
+      state.catalog?.models.status === "available"
+        ? state.catalog.models.entries
+        : [];
+    const entry =
+      reported &&
+      entries.find(
+        (e) =>
+          e.providerId === reported.providerId && e.modelId === reported.id,
+      );
+    if (entry)
+      dispatch({
+        type: "draft",
+        key: selectionKey(
+          state.selection.workspaceId,
+          state.selection.sessionId,
+        ),
+        model: entry.id,
+      });
+  }
+  type ContextPaths =
+    | { ok: true; files: string[]; folders: string[]; refused: number }
+    | { ok: false; code: string };
+  // Pickers and drag-and-drop only suggest workspace-relative paths (main did
+  // the containment); attaching still goes through observeContext.
+  async function readContextPaths(
+    operation: Extract<
+      ReadRequest,
+      { type: "context.pick" | "context.resolve" }
+    >,
+    state = store.getState(),
+  ): Promise<ContextPaths> {
+    if (
+      disposed ||
+      !state.epoch ||
+      !state.selection.workspaceId ||
+      !contextEffectsReady(state)
+    )
+      return { ok: false, code: "UNAVAILABLE" };
+    const { workspaceId } = state.selection,
+      { epoch } = state;
+    const result = await transport.read<{
+      files: string[];
+      folders: string[];
+      refused: number;
+    }>({ ...operation, workspaceId }, epoch);
+    // The dialog can outlive the scope it was opened for: drop a stale result.
+    const now = store.getState();
+    if (
+      disposed ||
+      now.epoch !== epoch ||
+      now.selection.workspaceId !== workspaceId
+    )
+      return { ok: false, code: "CANCELLED" };
+    if (!result.ok) return { ok: false, code: result.code };
+    const { files, folders, refused } = result.value ?? {};
+    return Array.isArray(files) &&
+      Array.isArray(folders) &&
+      Number.isSafeInteger(refused) &&
+      files.length <= 16 &&
+      folders.length <= 16 &&
+      files.every((p) => validWorkspaceFilePath(p)) &&
+      folders.every((p) => p === "" || validWorkspaceFilePath(p))
+      ? { ok: true, files, folders, refused }
+      : { ok: false, code: "FILE_DENIED" };
+  }
+  const pickContextPaths = (kind: "file" | "folder") =>
+    readContextPaths({ type: "context.pick", kind, workspaceId: "" });
+  function resolveDroppedFiles(files: File[]): Promise<ContextPaths> {
+    const paths = files
+      .slice(0, 16)
+      .map((file) => bridge.getPathForFile?.(file) ?? "")
+      .filter((path) => path.startsWith("/") || /^[A-Za-z]:[\\/]/.test(path));
+    return paths.length
+      ? readContextPaths({ type: "context.resolve", workspaceId: "", paths })
+      : Promise.resolve({ ok: false, code: "FILE_DENIED" });
+  }
+  // Observes each path in turn; returns how many were added.
+  async function attachContextFiles(paths: string[]): Promise<number> {
+    let added = 0;
+    for (const path of paths) if (await observeConversation(path)) added++;
+    return added;
+  }
+  let mentionAbort: AbortController | undefined;
+  // `@` mention search: files plus the folders that contain a match.
+  async function searchMentions(
+    query: string,
+  ): Promise<{ files: string[]; folders: string[] } | undefined> {
+    const state = store.getState();
+    if (
+      disposed ||
+      !state.epoch ||
+      !state.selection.workspaceId ||
+      !query.trim()
+    )
+      return undefined;
+    mentionAbort?.abort();
+    const abort = (mentionAbort = new AbortController());
+    for (let attempt = 0; attempt < 20; attempt++) {
+      const result = await transport.read<WorkbenchFileSearch>(
+        {
+          type: "file.search",
+          workspaceId: state.selection.workspaceId,
+          query: query.trim(),
+          mode: "name",
+        },
+        state.epoch,
+        abort.signal,
+      );
+      if (abort.signal.aborted) return undefined;
+      if (!result.ok && result.code === "READ_BUSY") {
+        await new Promise((resolve) => clock.setTimeout(resolve, 100));
+        continue;
+      }
+      if (!result.ok) return undefined;
+      const needle = query.trim().toLowerCase();
+      const files = result.value.results
+        .map((r) => r.path)
+        .filter((p) => validWorkspaceFilePath(p));
+      const folders = new Set<string>();
+      for (const file of files) {
+        const parts = file.split("/").slice(0, -1);
+        for (let i = 1; i <= parts.length; i++) {
+          const dir = parts.slice(0, i).join("/");
+          if (dir.toLowerCase().includes(needle)) folders.add(dir);
+        }
+      }
+      return { files: files.slice(0, 15), folders: [...folders].slice(0, 5) };
+    }
+    return undefined;
   }
   function sendContextMessage(
     text = selectors.draft(store.getState()).text,
@@ -4627,6 +4771,10 @@ export function createWindowWorkbench(
       cancelPermissionPolicyObservation(),
     observeContext: (path: string, selection?: ContextSelection) =>
       observeConversation(path, selection),
+    pickContextPaths,
+    resolveDroppedFiles,
+    attachContextFiles,
+    searchMentions,
     cancelContextObservation,
     removeContext: (capabilityId: string) =>
       dispatch({ type: "context.remove", capabilityId }),

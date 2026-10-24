@@ -1062,10 +1062,14 @@ try {
   await check("a11y-visual-menus", async () => {
     const found = [];
     await openWorkspaceMenu(page);
-    found.push(...(await visualAudit("workspace menu", '[role="menu"]')));
+    found.push(
+      ...(await visualAudit("workspace menu", '[role="menu"]:not([popover])')),
+    );
     await page.keyboard.press("Escape");
     await page.getByRole("button", { name: "더 보기", exact: true }).click();
-    found.push(...(await visualAudit("more menu", '[role="menu"]')));
+    found.push(
+      ...(await visualAudit("more menu", '[role="menu"]:not([popover])')),
+    );
     await page.keyboard.press("Escape");
     failIfAny("menus visual", found);
     return takeAuditNotes();
