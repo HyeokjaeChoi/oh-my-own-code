@@ -53,8 +53,19 @@ test("external URL and navigation decision", () => {
   assert.equal(navigationDecision("url", "http://localhost:1/"), "allow");
   assert.equal(navigationDecision("url", "https://example.com/"), "external");
   assert.equal(navigationDecision("url", "file:///etc/passwd"), "deny");
-  assert.equal(navigationDecision("inert", "http://localhost:1/"), "deny");
-  assert.equal(navigationDecision("inert", "https://example.com/"), "deny");
+  const o = "omoc-preview://abc/";
+  assert.equal(navigationDecision("file", `${o}a.html`, o), "allow");
+  assert.equal(navigationDecision("file", "omoc-preview://abcd/", o), "deny");
+  assert.equal(navigationDecision("file", `${o}a.html`), "deny"); // no origin
+  assert.equal(
+    navigationDecision("file", "https://example.com/", o),
+    "external",
+  );
+  assert.equal(
+    navigationDecision("file", "http://localhost:1/", o),
+    "external",
+  );
+  assert.equal(navigationDecision("url", `${o}a.html`, o), "deny");
 });
 
 test("request validation", () => {
@@ -157,7 +168,7 @@ test("open allows only local URLs and guards navigation", async () => {
   const s = await host.open("1", "w1", "http://localhost:3000/");
   assert.equal(s.open, true);
   assert.equal(s.url, "http://localhost:3000/");
-  assert.equal(views[0].opts.inert, false);
+  assert.equal(views[0].opts.mode, "url");
   const wc = views[0].webContents;
   for (const ev of ["will-frame-navigate", "will-redirect"]) {
     const ok = nav("http://127.0.0.1:9/");
@@ -177,11 +188,19 @@ test("open allows only local URLs and guards navigation", async () => {
   assert.equal(host.state("1").externalRequest, "https://x.example/");
   assert.deepEqual(wc.openHandler({ url: "javascript:1" }), { action: "deny" });
   // external open is gated on http(s)/local only and never opens file:
-  await host.openExternal("https://x.example/");
+  await host.openExternal("1", "https://x.example/");
   assert.deepEqual(opened, ["https://x.example/"]);
-  assert.throws(() => host.openExternal("file:///etc/passwd"), {
+  assert.throws(() => host.openExternal("1", "file:///etc/passwd"), {
     previewCode: "URL_DENIED",
   });
+  // only the page's current URL or a link it asked for; never an arbitrary renderer-supplied URL
+  assert.throws(() => host.openExternal("1", "https://other.example/"), {
+    previewCode: "URL_DENIED",
+  });
+  assert.throws(() => host.openExternal("9", "https://x.example/"), {
+    previewCode: "URL_DENIED",
+  });
+  await host.openExternal("1", "http://localhost:3000/");
 });
 
 test("load failure surfaces as error state, abort ignored", async () => {
@@ -235,56 +254,68 @@ test("nav, bounds, owner isolation, lifecycle", async () => {
   assert.equal(host.close("2").open, false);
 });
 
-test("openFile: markdown/image inline, html in inert view, path safety", async () => {
+test("openFile: every kind opens a fresh token-origin file view; path safety", async () => {
   const { host, views, root } = fixture();
   writeFileSync(join(root, "a.md"), "# hi <script>");
   writeFileSync(join(root, "p.png"), Buffer.from([1, 2, 3]));
   writeFileSync(join(root, "s.html"), "<h1>x</h1>");
+  writeFileSync(join(root, "d.pdf"), "%PDF-1.4");
   writeFileSync(join(root, "x.txt"), "no");
   const outside = realpathSync(mkdtempSync(join(tmpdir(), "prev-out-")));
   writeFileSync(join(outside, "o.html"), "secret");
   symlinkSync(join(outside, "o.html"), join(root, "link.html"));
-  assert.deepEqual(await host.openFile("1", "w1", "a.md"), {
-    kind: "markdown",
-    text: "# hi <script>",
-  });
-  const img = await host.openFile("1", "w1", "p.png");
-  assert.equal(img.dataUrl, "data:image/png;base64,AQID");
-  assert.equal(views.length, 0);
   const html = await host.openFile("1", "w1", "s.html");
   assert.equal(html.kind, "html");
-  assert.equal(views[0].opts.inert, true);
-  assert.match(views[0].webContents.loads[0], /^data:text\/html/);
-  // inert view: no navigation of any kind
-  const e = nav("http://localhost:1/");
-  views[0].webContents.emit("will-frame-navigate", e);
-  assert.equal(e.prevented, true);
-  host.nav("1", "reload");
-  assert.deepEqual(views[0].webContents.calls, []);
-  // switching to url mode replaces the inert view; markdown closes the view
-  await host.open("1", "w1", "http://localhost:1/");
+  assert.equal(views[0].opts.mode, "file");
+  const first = views[0].webContents.loads[0];
+  assert.match(first, /^omoc-preview:\/\/[0-9a-f]{32}\/s\.html$/);
+  // the renderer only sees the relative path, never the token origin
+  assert.equal(html.state.url, "");
+  assert.equal(html.state.file, "s.html");
+  // file view may follow links inside its own origin only; http(s) becomes an external request
+  const origin = first.slice(0, first.indexOf("/s.html") + 1);
+  const wc = views[0].webContents;
+  const inside = nav(`${origin}other.html`);
+  wc.emit("will-frame-navigate", inside);
+  assert.equal(inside.prevented, false);
+  for (const url of [
+    "omoc-preview://ffffffffffffffffffffffffffffffff/s.html",
+    "file:///etc/passwd",
+    "data:text/html,x",
+    "javascript:alert(1)",
+  ]) {
+    const e = nav(url);
+    wc.emit("will-redirect", e);
+    assert.equal(e.prevented, true, url);
+  }
+  const ext = nav("https://evil.example/");
+  wc.emit("will-frame-navigate", ext);
+  assert.equal(ext.prevented, true);
+  assert.equal(host.state("1").externalRequest, "https://evil.example/");
+  // each open gets a new view and a new origin; the old token stops serving
+  const served = await host.serve(`${origin}s.html`);
+  assert.equal(served.status, 200);
+  for (const [name, kind] of [
+    ["a.md", "markdown"],
+    ["p.png", "image"],
+    ["d.pdf", "pdf"],
+  ])
+    assert.equal((await host.openFile("1", "w1", name)).kind, kind);
+  assert.equal(views.length, 4);
   assert.equal(views[0].destroyed, 1);
-  assert.equal(views[1].opts.inert, false);
-  await host.openFile("1", "w1", "a.md");
-  assert.equal(views[1].destroyed, 1);
-  await assert.rejects(host.openFile("1", "w1", "../x.html"), {
-    previewCode: "NOT_FOUND",
-  });
-  await assert.rejects(host.openFile("1", "w1", "link.html"), {
-    previewCode: "PATH_DENIED",
-  });
-  await assert.rejects(host.openFile("1", "w1", join(outside, "o.html")), {
-    previewCode: "PATH_DENIED",
-  });
-  await assert.rejects(host.openFile("1", "w1", "x.txt"), {
-    previewCode: "UNSUPPORTED_TYPE",
-  });
-  await assert.rejects(host.openFile("1", "w1", "missing.md"), {
-    previewCode: "NOT_FOUND",
-  });
+  assert.equal((await host.serve(`${origin}s.html`)).status, 404);
+  for (const [path, code] of [
+    ["../x.html", "PATH_DENIED"],
+    ["link.html", "PATH_DENIED"],
+    [join(outside, "o.html"), "PATH_DENIED"],
+    ["x.txt", "UNSUPPORTED_TYPE"],
+    ["missing.md", "NOT_FOUND"],
+  ])
+    await assert.rejects(host.openFile("1", "w1", path), { previewCode: code });
   await assert.rejects(host.openFile("1", "nope", "a.md"), {
     previewCode: "NOT_FOUND",
   });
+  assert.equal(views.length, 4); // refusals never create a view
 });
 
 test("IPC admits, validates and maps errors", async () => {

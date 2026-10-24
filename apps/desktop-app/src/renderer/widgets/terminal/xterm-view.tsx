@@ -2,9 +2,11 @@ import { useEffect, useRef } from "react";
 import { FitAddon } from "@xterm/addon-fit";
 import { Terminal, type ITheme } from "@xterm/xterm";
 import "@xterm/xterm/css/xterm.css";
+import { detectLocalDevUrl } from "../../shared/preview/index.js";
 import {
   callTerminal as call,
   createResizeSync,
+  stripAnsi,
   TERMINAL_LIMITS,
   type TerminalInfo,
   type TerminalRead,
@@ -77,6 +79,7 @@ export function XtermView({
   onInfo,
   onError,
   onLeave,
+  onDevUrl,
   hintId,
 }: {
   terminalId: string;
@@ -84,10 +87,11 @@ export function XtermView({
   hintId: string;
   onInfo: (info: TerminalInfo) => void;
   onError: (code: string) => void;
+  onDevUrl?: (url: string) => void;
 }) {
   const host = useRef<HTMLDivElement>(null);
-  const callbacks = useRef({ onInfo, onError, onLeave });
-  callbacks.current = { onInfo, onError, onLeave };
+  const callbacks = useRef({ onInfo, onError, onLeave, onDevUrl });
+  callbacks.current = { onInfo, onError, onLeave, onDevUrl };
 
   useEffect(() => {
     const el = host.current;
@@ -217,6 +221,9 @@ export function XtermView({
     let idle = 0;
     let inflight = false;
     let exitedSeen = false;
+    // Dev-server URL detection over a short tail, so a URL split across reads is still found.
+    let tail = "";
+    let lastDevUrl: string | undefined;
     // Typing should echo promptly even when the poll has backed off.
     const kick = () => {
       idle = 0;
@@ -249,6 +256,12 @@ export function XtermView({
       if (truncated) term.write("\r\n\x1b[2m[이전 출력 생략]\x1b[0m\r\n");
       if (output) {
         idle = 0;
+        tail = (tail + stripAnsi(output)).slice(-512);
+        const devUrl = detectLocalDevUrl(tail);
+        if (devUrl && devUrl !== lastDevUrl) {
+          lastDevUrl = devUrl;
+          callbacks.current.onDevUrl?.(devUrl);
+        }
         await new Promise<void>((done) => term.write(output, done));
       } else idle = Math.min(idle + 1, 10);
       if (stopped) return;

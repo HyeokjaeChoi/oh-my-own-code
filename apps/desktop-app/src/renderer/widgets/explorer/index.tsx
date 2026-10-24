@@ -8,9 +8,11 @@ import {
   RefreshCw,
   Search,
   SlidersHorizontal,
+  Eye,
 } from "lucide-react";
 import { Button, Input, Notice, Select } from "@workbench/ui";
 import styles from "./explorer.module.css";
+import { requestPreview } from "../../shared/preview/index.js";
 import { type WorkbenchFileSearch } from "../../shared/api/index.js";
 import { PathText } from "../../shared/panel-text/index.js";
 import { WorkspaceFileEditor } from "../../features/workspace-file-editor/index.js";
@@ -20,6 +22,7 @@ import {
   useWorkbenchSelector,
   useWindowWorkbench,
 } from "../../entities/workbench/index.js";
+const PREVIEWABLE = /\.(html?|md|markdown|png|jpe?g|gif|webp|svg|pdf)$/i;
 function FileSearch({ open }: { open: (path: string) => void }) {
   const { actions } = useWindowWorkbench();
   const [query, setQuery] = useState("");
@@ -251,7 +254,7 @@ export function FileExplorer({ workspaceId }: { workspaceId: string }) {
         data-compact={Boolean(preview)}
       >
         {listing?.entries.map((entry) => (
-          <li key={entry.path}>
+          <li key={entry.path} className={styles.row}>
             <button
               disabled={busy}
               title={entry.path}
@@ -274,6 +277,17 @@ export function FileExplorer({ workspaceId }: { workspaceId: string }) {
                 {entry.type === "directory" ? "폴더 열기" : "파일 미리보기"}
               </span>
             </button>
+            {entry.type === "file" && PREVIEWABLE.test(entry.name) && (
+              <button
+                type="button"
+                className={styles.previewAction}
+                aria-label={`${entry.name} 미리보기 탭에서 열기`}
+                title="미리보기"
+                onClick={() => requestPreview({ path: entry.path })}
+              >
+                <Eye size={14} aria-hidden="true" />
+              </button>
+            )}
           </li>
         ))}
       </ul>

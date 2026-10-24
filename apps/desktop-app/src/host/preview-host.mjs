@@ -1,29 +1,16 @@
-import { readFileSync, realpathSync, statSync } from "node:fs";
-import { extname, isAbsolute, relative, resolve } from "node:path";
 import {
-  PREVIEW_LIMITS,
   navigationDecision,
   parseExternalUrl,
   parseLocalUrl,
 } from "../renderer/shared/preview/index.mjs";
+import { createPreviewFiles, previewKind } from "./preview-files.mjs";
 
 const fail = (code) => Object.assign(new Error(code), { previewCode: code });
-const IMAGES = {
-  ".png": "image/png",
-  ".jpg": "image/jpeg",
-  ".jpeg": "image/jpeg",
-  ".gif": "image/gif",
-  ".webp": "image/webp",
-  ".svg": "image/svg+xml", // rendered via <img> data URL: scripts never run
-};
-const inside = (root, path) => {
-  const rel = relative(root, path);
-  return rel === "" || (!rel.startsWith("..") && !isAbsolute(rel));
-};
 const IDLE = {
   open: false,
   mode: "url",
   url: "",
+  file: "",
   loading: false,
   canGoBack: false,
   canGoForward: false,
@@ -31,26 +18,36 @@ const IDLE = {
   externalRequest: null,
 };
 
-// Owns one isolated native preview view per owner (renderer window). `createView({inert})` is
-// injected: it returns { webContents, setBounds(rect), destroy() } and applies the session/webPreferences
-// lockdown (see preview-view.mjs). Everything policy-related that can be unit-tested lives here.
+// Owns one isolated native preview view per owner (renderer window). `createView({mode, workspaceId})`
+// is injected: it returns { webContents, setBounds(rect), destroy() } and applies the session/webPreferences
+// lockdown (see preview-view.mjs). Workspace files are served by `files` under a per-open token origin.
+// Everything policy-related that can be unit-tested lives here.
 export function createPreviewHost({
   createView,
   resolveWorkspace,
   openExternal,
 }) {
-  const views = new Map(); // owner -> { view, mode, error, externalRequest, bounds }
+  const files = createPreviewFiles({ resolveWorkspace });
+  const views = new Map(); // owner -> { view, mode, token?, origin?, error, externalRequest, bounds }
 
   function destroy(owner) {
     const e = views.get(owner);
     if (!e) return;
     views.delete(owner);
+    if (e.token) files.revoke(e.token);
     try {
       e.view.destroy();
     } catch {
       // already gone
     }
   }
+  const fileOf = (url) => {
+    try {
+      return decodeURIComponent(new URL(url).pathname.slice(1));
+    } catch {
+      return "";
+    }
+  };
   function snapshot(owner) {
     const e = views.get(owner);
     if (!e) return { ...IDLE };
@@ -58,7 +55,8 @@ export function createPreviewHost({
     return {
       open: true,
       mode: e.mode,
-      url: e.mode === "inert" ? "" : wc.getURL(),
+      url: e.mode === "file" ? "" : wc.getURL(),
+      file: e.mode === "file" ? fileOf(wc.getURL()) : "",
       loading: wc.isLoading(),
       canGoBack: wc.navigationHistory.canGoBack(),
       canGoForward: wc.navigationHistory.canGoForward(),
@@ -66,17 +64,27 @@ export function createPreviewHost({
       externalRequest: e.externalRequest,
     };
   }
-  function ensure(owner, mode, workspaceId) {
+  // url views are reused per workspace; file views are always fresh (new token, new origin).
+  function ensure(owner, mode, workspaceId, site) {
     const cur = views.get(owner);
-    if (cur?.mode === mode && cur.workspaceId === workspaceId) return cur;
+    if (mode === "url" && cur?.mode === mode && cur.workspaceId === workspaceId)
+      return cur;
     destroy(owner);
-    const view = createView({ inert: mode === "inert", workspaceId });
-    const e = { view, mode, workspaceId, error: null, externalRequest: null };
+    const view = createView({ mode, workspaceId });
+    const e = {
+      view,
+      mode,
+      workspaceId,
+      token: site?.token,
+      origin: site?.origin,
+      error: null,
+      externalRequest: null,
+    };
     views.set(owner, e);
     if (cur?.bounds) view.setBounds((e.bounds = cur.bounds));
     const wc = view.webContents;
     const guard = (event) => {
-      const decision = navigationDecision(e.mode, event.url);
+      const decision = navigationDecision(e.mode, event.url, e.origin);
       if (decision === "allow") return;
       event.preventDefault();
       if (decision === "external") e.externalRequest = event.url;
@@ -111,56 +119,25 @@ export function createPreviewHost({
       return snapshot(owner);
     },
     async openFile(owner, workspaceId, path) {
-      const root = resolveWorkspace(workspaceId);
-      if (!root) throw fail("NOT_FOUND");
-      const ext = extname(path).toLowerCase();
-      const kind =
-        ext === ".md" || ext === ".markdown"
-          ? "markdown"
-          : ext === ".html" || ext === ".htm"
-            ? "html"
-            : IMAGES[ext]
-              ? "image"
-              : undefined;
+      const kind = previewKind(path);
       if (!kind) throw fail("UNSUPPORTED_TYPE");
-      let real;
+      // Refuses absolute/escaping/symlinked/missing paths before any view is created.
+      const site = await files.register(workspaceId, path);
+      let e;
       try {
-        const base = realpathSync(root);
-        real = realpathSync(resolve(base, path));
-        if (!inside(base, real)) throw fail("PATH_DENIED");
-        const st = statSync(real);
-        if (!st.isFile()) throw fail("NOT_FOUND");
-        if (st.size > PREVIEW_LIMITS.fileBytes) throw fail("TOO_LARGE");
+        e = ensure(owner, "file", workspaceId, site);
       } catch (err) {
-        throw err?.previewCode ? err : fail("NOT_FOUND");
+        files.revoke(site.token);
+        throw err;
       }
-      const bytes = readFileSync(real);
-      if (kind === "image") {
-        destroy(owner);
-        return {
-          kind,
-          dataUrl: `data:${IMAGES[ext]};base64,${bytes.toString("base64")}`,
-        };
-      }
-      const text = bytes.toString("utf8");
-      if (kind === "markdown") {
-        destroy(owner);
-        return { kind, text };
-      }
-      // HTML: a fresh inert view (JS disabled, every request except data: blocked, no navigation).
-      // data: URL instead of file: or a custom protocol: no filesystem or origin authority is granted
-      // to the document, so relative links/assets simply do not resolve.
-      const e = ensure(owner, "inert");
-      e.error = null;
       try {
-        await e.view.webContents.loadURL(
-          `data:text/html;charset=utf-8;base64,${Buffer.from(text).toString("base64")}`,
-        );
+        await e.view.webContents.loadURL(site.entry);
       } catch {
         // surfaced through did-fail-load
       }
       return { kind, state: snapshot(owner) };
     },
+    serve: (url) => files.serve(url),
     setBounds(owner, rect) {
       const e = views.get(owner);
       if (!e) return;
@@ -171,7 +148,6 @@ export function createPreviewHost({
       const e = views.get(owner);
       if (!e) throw fail("NOT_OPEN");
       const wc = e.view.webContents;
-      if (e.mode === "inert") return snapshot(owner);
       if (action === "back" && wc.navigationHistory.canGoBack()) wc.goBack();
       else if (action === "forward" && wc.navigationHistory.canGoForward())
         wc.goForward();
@@ -179,9 +155,12 @@ export function createPreviewHost({
       return snapshot(owner);
     },
     state: snapshot,
-    openExternal(url) {
+    // Only the page's current http(s) URL or a link the page asked for (confirmed in the UI).
+    openExternal(owner, url) {
+      const e = views.get(owner);
       const u = parseExternalUrl(url) ?? parseLocalUrl(url);
-      if (!u) throw fail("URL_DENIED");
+      const known = e && [e.externalRequest, e.view.webContents.getURL()];
+      if (!u || !known?.includes(u)) throw fail("URL_DENIED");
       return openExternal(u);
     },
     clearExternalRequest(owner) {

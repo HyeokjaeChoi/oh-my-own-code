@@ -67,6 +67,21 @@
   max-height: 224px;
   overflow: auto;
 }
+.row {
+  display: flex;
+  align-items: center;
+}
+.row > button:first-child {
+  flex: 1;
+  min-width: 0;
+}
+.list .previewAction {
+  flex: 0 0 28px;
+  width: 28px;
+  padding: 0;
+  justify-content: center;
+  color: var(--omoc-semantic-color-text-secondary);
+}
 .list button {
   display: flex;
   align-items: center;

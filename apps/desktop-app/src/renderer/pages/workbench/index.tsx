@@ -41,6 +41,7 @@ import { CommandPalette } from "../../features/palette/index.js";
 import { Conversation } from "../../widgets/conversation/index.js";
 import { TerminalPanel } from "../../widgets/terminal/index.js";
 import { PreviewPanel } from "../../widgets/preview/index.js";
+import { PREVIEW_OPEN_EVENT } from "../../shared/preview/index.js";
 import { PlansPanel } from "../../widgets/plans/index.js";
 import { PlanReviewPanel } from "../../widgets/plan-review/index.js";
 import { ChangesPanel } from "../../widgets/changes/index.js";
@@ -180,6 +181,12 @@ export function Workbench() {
     });
   const setPanel = (panel: Panel | null) =>
     panel ? actions.openPanel(panel) : actions.closePanel();
+  // Terminal / file list ask for a preview: show the tab (it picks up the pending target).
+  useEffect(() => {
+    const show = () => actions.openPanel("preview");
+    window.addEventListener(PREVIEW_OPEN_EVENT, show);
+    return () => window.removeEventListener(PREVIEW_OPEN_EVENT, show);
+  }, [actions]);
   // Dragging updates the store only; the width is persisted when a gesture ends.
   const setPanelWidth = (panelWidth: number, persist = true) => {
     actions.layout({ panelWidth });

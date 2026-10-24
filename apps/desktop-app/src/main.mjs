@@ -51,7 +51,10 @@ import { createDataHost, wipeAppDataSync } from "./host/data-host.mjs";
 import { bindDataIpc } from "./host/data-ipc.mjs";
 import { createPreviewHost } from "./host/preview-host.mjs";
 import { bindPreviewIpc } from "./host/preview-ipc.mjs";
-import { createPreviewViewFactory } from "./host/preview-view.mjs";
+import {
+  createPreviewViewFactory,
+  registerPreviewScheme,
+} from "./host/preview-view.mjs";
 import { createWorktreeHost } from "./host/worktree-host.mjs";
 import { bindWorktreeIpc } from "./host/worktree-ipc.mjs";
 import {
@@ -145,10 +148,14 @@ const savedRules = createSavedRulesHost({
   owned: () => ownedStorage,
 });
 const previews = createPreviewHost({
-  createView: createPreviewViewFactory({ getWindow: () => mainWindow }),
+  createView: createPreviewViewFactory({
+    getWindow: () => mainWindow,
+    serve: (url) => previews.serve(url),
+  }),
   resolveWorkspace: (id) => workbench?.terminalRoot(id),
   openExternal: (url) => shell.openExternal(url),
 });
+registerPreviewScheme(); // before app ready
 const here = dirname(fileURLToPath(import.meta.url));
 const developmentUrl = process.env.OMOC_DESKTOP_DEV_URL;
 // Unpackaged e2e only: a transparent, click-through, unfocused window so test runs don't cover or steal the user's screen.
