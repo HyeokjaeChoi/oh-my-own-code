@@ -29,8 +29,8 @@ export function bindPreviewIpc({ ipcMain, admit, host }) {
         case "preview.state":
           return ok(host.state(owner));
         case "preview.openExternal":
+          await host.openExternal(owner, r.url);
           host.clearExternalRequest(owner);
-          await host.openExternal(r.url);
           return ok(null);
         default:
           return ok(host.close(owner));

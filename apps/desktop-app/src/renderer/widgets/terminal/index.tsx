@@ -6,6 +6,7 @@ import {
   type TerminalInfo,
 } from "../../shared/terminal/index.js";
 import type { ProjectActions } from "../../shared/project-actions/index.js";
+import { requestPreview } from "../../shared/preview/index.js";
 import { XtermView } from "./xterm-view.js";
 import styles from "./terminal.module.css";
 import { SquareTerminal, Plus } from "lucide-react";
@@ -41,6 +42,7 @@ export function TerminalPanel({ workspaceId }: { workspaceId: string }) {
   const [active, setActive] = useState<string>();
   const [error, setError] = useState<string>();
   const [project, setProject] = useState<ProjectActions>();
+  const [devUrls, setDevUrls] = useState<Record<string, string>>({});
   const footer = useRef<HTMLDivElement>(null);
   const [loaded, setLoaded] = useState(false);
   const trusted = useWorkbenchSelector(
@@ -204,6 +206,9 @@ export function TerminalPanel({ workspaceId }: { workspaceId: string }) {
             terminalId={current.terminalId}
             onInfo={update}
             onError={fail}
+            onDevUrl={(url) =>
+              setDevUrls((p) => ({ ...p, [current.terminalId]: url }))
+            }
             hintId={HINT_ID}
             onLeave={() =>
               footer.current
@@ -213,6 +218,18 @@ export function TerminalPanel({ workspaceId }: { workspaceId: string }) {
           />
           <div className={styles.footer} ref={footer}>
             <span role="status">{statusText(current)}</span>
+            {devUrls[current.terminalId] && current.status === "running" && (
+              <Button
+                size="compact"
+                intent="secondary"
+                onClick={() =>
+                  requestPreview({ url: devUrls[current.terminalId]! })
+                }
+                title={devUrls[current.terminalId]}
+              >
+                미리보기에서 열기
+              </Button>
+            )}
             <span id={HINT_ID} className={styles.hint}>
               포커스 이동: Ctrl+Shift+M
             </span>

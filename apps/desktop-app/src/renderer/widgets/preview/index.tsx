@@ -6,8 +6,9 @@ import {
   type FormEvent,
 } from "react";
 import {
-  parseExternalUrl,
   parseLocalUrl,
+  takePendingPreview,
+  PREVIEW_OPEN_EVENT,
   type PreviewFile,
   type PreviewRequest,
   type PreviewResult,
@@ -37,7 +38,7 @@ const errors: Record<string, string> = {
     "로컬 개발 서버(localhost, 127.0.0.1, [::1])만 미리볼 수 있습니다.",
   NOT_FOUND: "파일을 찾을 수 없습니다.",
   PATH_DENIED: "작업 공간 밖의 파일은 열 수 없습니다.",
-  UNSUPPORTED_TYPE: "HTML, Markdown, 이미지 파일만 미리볼 수 있습니다.",
+  UNSUPPORTED_TYPE: "HTML, Markdown, 이미지, PDF 파일만 미리볼 수 있습니다.",
   TOO_LARGE: "파일이 너무 큽니다 (5MB 초과).",
 };
 
@@ -45,7 +46,6 @@ export function PreviewPanel({ workspaceId }: { workspaceId: string }) {
   const [state, setState] = useState<PreviewState>();
   const [url, setUrl] = useState("http://localhost:3000/");
   const [path, setPath] = useState("");
-  const [file, setFile] = useState<PreviewFile>();
   const [error, setError] = useState<string>();
   const [external, setExternal] = useState<string>();
   const [fileRow, setFileRow] = useState(false);
@@ -96,9 +96,17 @@ export function PreviewPanel({ workspaceId }: { workspaceId: string }) {
   const go = async (e: FormEvent) => {
     e.preventDefault();
     setError(undefined);
-    const target = url.trim();
-    if (parseLocalUrl(target)) {
-      setFile(undefined);
+    const typed = url.trim();
+    const target = /^[a-z][a-z\d+.-]*:\/\//i.test(typed)
+      ? typed
+      : `http://${typed}`;
+    if (parseLocalUrl(target)) await openUrl(target);
+    else fail("URL_DENIED");
+  };
+  const openUrl = useCallback(
+    async (target: string) => {
+      setError(undefined);
+      setUrl(target);
       last.current = "";
       const r = await call<PreviewState>({
         type: "preview.open",
@@ -108,31 +116,44 @@ export function PreviewPanel({ workspaceId }: { workspaceId: string }) {
       if (!r.ok) return fail(r.code);
       setState(r.value);
       sendBounds();
-    } else if (parseExternalUrl(target)) setExternal(target);
-    else fail("URL_DENIED");
-  };
-  const openFile = async (e: FormEvent) => {
-    e.preventDefault();
-    setError(undefined);
-    last.current = "";
-    const r = await call<PreviewFile>({
-      type: "preview.openFile",
-      workspaceId,
-      path: path.trim(),
-    });
-    if (!r.ok) return fail(r.code);
-    setFile(r.value);
-    if (r.value.kind === "html") {
+    },
+    [workspaceId, sendBounds],
+  );
+  const openPath = useCallback(
+    async (target: string) => {
+      setError(undefined);
+      last.current = "";
+      const r = await call<PreviewFile>({
+        type: "preview.openFile",
+        workspaceId,
+        path: target,
+      });
+      if (!r.ok) return fail(r.code);
       setState(r.value.state);
       sendBounds();
-    }
+    },
+    [workspaceId, sendBounds],
+  );
+  const openFile = (e: FormEvent) => {
+    e.preventDefault();
+    void openPath(path.trim());
   };
+  // Targets handed over by the terminal (dev server) or the file list.
+  useEffect(() => {
+    const take = () => {
+      const target = takePendingPreview();
+      if (target && "url" in target) void openUrl(target.url);
+      else if (target) void openPath(target.path);
+    };
+    take();
+    window.addEventListener(PREVIEW_OPEN_EVENT, take);
+    return () => window.removeEventListener(PREVIEW_OPEN_EVENT, take);
+  }, [openUrl, openPath]);
   const nav = (action: "back" | "forward" | "reload") =>
     void call<PreviewState>({ type: "preview.nav", action }).then(
       (r) => r.ok && setState(r.value),
     );
   const closeAll = async () => {
-    setFile(undefined);
     setState(undefined);
     await call({ type: "preview.close" });
   };
@@ -142,7 +163,7 @@ export function PreviewPanel({ workspaceId }: { workspaceId: string }) {
     if (target) await call({ type: "preview.openExternal", url: target });
   };
 
-  const isUrl = state?.open && state.mode === "url";
+  const isOpen = state?.open === true;
   const status = state?.error
     ? `불러오지 못했습니다: ${state.error} (서버가 실행 중인지 확인하세요)`
     : state?.loading
@@ -157,7 +178,7 @@ export function PreviewPanel({ workspaceId }: { workspaceId: string }) {
           className={styles.iconButton}
           type="button"
           onClick={() => nav("back")}
-          disabled={!isUrl || !state?.canGoBack}
+          disabled={!isOpen || !state?.canGoBack}
           aria-label="뒤로"
           title="뒤로"
         >
@@ -169,7 +190,7 @@ export function PreviewPanel({ workspaceId }: { workspaceId: string }) {
           className={styles.iconButton}
           type="button"
           onClick={() => nav("forward")}
-          disabled={!isUrl || !state?.canGoForward}
+          disabled={!isOpen || !state?.canGoForward}
           aria-label="앞으로"
           title="앞으로"
         >
@@ -181,7 +202,7 @@ export function PreviewPanel({ workspaceId }: { workspaceId: string }) {
           className={styles.iconButton}
           type="button"
           onClick={() => nav("reload")}
-          disabled={!isUrl}
+          disabled={!isOpen}
           aria-label="새로고침"
           title="새로고침"
         >
@@ -201,10 +222,10 @@ export function PreviewPanel({ workspaceId }: { workspaceId: string }) {
           intent="quiet"
           className={styles.iconButton}
           type="button"
-          onClick={() => setExternal(state?.url || url.trim())}
-          disabled={!parseExternalUrl(state?.url || url.trim())}
-          aria-label="외부에서 열기"
-          title="외부에서 열기"
+          onClick={() => setExternal(state?.url)}
+          disabled={!state?.url}
+          aria-label="기본 브라우저로 열기"
+          title="기본 브라우저로 열기"
         >
           <SquareArrowOutUpRight size={16} aria-hidden="true" />
         </Button>
@@ -227,7 +248,7 @@ export function PreviewPanel({ workspaceId }: { workspaceId: string }) {
           <Input
             value={path}
             onChange={(e) => setPath(e.target.value)}
-            placeholder="작업 공간 파일 경로 (html, md, 이미지)"
+            placeholder="작업 공간 파일 경로 (html, md, 이미지, pdf)"
             aria-label="미리볼 작업 공간 파일"
             spellCheck={false}
             autoComplete="off"
@@ -295,21 +316,13 @@ export function PreviewPanel({ workspaceId }: { workspaceId: string }) {
             {status}
           </p>
         ))}
+      {state?.mode === "file" && state.file && (
+        <p className={styles.muted} title={state.file}>
+          파일 미리보기: {state.file}
+        </p>
+      )}
       <div ref={stage} className={styles.stage}>
-        {file?.kind === "markdown" && (
-          // ponytail: plain text, not rendered Markdown; the existing renderer is bound to assistant-ui message context.
-          <pre className={styles.text} tabIndex={0}>
-            {file.text}
-          </pre>
-        )}
-        {file?.kind === "image" && (
-          <img
-            className={styles.image}
-            src={file.dataUrl}
-            alt="미리보기 이미지"
-          />
-        )}
-        {!file && !state?.open && (
+        {!state?.open && (
           <p className={styles.empty}>
             개발 서버 주소를 입력하세요 · 예: localhost:3000
           </p>

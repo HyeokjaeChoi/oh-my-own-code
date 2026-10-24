@@ -4,6 +4,8 @@ export const PREVIEW_LIMITS = Object.freeze({
   fileBytes: 5 * 1024 * 1024,
   pathChars: 1024,
 });
+export const PREVIEW_SCHEME = "omoc-preview";
+const PDF_VIEWER_ID = "mhjfbmdgcfjbbpaeojofohoefgiehjai";
 const LOOPBACK = new Set(["localhost", "127.0.0.1", "[::1]"]);
 
 // Normalized URL string for a local dev-server URL, else undefined.
@@ -37,11 +39,48 @@ export function parseExternalUrl(raw) {
     return undefined;
   return u.href;
 }
-// Navigation guard: "inert" views (workspace HTML) may never navigate; url views only to local URLs.
-export function navigationDecision(mode, url) {
+// Navigation guard. "file" views (workspace artifacts) may only move inside their own
+// `omoc-preview://<token>/` origin; "url" views only to local URLs. http(s) elsewhere is offered
+// as an explicit external open (never navigated).
+export function navigationDecision(mode, url, origin = "") {
+  if (mode === "file" && origin && url.startsWith(origin)) return "allow";
   if (mode === "url" && parseLocalUrl(url)) return "allow";
-  if (mode === "url" && parseExternalUrl(url)) return "external";
+  if (parseExternalUrl(url)) return "external";
   return "deny";
+}
+// Network allowlist for the preview sessions (webRequest.onBeforeRequest): loopback http/ws and
+// inline data:/blob: only; the file view additionally gets its own `omoc-preview:` scheme.
+export function previewRequestAllowed(raw, mode) {
+  let u;
+  try {
+    u = new URL(raw);
+  } catch {
+    return false;
+  }
+  if (u.protocol === "data:" || u.protocol === "blob:") return true;
+  if (mode === "file" && u.protocol === `${PREVIEW_SCHEME}:`) return true;
+  // Chromium's built-in PDF viewer (fixed extension id) renders PDF files in the file view.
+  if (mode === "file" && u.protocol === "chrome-extension:")
+    return u.hostname === PDF_VIEWER_ID;
+  if (u.protocol !== "http:" && u.protocol !== "ws:") return false;
+  return !u.username && !u.password && LOOPBACK.has(u.hostname);
+}
+// First local dev-server URL printed in terminal output (e.g. "Local: http://localhost:5173/").
+// Takes the last match so a restart on a new port wins; ANSI must already be stripped.
+export function detectLocalDevUrl(text) {
+  if (typeof text !== "string") return undefined;
+  const all = [
+    ...text.matchAll(
+      /https?:\/\/(?:localhost|127\.0\.0\.1|\[::1\]):(\d{2,5})(?![\d])/gi,
+    ),
+  ];
+  for (const m of all.reverse()) {
+    const port = Number(m[1]);
+    if (port < 1 || port > 65535) continue;
+    const url = parseLocalUrl(m[0].replace(/^https:/i, "http:"));
+    if (url) return url;
+  }
+  return undefined;
 }
 
 const bound = (v) => Number.isInteger(v) && v >= 0 && v <= 20000;
