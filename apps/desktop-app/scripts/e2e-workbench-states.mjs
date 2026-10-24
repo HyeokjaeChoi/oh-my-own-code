@@ -505,17 +505,14 @@ async function setDisplay(page, width, height, zoomFactor = 1) {
     .toBeLessThanOrEqual(1);
 }
 
-// Runtime request selects live in the Agent / 모델 chip popovers; only one
-// popover is open at a time, so callers visit each select in turn.
+// The model search is the one select-like request control left (agent and
+// effort are radio lists); it lives in the 모델 chip popover.
 async function setRequestSettings(page, open) {
   if (!open) await closeComposerPopovers(page);
 }
 
 async function eachRequestSelect(page, visit) {
-  for (const [kind, name] of [
-    ["agent", "Agent 요청"],
-    ["model", "모델 검색"],
-  ]) {
+  for (const [kind, name] of [["model", "모델 검색"]]) {
     await openComposerPopover(page, kind);
     await visit(page.getByRole("combobox", { name }));
   }
@@ -688,7 +685,7 @@ async function assertComposerGeometry(page) {
     .evaluate((input) => {
       const composer = input.closest("form");
       const toolbar = composer.querySelector(
-        'button[aria-label^="파일 첨부와 미리보기"]',
+        'button[aria-label^="첨부 및 추가"]',
       ).parentElement;
       const requests = input.ownerDocument.querySelector(
         '[data-runtime-source="requested"]',
@@ -1478,8 +1475,10 @@ try {
       await composer.fill("Inspect the synthetic workspace.");
       await openComposerPopover(page, "agent");
       await page
-        .getByRole("combobox", { name: "Agent 요청" })
-        .selectOption("fixture-agent");
+        .locator(
+          '[role="radiogroup"][aria-label="에이전트"] input[value="fixture-agent"]',
+        )
+        .check();
       await pickModel(page, "fixture-model");
       await closeComposerPopovers(page);
       await page.getByRole("button", { name: "메시지 보내기" }).click();

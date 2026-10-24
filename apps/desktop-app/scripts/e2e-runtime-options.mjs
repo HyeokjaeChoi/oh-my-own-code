@@ -271,20 +271,23 @@ async function stopOwnedApplication(application, processHandle) {
 }
 
 // Selectors come from the actual runtime-options renderer source checkpoint.
-// Agent and model/variant live in separate chip popovers; `requested` is the
-// model fieldset (model + variant + hints).
+// Agent, model and effort (추론 강도) live in separate chip popovers; `requested`
+// is the model popover body (search + list + hint).
 const requested = () =>
-  page.locator('fieldset[data-runtime-source="requested"]').last();
+  page
+    .locator('[data-runtime-source="requested"]')
+    .filter({ has: page.locator("[data-model-picker]") });
 const responseReport = () => page.locator("[data-response-runtime]").first();
 // The session's own report is no longer a line in the picker: a mismatch with
 // the next request shows as a dot on the model chip with the detail in its title.
 const modelChip = () => page.getByRole("button", { name: "모델:" }).first();
-const agentRequest = () =>
-  page.getByRole("combobox", {
-    name: "Agent 요청",
-    exact: true,
-    includeHidden: true,
-  });
+const effortChip = () =>
+  page.getByRole("button", { name: "추론 강도:" }).first();
+// Agent rows are radios named by the agent's display name; values are ids.
+const agentRadio = (id) =>
+  page.locator(
+    `[role="radiogroup"][aria-label="에이전트"] input[value="${id}"]`,
+  );
 const modelSearch = () =>
   page.getByRole("combobox", {
     name: "모델 검색",
@@ -293,8 +296,8 @@ const modelSearch = () =>
   });
 const variantGroup = () =>
   page.getByRole("radiogroup", { name: "추론 강도", includeHidden: true });
-const composer = () =>
-  page.getByRole("textbox", { name: "메시지 작성", exact: true });
+// Not by role: the textarea is a combobox while the `@` list is open.
+const composer = () => page.locator('textarea[aria-label="메시지 작성"]');
 const send = () =>
   page.getByRole("button", { name: "메시지 보내기", exact: true });
 const sends = () =>
@@ -314,7 +317,7 @@ async function scenario(name) {
   await expect(
     page.locator(".workbench-header [data-connection]"),
   ).toHaveAttribute("data-connection", "connected");
-  await expect(requested()).toBeAttached();
+  await expect(modelChip()).toBeAttached();
   return scope;
 }
 async function reveal(locator) {
@@ -323,6 +326,8 @@ async function reveal(locator) {
 }
 // The turn meta shows on hover or focus; hovering the turn reveals it.
 async function showResponse() {
+  // An open popover sits above the composer, over the lower transcript.
+  await closeComposerPopovers(page);
   await reveal(responseReport());
   await responseReport().hover();
   await expect(responseReport()).toBeVisible();
@@ -336,7 +341,7 @@ async function geometry() {
 }
 async function choose(scope, variant = scope.variant) {
   await openComposerPopover(page, "agent");
-  await agentRequest().selectOption(scope.agent);
+  await agentRadio(scope.agent).check();
   await pickModel(page, scope.model);
   await pickVariant(page, variant);
 }
@@ -387,6 +392,69 @@ async function exerciseRuntimeOptions() {
   await expect(
     page.locator(".session-list li").filter({ hasText: "Runtime Session B" }),
   ).toContainText("3시간");
+  // Mode switching: no agent chip by default; Shift+Tab cycles and wraps.
+  const indicator = () => page.getByRole("button", { name: /^에이전트 모드:/ });
+  await expect(indicator()).toHaveCount(0);
+  // The `/` entry removes the slash token and opens the popover inside the card's bounds.
+  await composer().fill("");
+  await composer().focus();
+  await page.keyboard.type("/에이");
+  await page.getByRole("button", { name: "에이전트 모드 바꾸기" }).click();
+  const modePanel = page.getByRole("group", { name: "에이전트", exact: true });
+  await expect(modePanel).toBeVisible();
+  await expect(composer()).toHaveValue("");
+  const edges = await modePanel.evaluate((el) => {
+    const p = el.getBoundingClientRect();
+    const c = el.ownerDocument
+      .querySelector("[class*=composerCard]")
+      .getBoundingClientRect();
+    return { left: p.left - c.left, bottom: p.bottom - c.top };
+  });
+  assert.ok(edges.left >= -0.5, `popover left of card: ${edges.left}`);
+  assert.ok(edges.bottom <= 0.5, `popover overlaps card: ${edges.bottom}`);
+  // The composer is its invoker: Escape returns focus there.
+  await page.keyboard.press("Escape");
+  await expect(modePanel).toBeHidden();
+  await expect(composer()).toBeFocused();
+  await closeComposerPopovers(page);
+  await openComposerPopover(page, "agent");
+  const agentCount =
+    (await page
+      .locator('[role="radiogroup"][aria-label="에이전트"] input')
+      .count()) - 1;
+  assert.ok(agentCount >= 1, "catalog lists agents");
+  await closeComposerPopovers(page);
+  await composer().focus();
+  await page.keyboard.press("Shift+Tab");
+  await expect(indicator()).toHaveCount(1);
+  await expect(indicator()).toHaveAttribute(
+    "aria-label",
+    /\(Shift\+Tab으로 전환\)$/,
+  );
+  await expect(
+    page.getByRole("status").filter({ hasText: "에이전트:" }),
+  ).toHaveCount(1);
+  await expect(composer()).toBeFocused();
+  for (let i = 1; i < agentCount; i++) await page.keyboard.press("Shift+Tab");
+  await expect(indicator()).toHaveCount(1);
+  await page.keyboard.press("Shift+Tab");
+  await expect(indicator()).toHaveCount(0);
+  // The indicator opens the existing agent popover.
+  await page.keyboard.press("Shift+Tab");
+  await indicator().click();
+  await expect(
+    page.getByRole("group", { name: "에이전트", exact: true }),
+  ).toBeVisible();
+  await closeComposerPopovers(page);
+  // While the `@` list is open Shift+Tab is left to the browser (focus moves).
+  await composer().fill("@");
+  await expect(page.locator("[data-context-mention]")).toBeVisible();
+  await composer().focus();
+  await page.keyboard.press("Shift+Tab");
+  await expect(composer()).not.toBeFocused();
+  await expect(indicator()).toHaveCount(1);
+  await composer().fill("");
+  await closeComposerPopovers(page);
   await choose(scope);
   await composer().fill("SYNTHETIC next-send request");
   await openComposerPopover(page, "model");
@@ -394,6 +462,8 @@ async function exerciseRuntimeOptions() {
   await page.keyboard.press("Tab");
   await expect(page.getByRole("switch", { name: "무료만" })).toBeFocused();
   await page.keyboard.press("Tab");
+  // Reasoning levels are their own chip: opening it focuses the selected level.
+  await openComposerPopover(page, "effort");
   await expect(
     variantGroup().getByRole("radio", { name: scope.variant, exact: true }),
   ).toBeFocused();
@@ -404,7 +474,8 @@ async function exerciseRuntimeOptions() {
     "Option changes must stage only",
   );
   await expect(modelChip()).toHaveAttribute("title", /session-model/);
-  await expect(modelChip()).toHaveAttribute("title", /session\.variant/);
+  await expect(effortChip()).toHaveAttribute("title", /session\.variant/);
+  await expect(effortChip().locator("[data-runtime-mismatch]")).toHaveCount(1);
   await showResponse();
   await expect(responseReport()).toContainText("response-model");
   await expect(responseReport()).toContainText("response.variant");
@@ -432,6 +503,7 @@ async function exerciseRuntimeOptions() {
         // The whole turn meta must be readable: it wraps, never clips.
         await expect(responseReport()).toBeInViewport({ ratio: 0.95 });
         await shot(`${theme}-200-response-value-0`);
+        await openComposerPopover(page, "model");
         const hint = requested().locator("p").first();
         await hint.scrollIntoViewIfNeeded();
         await expect(hint).toBeInViewport({ ratio: 0.95 });
@@ -457,7 +529,7 @@ async function exerciseRuntimeOptions() {
     scope.variant,
   );
   await refreshCatalog();
-  await openComposerPopover(page, "model");
+  await openComposerPopover(page, "effort");
   const unavailableVariant = variantGroup().getByRole("radio", {
     name: `${scope.variant} (사용 불가)`,
     exact: true,
@@ -469,10 +541,19 @@ async function exerciseRuntimeOptions() {
   await shot("removed-variant-retained-blocked");
   assert.equal((await sends()).length, initialSends);
   await pickModel(page, "fixture-other-model");
+  // Choosing a model always closes the picker; the effort chip now reads 기본.
+  await expect(page.locator("[data-model-picker]")).toBeHidden();
+  await expect(effortChip()).toContainText("기본");
+  await openComposerPopover(page, "effort");
   await expect(
-    variantGroup().getByRole("radio", { name: "기본", exact: true }),
+    variantGroup().getByRole("radio", {
+      name: "기본 (모델 기본값)",
+      exact: true,
+    }),
   ).toBeChecked();
-  await expect(page.locator('[data-variant-cleared="true"]')).toBeVisible();
+  await expect(page.locator('[data-variant-cleared="true"]')).toContainText(
+    "추론 강도 요청을 지웠습니다",
+  );
   await shot("model-change-clears-variant");
   assert.equal((await sends()).length, initialSends);
 
@@ -480,19 +561,45 @@ async function exerciseRuntimeOptions() {
     scope = await scenario(name);
     await choose(scope, "");
     await composer().fill("SYNTHETIC model with no explicit variant");
-    await expect(requested()).toContainText(
-      "추론 강도 목록을 확인할 수 없습니다.",
-    );
-    await expect(variantGroup()).toHaveCount(0);
+    // No usable list and nothing requested: there is no effort chip to open.
+    await expect(effortChip()).toHaveCount(0);
     await expect(send()).toBeEnabled();
-    await reveal(requested());
+    await reveal(modelChip());
     await shot(`${name}-variants-unavailable`);
   }
+
+  // Default model + effort: a variant request needs an explicit model, so the
+  // reported model is pinned in the same update and send stays enabled.
+  scope = await scenario("supported");
+  await application.evaluate(() => {
+    const f = globalThis.__omocUiFixture;
+    const base = JSON.parse(JSON.stringify(f.catalog.models.entries[0]));
+    f.catalog.models.entries.push({
+      ...base,
+      id: "fixture-reported-model",
+      name: "SYNTHETIC reported model",
+      providerId: "synthetic",
+      modelId: "session-model",
+    });
+  });
+  await page.reload();
+  await expect(
+    page.locator(".workbench-header [data-connection]"),
+  ).toHaveAttribute("data-connection", "connected");
+  await composer().fill("SYNTHETIC default model with effort");
+  await expect(send()).toBeEnabled();
+  await expect(effortChip()).toBeVisible();
+  await pickVariant(page, scope.variant);
+  await closeComposerPopovers(page);
+  await expect(modelChip()).toContainText("SYNTHETIC reported model");
+  await expect(effortChip()).toContainText(scope.variant);
+  await expect(send()).toBeEnabled();
+  await shot("default-model-effort-pins-reported-model");
 
   await scenario("absent");
   // No session report: nothing to compare, so the chip carries no mismatch dot.
   await expect(modelChip().locator("[data-runtime-mismatch]")).toHaveCount(0);
-  await expect(modelChip()).not.toHaveAttribute("title", /./);
+  await expect(modelChip()).not.toHaveAttribute("title", /현재 세션/);
   await reveal(modelChip());
   await shot("session-no-report");
   await showResponse();
@@ -535,10 +642,24 @@ async function exerciseRuntimeOptions() {
       ),
     )
     .toBe(1);
+  // The composer empties on Enter, not on the ACK.
+  await expect(composer()).toHaveValue("");
+  // No "checking the connection" status while a send merely awaits its ACK,
+  // even past the 1.5s grace for lasting holds.
+  await page.waitForTimeout(2000);
+  await expect(page.locator("[data-context-held]")).toHaveCount(0);
+  // No typing over a send that may still fail; an option change during the
+  // send neither brings the text back nor keeps it after acceptance.
+  await expect(composer()).toHaveAttribute("readonly", "");
+  await pickVariant(page, "");
+  await closeComposerPopovers(page);
+  await expect(composer()).toHaveValue("");
   await shot("explicit-request-pending-ack");
   await application.evaluate(() =>
     globalThis.__omocUiFixture.releaseSendAcks(),
   );
+  await expect(composer()).not.toHaveAttribute("readonly", "");
+  await expect(composer()).toHaveValue("");
   await openComposerPopover(page, "model");
   await expect(modelSearch()).toBeEnabled();
   await closeComposerPopovers(page);
@@ -546,18 +667,22 @@ async function exerciseRuntimeOptions() {
     page.getByRole("button", { name: "현재 세션 실행 중단", exact: true }),
   ).toBeVisible();
   await pickModel(page, "fixture-other-model");
+  await openComposerPopover(page, "effort");
   await expect(
-    variantGroup().getByRole("radio", { name: "기본", exact: true }),
+    variantGroup().getByRole("radio", {
+      name: "기본 (모델 기본값)",
+      exact: true,
+    }),
   ).toBeChecked();
   await pickVariant(page, "other.variant");
   await composer().fill("SYNTHETIC editable next running draft");
-  await reveal(modelSearch());
+  await reveal(effortChip());
   await shot("running-next-draft");
   let requests = await sends();
   assert.equal(requests.length, initialSends + 1);
   assert.equal(requests.at(-1).model, scope.model);
   assert.equal(requests.at(-1).variant, scope.variant);
-  await expect(modelChip()).toHaveAttribute("title", /session\.variant/);
+  await expect(effortChip()).toHaveAttribute("title", /session\.variant/);
   await shot("running-distinct-session-setting");
   await showResponse();
   await expect(responseReport()).toContainText("response.variant");
@@ -571,8 +696,49 @@ async function exerciseRuntimeOptions() {
   await expect.poll(async () => (await sends()).length).toBe(initialSends + 2);
   requests = await sends();
   assert.equal(Object.hasOwn(requests.at(-1), "variant"), false);
-  await expect(modelChip()).toHaveAttribute("title", /session\.variant/);
+  await expect(effortChip()).toHaveAttribute("title", /session\.variant/);
   await shot("omitted-request-preserves-observed-variant");
+
+  // Korean IME: each composition update must stay one composing syllable
+  // (no stale re-render committing jamo), and Enter after it sends.
+  scope = await scenario("supported");
+  await choose(scope, "");
+  await closeComposerPopovers(page);
+  await composer().fill("");
+  await composer().focus();
+  const cdp = await page.context().newCDPSession(page);
+  for (const text of ["ㅁ", "마", "만"])
+    await cdp.send("Input.imeSetComposition", {
+      text,
+      selectionStart: 1,
+      selectionEnd: 1,
+    });
+  await cdp.send("Input.insertText", { text: "만" });
+  for (const text of ["ㄷ", "드", "들"])
+    await cdp.send("Input.imeSetComposition", {
+      text,
+      selectionStart: 1,
+      selectionEnd: 1,
+    });
+  await cdp.send("Input.insertText", { text: "들" });
+  await expect(composer()).toHaveValue("만들");
+  await page.keyboard.press("Enter");
+  await expect.poll(async () => (await sends()).length).toBe(initialSends + 3);
+  assert.equal((await sends()).at(-1).text, "만들");
+  await cdp.detach();
+
+  // A send that is not accepted gives the text back to the composer.
+  scope = await scenario("supported");
+  await choose(scope, "");
+  await closeComposerPopovers(page);
+  await composer().fill("SYNTHETIC not accepted");
+  await application.evaluate(() => {
+    globalThis.__omocUiFixture.nextSendUnknown = true;
+  });
+  await composer().focus();
+  await page.keyboard.press("Enter");
+  await expect.poll(async () => (await sends()).length).toBe(initialSends + 4);
+  await expect(composer()).toHaveValue("SYNTHETIC not accepted");
 
   // A failed last turn is explained on the turn itself; the generic page
   // banner stays hidden and no provider text is shown.
@@ -637,10 +803,10 @@ async function exerciseRuntimeOptions() {
     .toBe(true);
   await openComposerPopover(page, "model");
   await expect(modelOption(page, "")).toHaveAttribute("aria-selected", "true");
-  await expect(variantGroup()).toHaveCount(0);
+  await expect(effortChip()).toHaveCount(0);
   await reveal(composer());
   await shot("unknown-original-key-no-replay");
-  assert.equal((await sends()).length, initialSends + 2);
+  assert.equal((await sends()).length, initialSends + 4);
   const original = await application.evaluate(
     () => globalThis.__omocUiFixture.snapshot.retainedOperations[0],
   );

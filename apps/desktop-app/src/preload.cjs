@@ -1,5 +1,5 @@
 if (process.isMainFrame) {
-  const { contextBridge, ipcRenderer } = require("electron");
+  const { contextBridge, ipcRenderer, webUtils } = require("electron");
 
   contextBridge.exposeInMainWorld("desktopBridge", {
     workbench: (...args) => ipcRenderer.invoke("desktop:v2:workbench", ...args),
@@ -13,6 +13,12 @@ if (process.isMainFrame) {
     notify: (...args) => ipcRenderer.invoke("desktop:v1:notify", ...args),
     plans: (...args) => ipcRenderer.invoke("desktop:v1:plans", ...args),
     worktree: (...args) => ipcRenderer.invoke("desktop:v1:worktree", ...args),
+    // Absolute path of a dropped File (drag-and-drop attach). Main still
+    // canonicalizes and contains it via context.resolve.
+    getPathForFile: (file) => {
+      const path = webUtils.getPathForFile(file);
+      return typeof path === "string" ? path : "";
+    },
     cancelRead: (...args) =>
       ipcRenderer.invoke("desktop:v2:cancel-read", ...args),
     runtimeSnapshot: async (...args) => {

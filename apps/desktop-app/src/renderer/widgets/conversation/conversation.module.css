@@ -319,6 +319,7 @@
 }
 
 .composerCard {
+  anchor-name: --composer;
   position: relative;
   flex-shrink: 0;
   width: 100%;
@@ -379,9 +380,11 @@
 }
 
 .runStrip {
+  anchor-name: --runstrip;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 8px;
+  gap: 4px 8px;
   padding: 0 4px 4px;
   color: var(--omoc-semantic-color-text-secondary);
   font-size: var(--omoc-semantic-type-size-caption);
@@ -518,6 +521,7 @@
 }
 
 .chips {
+  margin-inline-end: 4px;
   display: flex;
   flex: 1 1 0;
   flex-wrap: nowrap;
@@ -558,16 +562,60 @@
   filter: brightness(0.96);
 }
 
-.chipText,
-.chipSecondary {
+.modelChip {
+  max-width: 220px;
+}
+
+.agentChip {
+  max-width: 160px;
+}
+
+.effortChip {
+  max-width: 140px;
+}
+
+/* Narrow windows: agent and permission keep their icon only, so the model
+   name stays readable. Their aria-labels still carry the full name. */
+@media (max-width: 599px) {
+  .chipLabel,
+  .chipChevron {
+    display: none;
+  }
+
+  .chip {
+    padding: 0 6px;
+  }
+
+  .modelChip {
+    flex: 1 1 0;
+    min-width: 48px;
+  }
+
+  .effortChip {
+    max-width: 88px;
+  }
+}
+
+.chip > svg {
+  flex: none;
+}
+
+/* Very narrow: the effort chip keeps only its icon (and mismatch dot). */
+@media (max-width: 420px) {
+  .effortChip {
+    flex: none;
+  }
+
+  .effortChip .chipText {
+    display: none;
+  }
+}
+
+.chipText {
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-.chipSecondary {
-  color: var(--omoc-semantic-color-text-tertiary);
 }
 
 .chipChevron {
@@ -592,15 +640,27 @@
   white-space: nowrap;
 }
 
-/* Native popover anchored to its chip; the browser clamps it to the viewport. */
+/* Native popover: its bottom sits 8px above the composer card (or the run
+   strip), never over the input; horizontally it follows its own trigger and is
+   clamped to the viewport. Height is bounded to the space above. */
 .popover {
+  --w: min(320px, calc(100vw - 16px));
   position: fixed;
-  position-anchor: var(--anchor);
   inset: auto;
-  margin: 0 0 8px;
-  width: max-content;
-  max-width: min(360px, calc(100vw - 16px));
-  max-height: min(70dvh, 560px);
+  top: 8px;
+  /* Stays inside the viewport when the card is scrolled partly out of view. */
+  bottom: max(8px, calc(anchor(var(--above, --composer) top) + 8px));
+  left: clamp(
+    8px,
+    calc(anchor(var(--anchor) right) - var(--w)),
+    calc(100vw - var(--w) - 8px)
+  );
+  align-self: end;
+  box-sizing: border-box;
+  margin: 0;
+  width: var(--w);
+  height: fit-content;
+  max-height: stretch;
   padding: 12px;
   overflow: auto;
   overscroll-behavior: contain;
@@ -611,25 +671,50 @@
   box-shadow: var(--omoc-semantic-shadow-overlay);
   font-size: var(--omoc-semantic-type-size-label);
   line-height: 20px;
-  position-area: top span-left;
-  position-try-fallbacks: flip-block;
 }
 
 .popover[data-align="start"] {
-  position-area: top span-right;
-  min-width: min(300px, calc(100vw - 16px));
+  --w: min(360px, calc(100vw - 16px));
+  left: clamp(8px, anchor(var(--anchor) left), calc(100vw - var(--w) - 8px));
+}
+
+.agentPopover {
+  --w: min(300px, calc(100vw - 16px));
+}
+
+.effortPopover {
+  --w: min(260px, calc(100vw - 16px));
+}
+
+.permissionPopover {
+  --w: min(340px, calc(100vw - 16px));
+}
+
+.popoverTitle {
+  margin: 0 0 8px;
+  font-size: var(--omoc-semantic-type-size-label);
+  font-weight: var(--omoc-semantic-type-weight-heading);
+  line-height: 20px;
+}
+
+.popoverNotice {
+  margin: 0 0 8px;
+  padding: 6px 8px;
+  border-radius: var(--omoc-primitive-radius-sm);
+  /* A tint of the warning foreground reads the same on light and dark surfaces. */
+  background: color-mix(
+    in srgb,
+    var(--omoc-semantic-color-warning-foreground) 14%,
+    transparent
+  );
+  color: var(--omoc-semantic-color-warning-foreground);
+  font-size: var(--omoc-semantic-type-size-caption);
+  line-height: var(--omoc-semantic-type-line-caption);
+  overflow-wrap: anywhere;
 }
 
 .popover:not(:popover-open) {
   display: none;
-}
-
-.field {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  min-width: 0;
-  margin-block: 8px;
 }
 
 .permissionModes {
@@ -657,6 +742,10 @@
 .permissionOption span {
   display: flex;
   flex-direction: column;
+}
+
+.permissionOption strong {
+  font-weight: 400;
 }
 
 .permissionOption small {
@@ -1078,18 +1167,6 @@ details[open] > .disclosure > .chevron {
 .runtimeReport p {
   margin: 4px 0;
 }
-.runtimeRequests {
-  min-width: 0;
-  margin: 4px 0 0;
-  padding: 0;
-  border: 0;
-  font-size: var(--omoc-semantic-type-size-caption);
-  line-height: 20px;
-}
-.runtimeRequests legend {
-  padding: 0;
-  font-weight: var(--omoc-semantic-type-weight-heading);
-}
 .runtimeHint {
   margin: 4px 0;
   color: var(--omoc-semantic-color-text-secondary);
@@ -1132,7 +1209,8 @@ details[open] > .disclosure > .chevron {
   overflow: auto;
 }
 .roundButton,
-.chip {
+.chip,
+.stripTrigger {
   anchor-name: var(--anchor);
 }
 
@@ -1151,12 +1229,15 @@ details[open] > .disclosure > .chevron {
 
 /* Model picker: a 320px searchable list inside the native model popover. */
 .modelPopover {
-  width: 320px;
   padding: 0;
 }
 
-.modelPopover .runtimeRequests {
-  margin: 0;
+.modelPopover > .popoverTitle {
+  margin: 12px 12px 4px;
+}
+
+.modelPopover > .modelNotice {
+  margin: 4px 12px 0;
 }
 
 .modelPicker {
@@ -1277,18 +1358,6 @@ details[open] > .disclosure > .chevron {
   line-height: var(--omoc-semantic-type-line-caption);
 }
 
-.modelVariant {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  padding: 8px;
-  border-top: 1px solid var(--omoc-semantic-color-border-subtle);
-  color: var(--omoc-semantic-color-text-secondary);
-  font-size: var(--omoc-semantic-type-size-label);
-  line-height: var(--omoc-semantic-type-line-label);
-}
-
 .modelPicker > .runtimeHint {
   margin: 0;
   padding: 8px;
@@ -1310,4 +1379,40 @@ details[open] > .disclosure > .chevron {
 }
 .rawIo > summary {
   cursor: pointer;
+}
+
+.popover.menuPopover[data-align="start"] {
+  --w: min(260px, calc(100vw - 16px));
+  padding: 4px;
+}
+
+.dropOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  border: 2px dashed var(--omoc-semantic-color-focus);
+  border-radius: inherit;
+  background: color-mix(
+    in srgb,
+    var(--omoc-semantic-color-surface-raised) 94%,
+    transparent
+  );
+  color: var(--omoc-semantic-color-text-primary);
+  font-size: var(--omoc-semantic-type-size-label);
+  font-weight: var(--omoc-semantic-type-weight-heading);
+  pointer-events: none;
+}
+
+.modeHint {
+  flex: none;
+  color: var(--omoc-semantic-color-text-secondary);
+  font-size: var(--omoc-semantic-type-size-caption);
+}
+
+@media (max-width: 599px) {
+  .modeHint {
+    display: none;
+  }
 }

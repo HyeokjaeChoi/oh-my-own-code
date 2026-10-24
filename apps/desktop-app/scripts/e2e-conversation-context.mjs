@@ -17,7 +17,9 @@ import { _electron as electron, expect } from "@playwright/test";
 import { captureProvenance } from "./build-provenance.mjs";
 import {
   COMPOSER_POPOVERS,
+  closeComposerPopovers,
   openCommandMenuShortcut,
+  expectAboveComposer,
   openComposerPopover,
   pickModel,
 } from "./e2e-composer.mjs";
@@ -284,8 +286,8 @@ export const SAVED_INVOCATION = Object.freeze([
 // popover is open at a time, so each step opens the one it needs.
 const attachTrigger = () =>
   page.getByRole("button", { name: COMPOSER_POPOVERS.attach }).first();
-const composer = () =>
-  page.getByRole("textbox", { name: "메시지 작성", exact: true });
+// Not by role: the textarea is a combobox while the `@` list is open.
+const composer = () => page.locator('textarea[aria-label="메시지 작성"]');
 const send = () =>
   page.getByRole("button", { name: "메시지 보내기", exact: true });
 const hook = (name) => page.locator(`[data-context-${name}]`);
@@ -309,6 +311,8 @@ async function scenario(name) {
   currentState = `scenario-${name}`;
   await application.evaluate(() => {
     const f = globalThis.__omocUiFixture;
+    f.contextPick = undefined;
+    f.contextResolve = undefined;
     f.releaseContextReads?.();
     f.releaseContextPrompts?.();
     f.releaseContextForks?.();
@@ -326,7 +330,6 @@ async function scenario(name) {
       page.locator(".workbench-header [data-connection]"),
     ).toHaveAttribute("data-connection", "connected");
   await expect(attachTrigger()).toBeAttached();
-  await openComposerPopover(page, "attach");
   assert.deepEqual(
     await application.evaluate(() => [
       globalThis.__omocUiFixture.contextReads.length,
@@ -337,11 +340,35 @@ async function scenario(name) {
   );
   return scope;
 }
+// The native dialog is synthetic: the fixture answers context.pick with the
+// workspace-relative result Main would return after containment.
+async function pickFiles(files, { folders = [], refused = 0 } = {}) {
+  await application.evaluate(
+    (_electron, value) => {
+      globalThis.__omocUiFixture.contextPick = value;
+    },
+    { files, folders, refused },
+  );
+  await openComposerPopover(page, "attach");
+  await page.getByRole("menuitem", { name: /^파일 추가/ }).click();
+}
 async function observe(scope) {
-  await hook("path").fill(scope.path);
-  await reveal(hook("observe"));
-  await hook("observe").click();
+  await pickFiles([scope.path]);
   await expect(hook("item")).toHaveCount(1);
+}
+// A chip opens the preview popover (and re-reads that file).
+async function openPreview(index = 0) {
+  const chip = hook("open").nth(index);
+  await expect(async () => {
+    const id = await chip.getAttribute("popovertarget");
+    if (
+      !(await page
+        .locator(`[id="${id}"]`)
+        .evaluate((el) => el.matches(":popover-open")))
+    )
+      await chip.click();
+    await expect(hook("preview")).toBeVisible({ timeout: 1000 });
+  }).toPass({ timeout: 10000 });
 }
 async function noHorizontalOverflow() {
   const bounds = await page.evaluate(() => ({
@@ -369,7 +396,7 @@ async function inspectLegacyGeometry() {
     const form = input.closest("form");
     const context = input.ownerDocument.querySelector("[data-context-tasks]");
     const toolbar = form.querySelector(
-      'button[aria-label^="파일 첨부와 미리보기"]',
+      'button[aria-label^="첨부 및 추가"]',
     ).parentElement;
     const box = (el) => {
       const r = el.getBoundingClientRect();
@@ -506,20 +533,43 @@ async function exerciseConversationContext() {
   await inspectLegacyGeometry();
   const initial = (await requests()).length;
   await pickModel(page, scope.model);
-  await openComposerPopover(page, "attach");
-  await hook("path").fill(scope.path);
-  await hook("path").focus();
-  await page.keyboard.press("Tab");
-  await expect(hook("observe")).toBeFocused();
-  await page.keyboard.press("Shift+Tab");
-  await expect(hook("path")).toBeFocused();
-  await page.keyboard.press("Tab");
+  // Menu keyboard flow: Enter opens, arrows move, Esc returns focus to "+".
+  await application.evaluate(
+    (_electron, value) => {
+      globalThis.__omocUiFixture.contextPick = value;
+    },
+    { files: [scope.path], folders: [], refused: 0 },
+  );
+  await attachTrigger().focus();
+  await page.keyboard.press("Enter");
+  const menu = page.getByRole("menu", { name: "첨부 및 추가" });
+  await expect(menu).toBeVisible();
+  await expectAboveComposer(page, menu);
+  const menuItems = menu.getByRole("menuitem");
+  await expect(menuItems).toHaveText([
+    /파일 추가…/,
+    /폴더 추가…/,
+    /파일·폴더 검색/,
+  ]);
+  await expect(menuItems.nth(0)).toBeFocused();
+  await page.keyboard.press("ArrowDown");
+  await expect(menuItems.nth(1)).toBeFocused();
+  await page.keyboard.press("ArrowUp");
+  await page.keyboard.press("ArrowUp");
+  await expect(menuItems.nth(2)).toBeFocused();
+  await page.keyboard.press("Escape");
+  await expect(menu).toBeHidden();
+  await expect(attachTrigger()).toBeFocused();
+  await page.keyboard.press("Enter");
+  await expect(menuItems.nth(0)).toBeFocused();
   await page.keyboard.press("Enter");
   await expect(hook("item")).toHaveCount(1);
+  await expect(menu).toBeHidden();
+  await openPreview();
   assert.equal(await hook("text").textContent(), scope.text);
-  await expect(hook("item")).toContainText("44 bytes");
+  await expect(hook("item")).toContainText("44 B");
   await composer().fill("SYNTHETIC staged request");
-  await expand(hook("item").locator("details"));
+  await expand(hook("preview").locator("details"));
   for (const theme of ["light", "dark"]) {
     for (const [width, zoom] of [
       [1440, 1],
@@ -536,13 +586,11 @@ async function exerciseConversationContext() {
       const prefix = `${theme}-${width}-zoom${zoom}`;
       // Expose each actual path/source/bytes/hash/preview/control, including200%.
       await captureValues(prefix, [
-        "[data-context-item] > strong",
-        "[data-context-item] > span",
-        "[data-context-item] dd",
-        "[data-context-preview] > strong",
-        "[data-context-text]",
-        "[data-context-reobserve]",
+        "[data-context-item] [data-context-open]",
         "[data-context-remove]",
+        "[data-context-preview] > strong",
+        "[data-context-preview] dd",
+        "[data-context-text]",
         "[data-context-close-preview]",
       ]);
       await reveal(send());
@@ -575,7 +623,7 @@ async function exerciseConversationContext() {
     1,
   );
   await reveal(
-    page.locator('[data-context-source="selection"] > span').first(),
+    page.locator('[data-context-source="selection"] [data-context-open]'),
   );
   await shot("captured-selection-reference");
   assert.equal((await requests()).length, initial);
@@ -627,6 +675,7 @@ async function exerciseConversationContext() {
   for (const name of ["image", "pdf"]) {
     scope = await scenario(name);
     await observe(scope);
+    await openPreview();
     await expect(hook("preview")).toHaveAttribute("data-context-preview", name);
     if (name === "image") {
       await expect(hook("image")).toHaveAttribute(
@@ -644,11 +693,10 @@ async function exerciseConversationContext() {
       );
     await reveal(hook(name));
     await shot(`${name}-captured-preview`);
-    await expand(hook("item").locator("details"));
+    await expand(hook("preview").locator("details"));
     await captureResponsive(name, [
-      "[data-context-item] > strong",
-      "[data-context-item] > span",
-      "[data-context-item] dd",
+      "[data-context-item] [data-context-open]",
+      "[data-context-preview] dd",
       `[data-context-${name}]`,
       "[data-context-close-preview]",
     ]);
@@ -663,16 +711,12 @@ async function exerciseConversationContext() {
     unsupported: "unsupported_content",
   })) {
     scope = await scenario(name);
-    await hook("path").fill(scope.path);
-    await hook("observe").click();
+    await pickFiles([scope.path]);
     await expect(hook("error")).toHaveAttribute("data-context-error", reason);
     await expect(hook("item")).toHaveCount(0);
     await reveal(hook("error"));
     await shot(`${name}-explicit-refusal`);
-    await captureResponsive(name, [
-      "[data-context-error]",
-      "[data-context-observe]",
-    ]);
+    await captureResponsive(name, ["[data-context-error]"]);
   }
   for (const name of ["unsupported-model", "missing-capabilities"]) {
     scope = await scenario(name);
@@ -680,11 +724,19 @@ async function exerciseConversationContext() {
     await pickModel(page, scope.model);
     await composer().fill("SYNTHETIC unsupported input remains editable");
     await expect(send()).toBeDisabled();
-    await reveal(hook("send-blocked"));
+    await expect(hook("reason")).toContainText(
+      "현재 모델은 이 형식을 지원하지 않습니다",
+    );
+    await expect(hook("change-model")).toBeVisible();
+    await reveal(hook("reason"));
     await shot(`${name}-no-text-substitution`);
+    // "모델 바꾸기" opens the model popover.
+    await hook("change-model").click();
+    await expect(page.getByRole("listbox", { name: "모델" })).toBeVisible();
+    await closeComposerPopovers(page);
     await captureResponsive(name, [
-      "[data-context-send-blocked]",
-      "[data-context-item] > span",
+      "[data-context-reason]",
+      "[data-context-item] [data-context-open]",
       '[aria-label="메시지 보내기"]',
     ]);
   }
@@ -700,14 +752,15 @@ async function exerciseConversationContext() {
     "CONTEXT_EXPIRED",
   );
   await expect(hook("item")).toHaveCount(1);
+  await expect(hook("reason")).toContainText("다시 확인이 필요합니다");
   await composer().fill("SYNTHETIC expiry retains editable summary");
   await expect(send()).toBeDisabled();
   await reveal(hook("error"));
   await shot("expired-no-automatic-reread");
   await captureResponsive("expired", [
     "[data-context-error]",
-    "[data-context-item] > strong",
-    "[data-context-reobserve]",
+    "[data-context-item] [data-context-open]",
+    "[data-context-reason]",
     '[aria-label="메시지 보내기"]',
   ]);
   assert.equal(
@@ -756,14 +809,21 @@ async function exerciseConversationContext() {
   for (const delivery of ["steer", "queue"]) {
     scope = await scenario("running");
     const count = (await requests()).length;
+    // Run controls live in the strip: empty draft disables them with a visible reason.
+    await closeComposerPopovers(page);
+    await composer().fill("");
+    await expect(hook("steer")).toBeDisabled();
+    await expect(hook("queue")).toBeDisabled();
+    await expect(hook("reason")).toContainText("보낼 내용을 먼저 입력하세요");
     await composer().fill(`SYNTHETIC current-run ${delivery}`);
+    await expect(hook("steer")).toBeEnabled();
+    await expect(hook("reason")).toHaveCount(0);
     await pickModel(page, "fixture-other-model");
-    await openComposerPopover(page, "run");
     if (delivery === "steer")
       await captureValues("running-current-run", [
         "[data-context-steer]",
         "[data-context-queue]",
-        "[data-context-inbox-observe]",
+        "[data-context-inbox-trigger]",
       ]);
     await hook(delivery).click();
     await expect.poll(async () => (await requests()).length).toBe(count + 1);
@@ -771,13 +831,201 @@ async function exerciseConversationContext() {
     assert.equal(request.delivery, delivery);
     for (const key of ["model", "agent", "variant", "attachments"])
       assert.equal(Object.hasOwn(request, key), false);
-    await hook("inbox-observe").click();
+    // Opening the popover is the explicit action that reads the queue.
+    const inboxReads = await application.evaluate(
+      () => globalThis.__omocUiFixture.inboxReads.length,
+    );
+    const inboxPanel = await openComposerPopover(page, "inbox");
+    await expectAboveComposer(page, inboxPanel);
     await expect(hook("inbox-row")).toHaveCount(1);
+    expect(
+      await application.evaluate(
+        () => globalThis.__omocUiFixture.inboxReads.length,
+      ),
+    ).toBeGreaterThan(inboxReads);
     await reveal(hook("inbox-row"));
     await shot(`${delivery}-scoped-inbox`);
   }
+  // Attach: "+" is a menu of direct actions; attachments are chips in the card.
+  scope = await scenario("ready");
+  const attachMenu = await openComposerPopover(page, "attach");
+  await expectAboveComposer(page, attachMenu);
+  await expect(attachMenu.getByRole("menuitem")).toHaveCount(3);
+  await expect(
+    page.locator("[data-context-path], [data-context-observe]"),
+  ).toHaveCount(0);
+  await shot("attach-menu");
+  // Cancelled dialog: silent, nothing attached.
+  await attachMenu.getByRole("menuitem", { name: /^파일 추가/ }).click();
+  await expect(hook("item")).toHaveCount(0);
+  await expect(hook("pick-notice")).toHaveCount(0);
+  // Files outside the workspace are dropped by Main; the count is reported.
+  await pickFiles([scope.path], { refused: 2 });
+  await expect(hook("item")).toHaveCount(1);
+  await expect(hook("pick-notice")).toContainText(
+    "작업 공간 밖의 파일 2개는 제외했습니다.",
+  );
+  await expect(hook("open")).toHaveAttribute("title", scope.path);
+  await expect(page.getByRole("button", { name: /^첨부 제거: / })).toHaveCount(
+    1,
+  );
+  await reveal(hook("item"));
+  await shot("attach-chips");
+  await openPreview();
+  await reveal(hook("preview"));
+  await shot("attach-chip-preview");
+  await hook("close-preview").click();
+  await expect(hook("preview")).toHaveCount(0);
+  await page.getByRole("button", { name: /^첨부 제거: / }).click();
+  await expect(hook("item")).toHaveCount(0);
+  // Folders become `@dir/` mentions at the caret; the root maps to `@./`.
+  await composer().fill("hello");
+  await application.evaluate(() => {
+    globalThis.__omocUiFixture.contextPick = {
+      files: [],
+      folders: ["src"],
+      refused: 0,
+    };
+  });
+  await openComposerPopover(page, "attach");
+  await page.getByRole("menuitem", { name: /^폴더 추가/ }).click();
+  await expect(composer()).toHaveValue("hello @src/ ");
+  await application.evaluate(() => {
+    globalThis.__omocUiFixture.contextPick = {
+      files: [],
+      folders: [""],
+      refused: 0,
+    };
+  });
+  await composer().fill("");
+  await openComposerPopover(page, "attach");
+  await page.getByRole("menuitem", { name: /^폴더 추가/ }).click();
+  await expect(composer()).toHaveValue("@./ ");
+  await expect(hook("item")).toHaveCount(0);
+  // "파일·폴더 검색" starts an `@` mention in the composer.
+  await composer().fill("");
+  await openComposerPopover(page, "attach");
+  await page.getByRole("menuitem", { name: /^파일·폴더 검색/ }).click();
+  await expect(composer()).toHaveValue("@");
+  await expect
+    .poll(() =>
+      page.evaluate(
+        () =>
+          globalThis.document.activeElement?.tagName +
+          ":" +
+          globalThis.document.activeElement?.getAttribute("aria-label"),
+      ),
+    )
+    .toBe("TEXTAREA:메시지 작성");
+  await expect(page.locator("[data-context-mention]")).toContainText(
+    "파일 또는 폴더 이름을 입력하세요",
+  );
+  // `@` combobox: focus stays in the textarea; arrows/Enter/Esc/Tab.
+  await composer().pressSequentially("sr");
+  const mentionList = page.getByRole("listbox", {
+    name: "파일·폴더 검색 결과",
+  });
+  await expect(mentionList.getByRole("option")).not.toHaveCount(0);
+  await expect(composer()).toHaveAttribute("role", "combobox");
+  await expectAboveComposer(page, page.locator("[data-context-mention]"));
+  await expect(
+    mentionList.locator('[data-mention-kind="folder"]').first(),
+  ).toBeVisible();
+  await expect(
+    mentionList.locator('[data-mention-kind="folder"]').first(),
+  ).toHaveText(/\/$/);
+  await shot("mention-list");
+  await page.keyboard.press("ArrowDown");
+  await expect(composer()).toBeFocused();
+  await page.keyboard.press("Escape");
+  await expect(page.locator("[data-context-mention]")).toHaveCount(0);
+  await expect(composer()).toHaveValue("@sr");
+  // Editing again reopens; a folder replaces the query with `@dir/ `.
+  await page.keyboard.press("Backspace");
+  await page.keyboard.type("r");
+  const folder = mentionList.locator('[data-mention-kind="folder"]').first();
+  await expect(folder).toBeVisible();
+  const folderPath = await folder.getAttribute("title");
+  const before = (await requests()).length;
+  await page.keyboard.press("Home");
+  await page.keyboard.press("End");
+  await expect(mentionList).toBeVisible();
+  for (let i = 0; i < 10; i++) {
+    if (
+      (await mentionList
+        .locator('[aria-selected="true"]')
+        .getAttribute("title")) === folderPath
+    )
+      break;
+    await page.keyboard.press("ArrowDown");
+  }
+  await page.keyboard.press("Tab");
+  await expect(composer()).toHaveValue(`@${folderPath}/ `);
+  assert.equal((await requests()).length, before, "Mention keys never send");
+  // A file removes the query and attaches the file.
+  await composer().fill("");
+  await composer().pressSequentially("@SYNTHETIC");
+  const fileOption = mentionList.locator(
+    `[data-mention-kind="file"][title="${scope.path}"]`,
+  );
+  await expect(fileOption).toBeVisible();
+  await fileOption.click();
+  await expect(hook("item")).toHaveCount(1);
+  await expect(composer()).toHaveValue("");
+  await shot("mention-file-attached");
+  // Drop: real File objects (via a file input) go through preload
+  // webUtils.getPathForFile and the validated context.resolve op.
+  await application.evaluate(
+    (_electron, value) => {
+      globalThis.__omocUiFixture.contextResolve = value;
+    },
+    { files: [scope.path], folders: ["src"], refused: 1 },
+  );
+  await page.getByRole("button", { name: /^첨부 제거: / }).click();
+  await expect(hook("item")).toHaveCount(0);
+  await writeFile(join(fixtureRoot, "drop-source.txt"), "drop");
+  await page.evaluate(() => {
+    const input = globalThis.document.createElement("input");
+    input.type = "file";
+    input.id = "e2e-drop-source";
+    globalThis.document.body.append(input);
+  });
+  await page.setInputFiles(
+    "#e2e-drop-source",
+    join(fixtureRoot, "drop-source.txt"),
+  );
+  const dropDispatch = (type) =>
+    page.evaluate((type) => {
+      const card = globalThis.document.querySelector("[class*=composerCard]");
+      const transfer = new globalThis.DataTransfer();
+      for (const file of globalThis.document.querySelector("#e2e-drop-source")
+        .files)
+        transfer.items.add(file);
+      card.dispatchEvent(
+        new globalThis.DragEvent(type, {
+          bubbles: true,
+          cancelable: true,
+          dataTransfer: transfer,
+        }),
+      );
+    }, type);
+  await dropDispatch("dragover");
+  await expect(hook("drop-overlay")).toContainText("여기에 놓아 첨부");
+  await shot("drop-overlay");
+  await dropDispatch("drop");
+  await expect(hook("drop-overlay")).toHaveCount(0);
+  await expect(hook("item")).toHaveCount(1);
+  await expect(composer()).toHaveValue("@src/ ");
+  await expect(hook("pick-notice")).toContainText(
+    "작업 공간 밖의 파일 1개는 제외했습니다.",
+  );
+  await application.evaluate(() => {
+    globalThis.__omocUiFixture.contextPick = undefined;
+    globalThis.__omocUiFixture.contextResolve = undefined;
+  });
+
   scope = await scenario("queued");
-  await openComposerPopover(page, "run");
+  await openComposerPopover(page, "inbox");
   await hook("inbox-observe").click();
   await expect(hook("inbox-row")).toHaveCount(1);
   await captureResponsive("inbox", [
@@ -799,8 +1047,7 @@ async function exerciseConversationContext() {
   await shot("cancel-ACK-does-not-prove-nonexecution");
 
   scope = await scenario("pending-read");
-  await hook("path").fill(scope.path);
-  await hook("observe").click();
+  await pickFiles([scope.path]);
   await expect(hook("cancel-read")).toBeVisible();
   await hook("cancel-read").click();
   await application.evaluate(() => {
@@ -854,23 +1101,25 @@ async function exerciseConversationContext() {
     )
     .toBe(true);
   await expectRevertDisabled();
-  await composer().fill("SYNTHETIC inert unknown draft");
-  await openComposerPopover(page, "run");
+  await composer().fill("SYNTHETIC inert draft");
   await shot("unknown-original-key-editable-no-replay");
   await captureResponsive("unknown", [
     '[aria-label="메시지 작성"]',
     '[aria-label="메시지 보내기"]',
-    "[data-context-inbox-observe]",
   ]);
   for (const name of ["held", "global-held", "untrusted"]) {
     await scenario(name);
     await composer().fill(`SYNTHETIC ${name} inert draft`);
-    await expect(hook("observe")).toBeDisabled();
+    await openComposerPopover(page, "attach");
+    for (const item of await page.getByRole("menuitem").all()) {
+      await expect(item).toBeDisabled();
+      await expect(item).toContainText("세션이 준비되면 사용할 수 있습니다");
+    }
+    await closeComposerPopovers(page);
     await expectRevertDisabled();
-    // The queue entry point stays available; its status strip does not.
+    // No run, no queue: the run strip (and its queue entry point) is absent.
     await expect(page.locator("[data-run-strip]")).toHaveCount(0);
-    await openComposerPopover(page, "run");
-    await expect(hook("inbox-observe")).toBeDisabled();
+    await expect(hook("inbox-trigger")).toHaveCount(0);
     await expect(send()).toBeDisabled();
     await reveal(composer());
     await shot(`${name}-editable-effects-held`);

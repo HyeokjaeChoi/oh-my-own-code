@@ -652,13 +652,26 @@ test("conversation context: actual React controls render inert previews and comp
     namespace: "conversation-context-react",
     tsconfig: fileURLToPath(new URL("../tsconfig.json", import.meta.url)),
   });
-  let Controls, MessageActions, Provider;
+  let Controls, MessageActions, RunStrip, Chips, Provider;
   // The composer wraps these bodies in popovers; render them bare here.
-  const passthrough = { attachPanel: (body) => body, runPanel: (body) => body };
+  const passthrough = {
+    menuPanel: (body) => body,
+    previewPanel: (body) => body,
+    inboxPanel: (body) => body,
+    intake: {
+      notice: "",
+      pickFiles() {},
+      pickFolder() {},
+      search() {},
+      drop() {},
+    },
+  };
   try {
     ({
       ConversationContextControls: Controls,
       ContextMessageActions: MessageActions,
+      RunStripControls: RunStrip,
+      AttachmentChips: Chips,
     } = await scoped.import(
       "./renderer/features/conversation-context/index.tsx",
       import.meta.url,
@@ -712,18 +725,41 @@ test("conversation context: actual React controls render inert previews and comp
     assert.ok(html.includes("a".repeat(64)));
     assert.ok(html.includes("b".repeat(64)));
     for (const hook of [
-      "path",
-      "observe",
-      "list",
-      "item",
+      "menu-item",
       "preview",
       "text",
       "selection",
-      "steer",
-      "queue",
       "inbox-observe",
     ])
       assert.ok(html.includes(`data-context-${hook}`), hook);
+    // Attachments are chips inside the composer card, not part of the panels.
+    const chipsHtml = renderToStaticMarkup(
+      createElement(
+        Provider,
+        { value },
+        createElement(Chips, { previewId: "p", onChangeModel() {} }),
+      ),
+    );
+    for (const hook of ["chips", "item", "open", "remove"])
+      assert.ok(chipsHtml.includes(`data-context-${hook}`), hook);
+    assert.ok(chipsHtml.includes('aria-label="첨부 제거: notes.txt"'));
+    assert.ok(chipsHtml.includes('title="notes.txt"'));
+    // Default model: the send needs an explicit model, so the chip says so.
+    assert.ok(chipsHtml.includes("첨부를 보낼 모델을 선택하세요"));
+    assert.ok(chipsHtml.includes("data-context-change-model"));
+    // Steer/queue live in the run strip, with a visible reason while disabled.
+    const stripHtml = renderToStaticMarkup(
+      createElement(
+        Provider,
+        { value },
+        createElement(RunStrip, {
+          running: true,
+          inboxTrigger: (label) => createElement("button", null, label),
+        }),
+      ),
+    );
+    for (const hook of ["steer", "queue", "reason"])
+      assert.ok(stripHtml.includes(`data-context-${hook}`), hook);
     // A branch task owns the composer: attach/run panels are not rendered.
     api.actions.previewContextBranch("u-1");
     const branchHtml = renderToStaticMarkup(
@@ -731,7 +767,7 @@ test("conversation context: actual React controls render inert previews and comp
     );
     for (const hook of ["branch", "boundary", "branch-text", "branch-confirm"])
       assert.ok(branchHtml.includes(`data-context-${hook}`), hook);
-    for (const hook of ["path", "observe", "steer", "queue", "inbox-observe"])
+    for (const hook of ["menu-item", "inbox-observe"])
       assert.ok(!branchHtml.includes(`data-context-${hook}`), hook);
     assert.ok(branchHtml.includes("현재 작업 공간의 파일은 그대로 둡니다"));
     assert.ok(branchHtml.includes("새 분기 만들기 · 전송 안 함"));
@@ -771,6 +807,36 @@ test("conversation context: actual React controls render inert previews and comp
         "data:image",
       ),
     );
+    // Chip reasons follow the chosen model's input capabilities.
+    const chipReasons = () =>
+      renderToStaticMarkup(
+        createElement(
+          Provider,
+          { value },
+          createElement(Chips, { previewId: "p", onChangeModel() {} }),
+        ),
+      );
+    api.actions.options({ model: "next-model" });
+    assert.ok(!chipReasons().includes("지원하지 않습니다"));
+    assert.ok(chipReasons().includes('src="data:image/gif;base64,'));
+    seedRuntimeCatalog(api.store, {
+      ...runtimeCatalog(),
+      models: {
+        status: "available",
+        entries: [
+          {
+            id: "next-model",
+            name: "Next model",
+            variants: { status: "available", ids: [] },
+            capabilities: { tools: true, input: ["text"], output: ["text"] },
+          },
+        ],
+      },
+    });
+    assert.ok(
+      chipReasons().includes("현재 모델은 이 형식을 지원하지 않습니다"),
+    );
+    assert.ok(chipReasons().includes("data-context-change-model"));
     observed = contextObserved("sample.pdf", "", {
       descriptor: {
         ...contextObserved("sample.pdf", "").descriptor,
@@ -791,8 +857,88 @@ test("conversation context: actual React controls render inert previews and comp
     );
     assert.ok(inboxHtml.includes('data-context-inbox-row="pending-1"'));
     assert.ok(inboxHtml.includes('data-context-inbox-cancel="pending-1"'));
-    assert.ok(inboxHtml.includes("취소나 미실행을 증명하지 않습니다"));
+    assert.ok(inboxHtml.includes("마지막 확인 시점 기준입니다."));
     assert.equal(calls.length, 4);
+  } finally {
+    api.dispose();
+  }
+});
+test("conversation context: attaching with the default model pins the model the session reports", async () => {
+  const { api } = contextWindow((e) =>
+    e.operation.type === "context.observe"
+      ? { ok: true, value: contextObserved(e.operation.path) }
+      : undefined,
+  );
+  try {
+    seed(
+      api.store,
+      snapshot(1, "a", {
+        sessionSelection: {
+          sessionId: "a",
+          model: { providerId: "prov", id: "mod" },
+        },
+      }),
+    );
+    seedRuntimeCatalog(api.store, {
+      ...runtimeCatalog(),
+      models: {
+        status: "available",
+        entries: [
+          {
+            id: "prov/mod",
+            providerId: "prov",
+            modelId: "mod",
+            name: "Reported",
+            variants: { status: "available", ids: [] },
+            capabilities: { tools: true, input: ["text"], output: ["text"] },
+          },
+        ],
+      },
+    });
+    assert.equal(selectors.draft(api.store.getState()).model, "");
+    assert.equal(await api.actions.observeContext("notes.txt"), true);
+    assert.equal(selectors.draft(api.store.getState()).model, "prov/mod");
+    assert.equal(selectors.contextSendReady(api.store.getState()), true);
+    // An explicit choice is never overridden by a later attachment.
+    api.actions.options({ model: "other-model" });
+    await api.actions.observeContext("two.txt");
+    assert.equal(selectors.draft(api.store.getState()).model, "other-model");
+  } finally {
+    api.dispose();
+  }
+});
+test("conversation context: dropped files resolve through context.resolve with absolute paths only", async () => {
+  const { api, calls, bridge } = contextWindow((e) =>
+    e.operation.type === "context.resolve"
+      ? {
+          ok: true,
+          value: { files: ["a.txt"], folders: ["src"], refused: 1 },
+        }
+      : undefined,
+  );
+  bridge.getPathForFile = (file) => file.path;
+  try {
+    const result = await api.actions.resolveDroppedFiles([
+      { path: "/w/a.txt" },
+      { path: "relative.txt" },
+      { path: "" },
+    ]);
+    assert.deepEqual(result, {
+      ok: true,
+      files: ["a.txt"],
+      folders: ["src"],
+      refused: 1,
+    });
+    const sent = calls.filter((e) => e.operation.type === "context.resolve");
+    assert.equal(sent.length, 1);
+    assert.deepEqual(sent[0].operation.paths, ["/w/a.txt"]);
+    // Nothing absolute (for example a pasted image): no request at all.
+    const none = await api.actions.resolveDroppedFiles([{ path: "" }]);
+    assert.equal(none.ok, false);
+    assert.equal(
+      calls.filter((e) => e.operation.type === "context.resolve").length,
+      1,
+    );
   } finally {
     api.dispose();
   }
@@ -1145,6 +1291,37 @@ test("conversation context: historical unavailable context is accepted only for 
     }),
   );
   assert.equal(store.getState().snapshot.messages[0].context.count, 1);
+});
+test("conversation context: an accepted send clears text and attachments even if a snapshot advanced the revision before the receipt", async () => {
+  const gate = deferred();
+  const { api, calls } = contextWindow((e) =>
+    e.operation.type === "context.observe"
+      ? { ok: true, value: contextObserved("notes.txt") }
+      : e.operation.type === "message.send"
+        ? gate.promise.then(() => ({
+            ok: true,
+            value: { status: "accepted" },
+            receipt: receipt(e),
+          }))
+        : undefined,
+  );
+  try {
+    await api.actions.observeContext("notes.txt");
+    api.actions.options({ model: "next-model" });
+    api.actions.draft("question");
+    const sent = api.actions.sendContextMessage();
+    while (!calls.some((e) => e.operation.type === "message.send"))
+      await new Promise((r) => setImmediate(r));
+    // The session starts running: a fresher snapshot lands before the ACK.
+    seed(api.store, snapshot(2, "a", {}));
+    gate.resolve();
+    assert.equal(await sent, true);
+    await flush();
+    assert.equal(selectors.draft(api.store.getState()).text, "");
+    assert.equal(selectors.contextDraft(api.store.getState()).items.length, 0);
+  } finally {
+    api.dispose();
+  }
 });
 test("conversation context: running delivery omits NEXT options and attachments", async () => {
   const { api, calls } = contextWindow(
@@ -18860,6 +19037,62 @@ test("runtime options: switching models keeps a variant only if the new model li
   store.dispatch({ type: "draft", key, variant: "low" });
   assert.equal(invalid(), true);
 });
+test("context.pick: a pick that finishes after the scope changed is dropped", async () => {
+  let release;
+  let hold = false;
+  const { api, calls } = contextWindow((e) => {
+    if (e.operation.type !== "context.pick") return undefined;
+    const value = {
+      ok: true,
+      value: { files: ["notes.txt"], folders: [], refused: 0 },
+    };
+    return hold ? new Promise((r) => (release = () => r(value))) : value;
+  });
+  assert.deepEqual(await api.actions.pickContextPaths("file"), {
+    ok: true,
+    files: ["notes.txt"],
+    folders: [],
+    refused: 0,
+  });
+  assert.equal(calls.at(-1).operation.type, "context.pick");
+  hold = true;
+  const pending = api.actions.pickContextPaths("file");
+  await new Promise((r) => setImmediate(r));
+  changeContextAuthority(api, "epoch");
+  release();
+  assert.deepEqual(await pending, { ok: false, code: "CANCELLED" });
+});
+test("runtime options: effort over the default model needs the reported model pinned in the same update", () => {
+  const store = createWorkbenchStore();
+  seed(store);
+  seedRuntimeCatalog(store, {
+    ...runtimeCatalog(),
+    models: {
+      status: "available",
+      entries: [
+        {
+          id: "reported",
+          name: "R",
+          free: true,
+          variants: { status: "available", ids: ["low", "high"] },
+        },
+      ],
+    },
+  });
+  const key = selectionKey("w", "a");
+  const draft = () => selectors.draft(store.getState());
+  const invalid = () => selectors.requestOptionsInvalid(store.getState());
+  // A bare variant (default model) is not sendable.
+  store.dispatch({ type: "draft", key, variant: "high" });
+  assert.equal(invalid(), true);
+  store.dispatch({ type: "draft", key, variant: "" });
+  // The widget sends model and variant together: valid, nothing cleared.
+  store.dispatch({ type: "draft", key, model: "reported", variant: "high" });
+  assert.equal(draft().model, "reported");
+  assert.equal(draft().variant, "high");
+  assert.equal(draft().variantCleared, false);
+  assert.equal(invalid(), false);
+});
 test("runtime options: accept separate session and same-message reports; omission clears only session setting", () => {
   const store = createWorkbenchStore();
   const message = {
@@ -19190,7 +19423,12 @@ test("runtime options: late ACK after root trust floor and ABA preserves current
           receipt: receipt(original, { revision: 9 }),
         });
         await done;
-        assert.equal(selectors.draft(api.store.getState()).text, "original");
+        // A merely fresher snapshot (same root/trust/session) does not make an
+        // accepted send's draft stale; every other change keeps the draft.
+        assert.equal(
+          selectors.draft(api.store.getState()).text,
+          change === "floor" ? "" : "original",
+        );
         assert.equal(api.store.getState().revision, before.revision);
         assert.equal(api.store.getState().notice, before.notice);
         assert.equal(
@@ -19848,7 +20086,9 @@ test("runtime options: changing caller type and next options cannot turn a messa
     assert.equal(await done, true);
     assert.equal(api.store.getState().snapshot.sessionSelection, undefined);
     assert.equal(selectors.draft(api.store.getState()).model, "other-model");
-    assert.equal(selectors.draft(api.store.getState()).text, "original");
+    // An option change is not a text edit: the accepted send clears the text
+    // (keeping it would invite a duplicate send) and keeps the new options.
+    assert.equal(selectors.draft(api.store.getState()).text, "");
   } finally {
     api.dispose();
     noRead.resolve({ ok: false, code: "CANCELLED" });

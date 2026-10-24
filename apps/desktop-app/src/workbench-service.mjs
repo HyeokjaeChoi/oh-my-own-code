@@ -68,7 +68,9 @@ import {
 } from "./host/workbench-admission.mjs";
 import { performance } from "node:perf_hooks";
 import { homedir } from "node:os";
-import { basename, isAbsolute } from "node:path";
+import { basename, isAbsolute, relative, sep } from "node:path";
+import { lstat, realpath } from "node:fs/promises";
+import { workspaceFilePathReason } from "./renderer/shared/workspace-file/index.mjs";
 import { isDeepStrictEqual } from "node:util";
 import { redactReceipt } from "./host/workbench-receipts.mjs";
 import { isPlaceholderTitle, nativeSessionTitle } from "./session-title.mjs";
@@ -353,6 +355,7 @@ export function projectMessages(data) {
 export function createWorkbenchService({
   runtime,
   pickDirectory,
+  pickFile,
   probeWorkspace,
   confirmTrust,
   confirmImport = async () => false,
@@ -3800,6 +3803,74 @@ export function createWorkbenchService({
       ...value,
     });
   }
+  // Containment shared by the native pickers and drag-and-drop resolution. The
+  // result is a convenience for the renderer only: attaching a file still goes
+  // through context.observe, which performs every real read check.
+  async function containPaths(w, candidates) {
+    const root = await canonicalDirectory(w.path).catch(() =>
+      fail("FILE_DENIED"),
+    );
+    const files = [],
+      folders = [];
+    let refused = Math.max(0, candidates.length - 16);
+    const lexInside = (base, candidate) => {
+      const rel = relative(base, candidate);
+      return rel !== ".." && !rel.startsWith(`..${sep}`) && !isAbsolute(rel);
+    };
+    for (const candidate of candidates.slice(0, 16)) {
+      // Lexically outside paths never reach the filesystem (no TCC prompts or
+      // network stats for arbitrary renderer-supplied paths).
+      if (!lexInside(root, candidate) && !lexInside(w.path, candidate)) {
+        refused++;
+        continue;
+      }
+      try {
+        const real = await realpath(candidate);
+        const stat = await lstat(real);
+        const rel = relative(root, real);
+        const inside =
+          rel === ""
+            ? stat.isDirectory()
+            : rel !== ".." && !rel.startsWith(`..${sep}`) && !isAbsolute(rel);
+        const path = rel.split(sep).join("/");
+        if (!inside || (path && workspaceFilePathReason(path))) refused++;
+        else if (stat.isDirectory()) folders.push(path);
+        else if (stat.isFile()) files.push(path);
+        else refused++;
+      } catch {
+        refused++;
+      }
+    }
+    return { files, folders, refused };
+  }
+  async function pickContextPaths(request, w) {
+    if (typeof pickFile !== "function") fail("UNAVAILABLE");
+    const authority = contextReadAuthority(w);
+    await recheck(w);
+    authority.verify();
+    const kind = request.kind ?? "file";
+    const picked = [].concat((await pickFile(w.path, kind)) ?? []);
+    authority.verify();
+    if (!picked.length) fail("CANCELLED");
+    const result = await containPaths(w, picked);
+    authority.verify();
+    // A folder pick yields folders only, a file pick files only.
+    return kind === "folder"
+      ? { ...result, files: [], refused: result.refused + result.files.length }
+      : {
+          ...result,
+          folders: [],
+          refused: result.refused + result.folders.length,
+        };
+  }
+  async function resolveContextPaths(request, w) {
+    const authority = contextReadAuthority(w);
+    await recheck(w);
+    authority.verify();
+    const result = await containPaths(w, request.paths);
+    authority.verify();
+    return result;
+  }
   async function nativeInbox(w, s, verify = checkLive) {
     verify();
     await recheck(w);
@@ -5625,6 +5696,9 @@ export function createWorkbenchService({
     )
       return observeGit(request, w);
     if (request.type === "context.observe") return observeContext(request, w);
+    if (request.type === "context.pick") return pickContextPaths(request, w);
+    if (request.type === "context.resolve")
+      return resolveContextPaths(request, w);
     if (request.type === "permission.policy.read")
       return observePermissionPolicy(w, s);
     if (request.type === "session.inbox") return observeInbox(w, s);

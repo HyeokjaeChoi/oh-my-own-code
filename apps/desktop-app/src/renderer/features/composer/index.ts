@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import type { AssistantRuntime } from "@assistant-ui/react";
 import {
   emptyDraft,
+  sendInFlight,
   useWindowWorkbench,
 } from "../../entities/workbench/index.js";
 import { selectionKey } from "../../shared/projection/index.js";
@@ -16,25 +17,37 @@ export function useComposerDraft(
   runtime: AssistantRuntime,
   workspaceId: string,
   sessionId: string,
+  // While an IME composes, the input alone owns the text: any write would
+  // commit the composing syllable. The draft catches up on compositionend.
+  composing: { readonly current: boolean },
 ) {
   const { store } = useWindowWorkbench(),
     key = selectionKey(workspaceId, sessionId);
   useEffect(() => {
     const sync = () => {
-      const text = (store.getState().drafts[key] ?? emptyDraft).text;
+      if (composing.current) return;
+      const state = store.getState();
+      // A sent draft awaiting its ACK shows as empty (failure brings it back).
+      const text = sendInFlight(state, key)
+        ? ""
+        : (state.drafts[key] ?? emptyDraft).text;
       if (runtime.thread.composer.getState().text !== text)
         runtime.thread.composer.setText(text);
     };
     sync();
     const unsubscribe = store.subscribe((next, previous) => {
-      if (next.drafts[key] !== previous.drafts[key]) sync();
+      if (
+        next.drafts[key] !== previous.drafts[key] ||
+        next.operations !== previous.operations
+      )
+        sync();
     });
     const unsubscribeComposer = runtime.thread.composer.subscribe(sync);
     return () => {
       unsubscribe();
       unsubscribeComposer();
     };
-  }, [store, runtime, key]);
+  }, [store, runtime, key, composing]);
 }
 
 // Preselects the saved default model once per session while the draft requests none.

@@ -558,10 +558,12 @@ try {
   const scope = await openCase();
   const baseline = await readFileBaseline();
   const prefix = "SYNTHETIC existing composer";
-  const agent = page.getByLabel("Agent 요청", { exact: true });
+  const agent = page.locator(
+    '[role="radiogroup"][aria-label="에이전트"] input[value="fixture-agent"]',
+  );
   await composer().fill(prefix);
   await openComposerPopover(page, "agent");
-  await agent.selectOption("fixture-agent");
+  await agent.check();
   await pickModel(page, "fixture-model");
   await closeComposerPopovers(page);
   await showFiles();
@@ -617,7 +619,7 @@ try {
     comment,
     prefix,
   );
-  await expect(agent).toHaveValue("fixture-agent");
+  await expect(agent).toBeChecked();
   await openComposerPopover(page, "model");
   await expect(modelOption(page, "fixture-model")).toHaveAttribute(
     "aria-selected",

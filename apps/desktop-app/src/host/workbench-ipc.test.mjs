@@ -90,6 +90,7 @@ test("preload exposes v2 only to the main frame, without legacy envelope adaptat
         return Promise.resolve({ ok: true });
       },
     },
+    webUtils: { getPathForFile: (file) => `/dropped/${file.name}` },
   };
   const require = (name) => {
     assert.equal(name, "electron");
@@ -101,6 +102,7 @@ test("preload exposes v2 only to the main frame, without legacy envelope adaptat
   const envelope = { version: 2, readId: "r", operation: { type: "snapshot" } };
   await bridge.workbench(envelope);
   await bridge.cancelRead({ version: 2, runtimeEpoch: "e", readId: "r" });
+  assert.equal(bridge.getPathForFile({ name: "a.txt" }), "/dropped/a.txt");
   assert.equal(calls[0][0], "desktop:v2:workbench");
   assert.equal(calls[0][1], envelope);
   assert.equal(calls[1][0], "desktop:v2:cancel-read");

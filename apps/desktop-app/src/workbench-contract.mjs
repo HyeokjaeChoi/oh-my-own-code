@@ -1,3 +1,4 @@
+import { isAbsolute } from "node:path";
 import { validWireId } from "./wire-id.mjs";
 export { validWireId } from "./wire-id.mjs";
 import {
@@ -159,6 +160,8 @@ const schemas = {
     ["title", "before"],
   ],
   "context.observe": [["workspaceId", "path"], ["selection"]],
+  "context.pick": [["workspaceId"], ["kind"]],
+  "context.resolve": [["workspaceId", "paths"], []],
   "session.inbox": [["workspaceId", "sessionId"], []],
   "session.inbox.cancel": [
     ["workspaceId", "sessionId", "requestId", "inboxId"],
@@ -263,6 +266,23 @@ export function validateRequest(value) {
       if (!validContextSelection(entry)) fail("INVALID_REQUEST");
       continue;
     }
+    if (key === "paths") {
+      // Absolute paths from drag-and-drop; main canonicalizes and contains them.
+      if (
+        !Array.isArray(entry) ||
+        entry.length < 1 ||
+        entry.length > 16 ||
+        !entry.every(
+          (p) =>
+            typeof p === "string" &&
+            p.length <= 2048 &&
+            !p.includes("\0") &&
+            isAbsolute(p),
+        )
+      )
+        fail("INVALID_REQUEST");
+      continue;
+    }
     if (key === "pinModels") {
       if (
         !Array.isArray(entry) ||
@@ -306,6 +326,12 @@ export function validateRequest(value) {
     )
       fail("INVALID_REQUEST");
   }
+  if (
+    value.type === "context.pick" &&
+    Object.hasOwn(value, "kind") &&
+    !["file", "folder"].includes(value.kind)
+  )
+    fail("INVALID_REQUEST");
   if (value.type === "workspace.import" && value.path === "")
     fail("INVALID_REQUEST");
   if (
@@ -527,6 +553,8 @@ export function portableName(name) {
 export const READ_TYPES = Object.freeze([
   "permission.policy.read",
   "context.observe",
+  "context.pick",
+  "context.resolve",
   "session.inbox",
   "git.commit.preview.read",
   "git.branch.preview.read",

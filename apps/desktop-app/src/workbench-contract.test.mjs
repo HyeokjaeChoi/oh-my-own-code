@@ -43,6 +43,17 @@ test("extensions observation is a workspace-only v2 read without effect authorit
   ])
     assert.throws(() => validateRequest({ ...operation, type }));
 });
+test("context.pick is a workspace-only read that carries no path", () => {
+  const operation = { type: "context.pick", workspaceId: "workspace" };
+  const envelope = { version: 2, runtimeEpoch: "e", readId: "r", operation };
+  assert.ok(READ_TYPES.includes(operation.type));
+  assert.deepEqual(validateEnvelope(envelope), envelope);
+  for (const extra of [{ path: "a.txt" }, { sessionId: "s" }, { kind: "x" }])
+    assert.throws(() =>
+      validateEnvelope({ ...envelope, operation: { ...operation, ...extra } }),
+    );
+  assert.throws(() => validateEnvelope({ ...envelope, operationId: "op" }));
+});
 test("Skill files keep exact nested target and missing-directory baseline closed", () => {
   const sourceName = "small-skill";
   for (const operation of [

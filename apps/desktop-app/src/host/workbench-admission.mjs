@@ -56,12 +56,16 @@ const errorResult = (error) =>
   failure(
     Object.hasOwn(ERRORS, error?.appCode) ? error.appCode : "RUNTIME_ERROR",
   );
+// A native file dialog waits on the user, so it gets its own lane and a longer deadline.
+const PICK_DEADLINE_MS = 120000;
 function readClass(type) {
   if (type === "operation.lookup") return "lookup";
+  if (type === "context.pick") return "pick";
   if (type === "catalog.list") return "catalog";
   if (
     type === "permission.policy.read" ||
     type === "context.observe" ||
+    type === "context.resolve" ||
     type === "session.inbox" ||
     type === "git.branch.preview.read" ||
     type === "git.restore.preview.read" ||
@@ -152,14 +156,14 @@ export function createHostAdmission({
     actuals.add(actual);
     return actual;
   }
-  function scope(kind, record) {
+  function scope(kind, record, ms = deadlineMs) {
     const controller = new AbortController();
     const value = {
       kind,
       record,
       controller,
       signal: AbortSignal.any([service.signal, controller.signal]),
-      deadline: performance.now() + deadlineMs,
+      deadline: performance.now() + ms,
       sdkActive: false,
       effectStarted: false,
     };
@@ -285,7 +289,16 @@ export function createHostAdmission({
     if (!task) {
       task = {
         identity,
-        owner: Object.assign(scope(kind), { sender }),
+        owner: Object.assign(
+          scope(
+            kind,
+            undefined,
+            kind === "pick"
+              ? Math.max(deadlineMs, PICK_DEADLINE_MS)
+              : deadlineMs,
+          ),
+          { sender },
+        ),
         subs: new Map(),
         quarantined: false,
       };
