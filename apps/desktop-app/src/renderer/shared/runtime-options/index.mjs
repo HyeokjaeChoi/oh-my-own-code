@@ -61,6 +61,8 @@ export function validUsage(value) {
   );
 }
 export function projectUsage(message) {
+  // In-flight assistant messages carry partial counts: unknown, not usage.
+  if (!Number.isFinite(message?.time?.completed)) return undefined;
   const t = message?.tokens;
   if (!t || typeof t !== "object" || !t.cache || typeof t.cache !== "object")
     return undefined;
