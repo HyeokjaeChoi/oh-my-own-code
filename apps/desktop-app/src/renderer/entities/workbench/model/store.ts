@@ -2001,7 +2001,13 @@ export type DiagnosticsIdentity = Scope & {
   filtered: boolean;
   requestGeneration: number;
 };
-export type Panel = "files" | "changes" | "work" | "terminal" | "preview";
+export type Panel =
+  | "files"
+  | "changes"
+  | "work"
+  | "plan"
+  | "terminal"
+  | "preview";
 export type ContextDraft = {
   items: readonly ContextDescriptor[];
   verifiedIds: readonly string[];

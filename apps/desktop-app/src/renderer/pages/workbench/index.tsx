@@ -42,6 +42,7 @@ import { Conversation } from "../../widgets/conversation/index.js";
 import { TerminalPanel } from "../../widgets/terminal/index.js";
 import { PreviewPanel } from "../../widgets/preview/index.js";
 import { PlansPanel } from "../../widgets/plans/index.js";
+import { PlanReviewPanel } from "../../widgets/plan-review/index.js";
 import { ChangesPanel } from "../../widgets/changes/index.js";
 import { SidePanel } from "./side-panel.js";
 import { FileExplorer } from "../../widgets/explorer/index.js";
@@ -741,6 +742,12 @@ export function Workbench() {
               sessionId={selection.sessionId}
             />
           </>
+        ) : panel === "plan" ? (
+          <PlanReviewPanel
+            key={key}
+            workspaceId={selection.workspaceId}
+            sessionId={selection.sessionId}
+          />
         ) : panel === "terminal" ? (
           <TerminalPanel key={key} workspaceId={selection.workspaceId} />
         ) : panel === "preview" ? (

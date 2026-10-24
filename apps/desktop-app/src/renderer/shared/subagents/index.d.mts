@@ -22,6 +22,8 @@ export interface QueuedDelegation {
   parentId: string;
   title: string;
   brief: Brief;
+  /** Narrower-than-parent permission mode for the child (e.g. reviewers). */
+  mode?: "read_plan";
 }
 export interface Brief {
   role?: string;

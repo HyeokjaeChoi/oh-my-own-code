@@ -61,12 +61,33 @@ const setQueue = (next: QueuedDelegation[]) => {
   emit();
 };
 
+// Queues a delegation; a mounted SubagentPanel (bare is enough) starts it.
+export function enqueueDelegation(item: QueuedDelegation) {
+  setQueue([...queue, item]);
+}
+// Child rows of a session (native + delegated + queued), re-rendered on changes.
+export function useChildRows(sessionId: string | undefined) {
+  const snapshot = useWorkbenchSelector(selectors.snapshot);
+  useSyncExternalStore(subscribe, () => queue);
+  useSyncExternalStore(subscribe, () => lineage);
+  return deriveChildTree({
+    rootId: sessionId,
+    sessions: snapshot?.sessions ?? [],
+    permissions: snapshot?.permissions ?? [],
+    lineage,
+    queued: queue,
+  });
+}
+
 export function SubagentPanel({
   workspaceId,
   sessionId,
+  bare = false,
 }: {
   workspaceId?: string | undefined;
   sessionId?: string | undefined;
+  /** Runs the queue/drain logic without rendering the 하위 작업 UI. */
+  bare?: boolean;
 }) {
   const snapshot = useWorkbenchSelector(selectors.snapshot);
   const pending = useWorkbenchSelector(selectors.pending);
@@ -170,9 +191,11 @@ export function SubagentPanel({
     // The child must never be broader than its parent: apply the parent's mode
     // before the brief; an unknown parent mode or a failed set sends nothing.
     const state = store.getState();
-    const mode = state.snapshot?.sessions.find(
-      (x) => x.id === item.parentId,
-    )?.permissionMode;
+    // A reviewer asks for the narrowest mode (read_plan), never a broader one.
+    const mode =
+      item.mode ??
+      state.snapshot?.sessions.find((x) => x.id === item.parentId)
+        ?.permissionMode;
     if (!mode) return false;
     const own = state.snapshot?.sessions.find(
       (x) => x.id === child,
@@ -233,6 +256,7 @@ export function SubagentPanel({
   }, [delegatedActive, waiting.length, busy, pending]);
   const set = (key: keyof Brief) => (value: string) =>
     setBrief({ ...brief, [key]: value });
+  if (bare) return null;
   return (
     <div className={`${styles.root} subagent-panel`}>
       <div className={styles.head}>

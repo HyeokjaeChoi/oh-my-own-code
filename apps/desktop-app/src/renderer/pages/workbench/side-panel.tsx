@@ -4,6 +4,7 @@ import {
   FileDiff,
   Folder,
   Globe,
+  ClipboardCheck,
   ListChecks,
   SquareTerminal,
   X,
@@ -16,6 +17,7 @@ export const PANEL_TABS: { id: Panel; label: string; icon: LucideIcon }[] = [
   { id: "files", label: "파일", icon: Folder },
   { id: "changes", label: "변경", icon: FileDiff },
   { id: "work", label: "작업", icon: ListChecks },
+  { id: "plan", label: "계획", icon: ClipboardCheck },
   { id: "terminal", label: "터미널", icon: SquareTerminal },
   { id: "preview", label: "미리보기", icon: Globe },
 ];

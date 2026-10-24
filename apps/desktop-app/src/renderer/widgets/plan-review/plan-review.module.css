@@ -1,0 +1,45 @@
+.root {
+  font-size: var(--omoc-semantic-type-size-compact);
+  line-height: 1.5;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-bottom: 12px;
+}
+.root section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: flex-start;
+}
+.root h3 {
+  margin: 0;
+  font-size: var(--omoc-semantic-type-size-compact);
+  font-weight: 600;
+}
+.root p {
+  margin: 0;
+}
+.muted {
+  color: var(--omoc-semantic-color-text-tertiary);
+  font-size: var(--omoc-semantic-type-size-caption);
+}
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 2px;
+  align-self: stretch;
+}
+.plan {
+  align-self: stretch;
+  min-height: 160px;
+}
+.result {
+  margin: 0;
+  max-height: 240px;
+  overflow: auto;
+  white-space: pre-wrap;
+}

@@ -171,10 +171,10 @@ Model-initiated `subagent` works in the real app (2026-10-13/14): `OMOC_E2E_STRI
 
 | Clause                                    | Status  | Evidence |
 | ----------------------------------------- | ------- | -------- |
-| Plan/checklist beside chat, edit, approve | missing | none     |
-| Approved version linked to run            | missing | none     |
-| Independent reviewer findings             | missing | none     |
-| Verified (not claimed) lint/test status   | missing | none     |
+| Plan/checklist beside chat, edit, approve | partial | 2026-10-24 side-panel "계획" tab (`widgets/plan-review`): checklist = latest `todowrite` call (n/m), plan text = latest assistant message with runtime agent `plan`, editable draft (window-local, not persisted), "승인하고 실행" resets composer agent and sends `[승인된 계획 vN]` message. Plan text is limited to the 32 KB / last-100-message projection window. Not live-run yet |
+| Approved version linked to run            | partial | 2026-10-24 versions = `[승인된 계획 vN]` user messages (`shared/plan-review` `approvedPlans`), jump-to-message + count of assistant turns until the next approval. Link is derived from message text, not an app-owned record; lost if the message leaves the 100-message window |
+| Independent reviewer findings             | partial | 2026-10-24 "독립 리뷰 요청" queues a `리뷰어:` child via the delegation path (`read_plan` mode forced, brief says no edits). Reviewer result/"미해결 지적 n건" (lines starting `- `) is shown only while the reviewer session itself is selected (parent snapshot does not hold child messages). Implementer-vs-reviewer split is by the `리뷰어:` title prefix; no persisted finding state / re-review loop |
+| Verified (not claimed) lint/test status   | partial | 2026-10-24 checks derived from shell tool calls (lint/test/typecheck patterns): 통과/실패 from tool `status` ("error" = fail) or the exit code parsed from output text (`deriveToolView` regex); completed without a parsable exit code = "결과 확인 불가", never a pass. No timestamps in the projection, so "턴 N" is shown instead of a time. "수정 후 재검증 필요" when a completed edit/write/patch follows the last pass. Unit tests only (`src/plan-review.test.mjs`) |
 
 ## F-16 History/usage
 
