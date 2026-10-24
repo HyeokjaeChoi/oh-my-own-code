@@ -1,7 +1,8 @@
 // Host-only, in-memory checked attachment snapshots. Importing performs no IO.
-import { createHash, randomUUID } from "node:crypto";
+import { createHash, randomBytes, randomUUID } from "node:crypto";
 import * as actualIO from "node:fs/promises";
-import { isAbsolute, normalize } from "node:path";
+import { constants, rmSync } from "node:fs";
+import { isAbsolute, join, normalize } from "node:path";
 import { fail } from "../workbench-contract.mjs";
 import {
   validWorkspaceFileRoot,
@@ -15,6 +16,18 @@ const MEDIA_BYTES = 8 * 1024 * 1024;
 const SEND_BYTES = 16 * 1024 * 1024;
 const CACHE_BYTES = 64 * 1024 * 1024;
 const TTL = 10 * 60 * 1000;
+const PASTE_EXT = {
+  "image/png": "png",
+  "image/jpeg": "jpg",
+  "image/gif": "gif",
+  "image/webp": "webp",
+};
+const STAGED_NAME = /^[a-f0-9]{32}\.(?:png|jpg|gif|webp)$/u;
+const STAGED_ITEMS = 8;
+// Pasted clipboard images are written only below the app-owned staged root.
+export function wipeStagedRoot(root) {
+  rmSync(root, { recursive: true, force: true });
+}
 const id = (v) => typeof v === "string" && /^[A-Za-z0-9_.:-]{1,128}$/u.test(v);
 const hex = (v) => typeof v === "string" && /^[a-f0-9]{64}$/u.test(v);
 const data = (v) =>
@@ -135,24 +148,34 @@ const unavailable = (reason) => ({ status: "unavailable", reason });
 const unsupported = (reason) => ({ status: "unsupported", reason });
 
 export function createConversationContextIO(options = {}) {
-  if (!closed(options, [], ["io", "now", "randomId", "validateImage"]))
+  if (
+    !closed(
+      options,
+      [],
+      ["io", "now", "randomId", "validateImage", "stageRoot"],
+    )
+  )
     fail("INVALID_REQUEST");
   const {
     io = actualIO,
     now = () => Math.floor(globalThis.performance.now()),
     randomId = randomUUID,
     validateImage,
+    stageRoot,
   } = options;
   if (
     !io ||
     !["open", "lstat", "realpath"].every((k) => typeof io[k] === "function") ||
     typeof now !== "function" ||
     typeof randomId !== "function" ||
-    (validateImage !== undefined && typeof validateImage !== "function")
+    (validateImage !== undefined && typeof validateImage !== "function") ||
+    (stageRoot !== undefined &&
+      !(typeof stageRoot === "string" && isAbsolute(stageRoot)))
   )
     fail("INVALID_REQUEST");
   const entries = new Map(),
-    closedSenders = new Set();
+    closedSenders = new Set(),
+    staging = new Set();
   let closedAll = false,
     serial = 0;
   function active(s) {
@@ -172,6 +195,10 @@ export function createConversationContextIO(options = {}) {
     if (entry.pins === 0) {
       entries.delete(entry.descriptor.capabilityId);
       entry.bytes = undefined;
+      if (entry.staged)
+        rmSync(join(stageRoot, entry.staged.epoch, entry.staged.name), {
+          force: true,
+        });
     }
   }
   function expire(time) {
@@ -404,6 +431,204 @@ export function createConversationContextIO(options = {}) {
       },
     });
   }
+  // Reads a staged file back through its own containment: the epoch dir must be
+  // a real directory under the real staged root, the file a single-link regular
+  // file (never a symlink) whose realpath is itself, same inode when opened.
+  async function readStaged({ epoch, name }) {
+    if (!stageRoot || !id(epoch) || !STAGED_NAME.test(name))
+      fail("INVALID_SELECTION");
+    try {
+      const dir = join(await actualIO.realpath(stageRoot), epoch);
+      if (!(await actualIO.lstat(dir)).isDirectory()) fail("INVALID_SELECTION");
+      const file = join(dir, name);
+      const link = await actualIO.lstat(file);
+      if (
+        !link.isFile() ||
+        link.nlink !== 1 ||
+        (await actualIO.realpath(file)) !== file
+      )
+        fail("INVALID_SELECTION");
+      const handle = await actualIO.open(
+        file,
+        constants.O_RDONLY | constants.O_NOFOLLOW,
+      );
+      try {
+        const info = await handle.stat();
+        if (
+          !info.isFile() ||
+          info.ino !== link.ino ||
+          info.dev !== link.dev ||
+          info.size < 1 ||
+          info.size > MEDIA_BYTES
+        )
+          fail("INVALID_SELECTION");
+        const bytes = Buffer.alloc(info.size);
+        const { bytesRead } = await handle.read(bytes, 0, info.size, 0);
+        if (bytesRead !== info.size) fail("INVALID_SELECTION");
+        return bytes;
+      } finally {
+        await handle.close();
+      }
+    } catch (e) {
+      throw e?.appCode
+        ? e
+        : Object.assign(new Error("staged"), { appCode: "INVALID_SELECTION" });
+    }
+  }
+  async function stage(workspace, request, scope) {
+    if (
+      !validWorkspace(workspace) ||
+      !closed(request, ["mime", "bytes"]) ||
+      !Object.hasOwn(PASTE_EXT, request.mime) ||
+      Object.getPrototypeOf(request.bytes) !== Uint8Array.prototype ||
+      request.bytes.byteLength < 1 ||
+      request.bytes.byteLength > MEDIA_BYTES
+    )
+      fail("INVALID_REQUEST");
+    const w = { ...workspace },
+      s = captureScope(scope),
+      mime = request.mime;
+    if (!stageRoot) fail("UNAVAILABLE");
+    check(s);
+    // One stage in flight per window.
+    if (staging.has(s.sender)) fail("READ_BUSY");
+    staging.add(s.sender);
+    let written;
+    try {
+      const bytes = Buffer.from(request.bytes);
+      if (mediaMime(bytes) !== mime) return unsupported("unsupported_content");
+      if (validateImage) {
+        let valid;
+        try {
+          valid = await validateImage(Buffer.from(bytes), mime);
+        } catch (e) {
+          check(s);
+          if (e?.appCode) throw e;
+          return unsupported("unsupported_content");
+        }
+        check(s);
+        if (valid !== true) return unsupported("unsupported_content");
+      }
+      let time = clock();
+      active(s);
+      expire(time);
+      const owned = [...entries.values()].filter(
+        (entry) => entry.sender === s.sender && entry.staged,
+      );
+      if (
+        owned.length >= STAGED_ITEMS ||
+        owned.reduce((n, entry) => n + entry.bytes.length, 0) + bytes.length >
+          SEND_BYTES
+      )
+        return unavailable("capacity_exceeded");
+      const token = randomId();
+      if (!id(token) || token.length > 96) fail("INVALID_REQUEST");
+      if (!Number.isSafeInteger(serial + 1)) fail("LIMIT_REACHED");
+      const epoch = s.runtimeEpoch;
+      const name = `${randomBytes(16).toString("hex")}.${PASTE_EXT[mime]}`;
+      await actualIO.mkdir(stageRoot, { recursive: true, mode: 0o700 });
+      await actualIO.chmod(stageRoot, 0o700);
+      const dir = join(await actualIO.realpath(stageRoot), epoch);
+      await actualIO.mkdir(dir, { mode: 0o700 }).catch((e) => {
+        if (e?.code !== "EEXIST") throw e;
+      });
+      await actualIO.chmod(dir, 0o700);
+      const handle = await actualIO.open(
+        join(dir, name),
+        constants.O_WRONLY |
+          constants.O_CREAT |
+          constants.O_EXCL |
+          constants.O_NOFOLLOW,
+        0o600,
+      );
+      written = { epoch, name };
+      try {
+        await handle.writeFile(bytes);
+      } finally {
+        await handle.close();
+      }
+      // The held bytes are what the contained read-back returns.
+      const held = await readStaged(written);
+      if (!held.equals(bytes)) fail("INVALID_SELECTION");
+      check(s);
+      time = clock();
+      active(s);
+      const capabilityId = `${token}.${++serial}`;
+      const digest = createHash("sha256").update(held).digest("hex");
+      const path = `pasted-${name.slice(0, 8)}.${PASTE_EXT[mime]}`;
+      const descriptor = Object.freeze({
+        capabilityId,
+        workspaceId: w.id,
+        workspacePath: w.path,
+        path,
+        name: path,
+        source: "paste",
+        version: digest,
+        digest,
+        mime,
+        size: held.length,
+      });
+      const preview = Object.freeze({
+        kind: "image",
+        dataUrl: `data:${mime};base64,${held.toString("base64")}`,
+      });
+      entries.set(capabilityId, {
+        descriptor,
+        bytes: held,
+        sender: s.sender,
+        runtimeEpoch: s.runtimeEpoch,
+        touched: time,
+        pins: 0,
+        reusable: true,
+        staged: written,
+      });
+      written = undefined;
+      return Object.freeze({ status: "available", descriptor, preview });
+    } finally {
+      staging.delete(s.sender);
+      if (written)
+        rmSync(join(stageRoot, written.epoch, written.name), { force: true });
+    }
+  }
+  // Drops one pasted capability (chip removed, or sent): file deleted once unpinned.
+  function release(capabilityId, scope) {
+    const s = captureScope(scope);
+    if (!id(capabilityId)) fail("INVALID_REQUEST");
+    const entry = entries.get(capabilityId);
+    if (
+      !entry?.staged ||
+      entry.sender !== s.sender ||
+      entry.runtimeEpoch !== s.runtimeEpoch
+    )
+      return false;
+    revoke(entry);
+    return true;
+  }
+  // Send-time branch for pasted descriptors: re-read the staged file through its
+  // own containment and require the digest the descriptor was issued with.
+  async function verifyStaged(descriptors, workspace, scope) {
+    if (!validWorkspace(workspace)) fail("INVALID_REQUEST");
+    const s = captureScope(scope);
+    for (const d of descriptors) {
+      if (d?.source !== "paste") continue;
+      check(s);
+      const entry = entries.get(d.capabilityId);
+      if (
+        !entry?.staged ||
+        !entry.reusable ||
+        entry.sender !== s.sender ||
+        entry.runtimeEpoch !== s.runtimeEpoch ||
+        entry.descriptor.workspaceId !== workspace.id ||
+        entry.descriptor.workspacePath !== workspace.path ||
+        !equalDescriptor(d, entry.descriptor)
+      )
+        fail("INVALID_SELECTION");
+      const held = await readStaged(entry.staged);
+      check(s);
+      if (createHash("sha256").update(held).digest("hex") !== d.digest)
+        fail("INVALID_SELECTION");
+    }
+  }
   function closeSender(sender) {
     if (
       typeof sender !== "string" ||
@@ -419,6 +644,15 @@ export function createConversationContextIO(options = {}) {
   function close() {
     closedAll = true;
     for (const entry of entries.values()) revoke(entry);
+    if (stageRoot) wipeStagedRoot(stageRoot);
   }
-  return Object.freeze({ observe, acquire, closeSender, close });
+  return Object.freeze({
+    observe,
+    acquire,
+    stage,
+    release,
+    verifyStaged,
+    closeSender,
+    close,
+  });
 }

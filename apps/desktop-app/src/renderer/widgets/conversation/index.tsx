@@ -1307,6 +1307,11 @@ export function Conversation(props: Props) {
                 if (!event.currentTarget.contains(event.relatedTarget as Node))
                   setDropping(false);
               }}
+              onPaste={(event) => {
+                // Only an image on the clipboard is taken; text pastes as before.
+                if (intake.paste(Array.from(event.clipboardData.files)))
+                  event.preventDefault();
+              }}
               onDrop={(event) => {
                 if (!event.dataTransfer.types.includes("Files")) return;
                 event.preventDefault();

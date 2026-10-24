@@ -578,3 +578,25 @@ test("revert banner files text distinguishes none changed from not restored", ()
     "파일은 복원되지 않았습니다",
   );
 });
+test("paste descriptors are image-only, rangeless, and reach message.send", () => {
+  const paste = {
+    ...descriptor(),
+    path: "pasted-1a2b3c4d.png",
+    name: "pasted-1a2b3c4d.png",
+    source: "paste",
+    mime: "image/png",
+  };
+  assert.equal(context.validContextDescriptor(paste), true);
+  for (const patch of [
+    { mime: "text/plain" },
+    { mime: "application/pdf" },
+    { range: { start: 0, end: 1 } },
+    { size: 8388609 },
+    { path: "pasted-1a2b3c4d.png/../x.png", name: "x.png" },
+  ])
+    assert.equal(context.validContextDescriptor({ ...paste, ...patch }), false);
+  assert.deepEqual(
+    validateRequest({ ...send(), attachments: [paste] }).attachments,
+    [paste],
+  );
+});

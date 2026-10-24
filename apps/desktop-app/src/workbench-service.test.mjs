@@ -11,6 +11,7 @@ import {
   stat,
   chmod,
   realpath,
+  readdir,
 } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -2854,4 +2855,89 @@ test("a failed turn's type reduces to a closed cause and never leaves main", () 
   assert.deepEqual(net.failure, { kind: "network" });
   assert.deepEqual(other.failure, { status: 429 });
   assert.equal("failure" in none, false);
+});
+
+test("context.stage stages a pasted image app-side and context.release deletes it", async (t) => {
+  const stageRoot = await mkdtemp(join(tmpdir(), "workbench-stage-"));
+  t.after(() => rm(stageRoot, { recursive: true, force: true }));
+  const { createConversationContextIO } = await import(
+    "./host/conversation-context-io.mjs"
+  );
+  const contextIO = createConversationContextIO({ stageRoot });
+  t.after(() => contextIO.close());
+  const f = await fixture(t, { contextIO });
+  const png = Buffer.from(
+    "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jRZkAAAAASUVORK5CYII=",
+    "base64",
+  );
+  const read = (operation, readId) =>
+    f.service.handle(
+      { version: 2, runtimeEpoch: f.epoch, readId, operation },
+      "paste-sender",
+    );
+  const staged = await read(
+    {
+      type: "context.stage",
+      workspaceId: f.ids.workspaceId,
+      mime: "image/png",
+      bytes: new Uint8Array(png),
+    },
+    "stage-1",
+  );
+  assert.equal(staged.ok, true, JSON.stringify(staged));
+  const d = staged.value.descriptor;
+  assert.equal(d.source, "paste");
+  assert.equal(d.workspacePath, await realpath(f.workspace));
+  assert.ok(!JSON.stringify(staged.value).includes(stageRoot));
+  const dir = join(stageRoot, f.epoch);
+  assert.equal((await readdir(dir)).length, 1);
+  assert.deepEqual(await readdir(f.workspace), []);
+  // Wrong magic bytes for the claimed type is refused and writes nothing.
+  const bad = await read(
+    {
+      type: "context.stage",
+      workspaceId: f.ids.workspaceId,
+      mime: "image/jpeg",
+      bytes: new Uint8Array(png),
+    },
+    "stage-2",
+  );
+  assert.equal(bad.ok, true);
+  assert.equal(bad.value.status, "unsupported");
+  assert.equal((await readdir(dir)).length, 1);
+  // Strings, Buffers and unknown workspaces never reach the staged directory.
+  for (const operation of [
+    { ...bad, type: "context.stage" },
+    {
+      type: "context.stage",
+      workspaceId: f.ids.workspaceId,
+      mime: "image/png",
+      bytes: png,
+    },
+    {
+      type: "context.stage",
+      workspaceId: "missing",
+      mime: "image/png",
+      bytes: new Uint8Array(png),
+    },
+  ]) {
+    const refused = await read(operation, "stage-3").catch(() => ({
+      ok: false,
+    }));
+    assert.equal(refused.ok, false);
+  }
+  assert.equal((await readdir(dir)).length, 1);
+  const released = await read(
+    {
+      type: "context.release",
+      workspaceId: f.ids.workspaceId,
+      capabilityId: d.capabilityId,
+    },
+    "release-1",
+  );
+  assert.deepEqual(released.value, {
+    workspaceId: f.ids.workspaceId,
+    released: true,
+  });
+  assert.deepEqual(await readdir(dir), []);
 });

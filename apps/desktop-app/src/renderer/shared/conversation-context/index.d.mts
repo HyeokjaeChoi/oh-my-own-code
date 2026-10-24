@@ -9,7 +9,7 @@ export interface ContextDescriptor {
   workspacePath: string;
   path: string;
   name: string;
-  source: "file" | "selection";
+  source: "file" | "selection" | "paste";
   version: string;
   digest: string;
   mime:

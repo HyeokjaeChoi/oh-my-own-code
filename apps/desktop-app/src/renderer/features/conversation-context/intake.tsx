@@ -12,6 +12,7 @@ import {
   useWorkbenchSelector,
 } from "../../entities/workbench/index.js";
 import {
+  CONTEXT_LIMITS,
   contextModelSupports,
   type ContextDescriptor,
 } from "../../shared/api/index.js";
@@ -26,7 +27,17 @@ export type ContextIntake = {
   // Starts an `@` mention in the composer.
   search(): void;
   drop(files: File[]): void;
+  // Clipboard files: true when an image was taken (caller cancels the text paste).
+  paste(files: File[]): boolean;
 };
+
+type PasteMime = "image/png" | "image/jpeg" | "image/gif" | "image/webp";
+const PASTE_MIMES: readonly string[] = [
+  "image/png",
+  "image/jpeg",
+  "image/gif",
+  "image/webp",
+];
 
 // Files are attached through observeContext; folders only become `@dir/`
 // mentions in the message text (no new send wire).
@@ -67,6 +78,31 @@ export function useContextIntake(
     pickFolder: () => void take(actions.pickContextPaths("folder")),
     search: () => insert.current("@"),
     drop: (files) => void take(actions.resolveDroppedFiles(files)),
+    paste(files) {
+      const image = files.find((f) => f.type.startsWith("image/"));
+      if (!image) return false;
+      // A copied file that has a path attaches like a dropped file.
+      if (actions.droppedFileHasPath(image)) {
+        void take(actions.resolveDroppedFiles([image]));
+        return true;
+      }
+      if (!PASTE_MIMES.includes(image.type))
+        setNotice("지원하지 않는 파일 형식입니다.");
+      else if (image.size < 1 || image.size > CONTEXT_LIMITS.fileBytes)
+        setNotice("파일 크기 한도를 넘었습니다.");
+      else {
+        setNotice("");
+        void image.arrayBuffer().then(
+          (buffer) =>
+            actions.pasteContextImage({
+              mime: image.type as PasteMime,
+              bytes: new Uint8Array(buffer),
+            }),
+          () => setNotice("이미지를 붙여넣지 못했습니다. 다시 시도하세요."),
+        );
+      }
+      return true;
+    },
   };
 }
 
@@ -158,7 +194,10 @@ function reasonFor(
 ): { text: string; model: boolean } | undefined {
   if (!verified)
     return {
-      text: "다시 확인이 필요합니다. 첨부를 눌러 확인하세요.",
+      text:
+        d.source === "paste"
+          ? "확인 기간이 끝났습니다. 이미지를 다시 붙여넣으세요."
+          : "다시 확인이 필요합니다. 첨부를 눌러 확인하세요.",
       model: false,
     };
   if (!model || !entry)
@@ -221,10 +260,15 @@ export function AttachmentChips({
             <button
               type="button"
               className={styles.attMain}
-              popoverTarget={previewId}
+              // A pasted image has no workspace path to re-read: no preview open.
+              popoverTarget={d.source === "paste" ? undefined : previewId}
               title={d.path}
               data-context-open={d.capabilityId}
-              onClick={() => void actions.observeContext(d.path)}
+              onClick={() =>
+                d.source === "paste"
+                  ? undefined
+                  : void actions.observeContext(d.path)
+              }
             >
               {thumb ? (
                 <img src={thumb} alt="" className={styles.attThumb} />

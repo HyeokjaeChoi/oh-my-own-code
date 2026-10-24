@@ -2012,6 +2012,8 @@ export type ContextReadIdentity = Readonly<{
   scope: Scope;
   token: number;
   path?: string;
+  // A clipboard image staged by main: the descriptor path is issued by main.
+  paste?: true;
   selection?: ContextSelection;
 }>;
 export type ContextBranch = Readonly<{
@@ -5730,7 +5732,7 @@ function reduceConversationContext(state: State, event: Event): State {
             value.revision !== state.revision ||
             value.workspaceId !== state.selection.workspaceId ||
             value.workspacePath !== event.identity.scope.workspacePath ||
-            value.path !== event.identity.path
+            (!event.identity.paste && value.path !== event.identity.path)
           )
             throw Error("STALE");
           if (value.status !== "available") next.error = value.reason;
@@ -5743,7 +5745,7 @@ function reduceConversationContext(state: State, event: Event): State {
                   d.version !== selection.version ||
                   d.range?.start !== selection.start ||
                   d.range.end !== selection.end
-                : d.source !== "file"
+                : d.source !== (event.identity.paste ? "paste" : "file")
             )
               throw Error("STALE");
             const items = [

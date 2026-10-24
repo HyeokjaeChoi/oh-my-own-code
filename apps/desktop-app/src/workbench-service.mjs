@@ -3637,6 +3637,16 @@ export function createWorkbenchService({
           )
         )
           fail("INVALID_SELECTION");
+        // Pasted images: re-read the staged file through its own containment.
+        await contextIO.verifyStaged?.(
+          request.attachments,
+          { id: w.id, path: w.path },
+          {
+            runtimeEpoch: host.epoch,
+            sender: currentScope()?.sender,
+            check: checkLive,
+          },
+        );
         acquired = contextIO.acquire(
           request.attachments,
           { id: w.id, path: w.path },
@@ -3730,6 +3740,18 @@ export function createWorkbenchService({
         ok: true,
         value: { requestId: request.requestId, status: "accepted" },
       };
+      // Sent: the staged copies of pasted images are no longer needed.
+      for (const d of request.attachments ?? [])
+        if (d.source === "paste")
+          try {
+            contextIO.release?.(d.capabilityId, {
+              runtimeEpoch: host.epoch,
+              sender: currentScope()?.sender,
+              check: checkLive,
+            });
+          } catch {
+            // Best effort: the TTL and the quit wipe still remove the file.
+          }
     } catch (error) {
       if (dispatched) {
         s.unknown = true;
@@ -3802,6 +3824,39 @@ export function createWorkbenchService({
       path: request.path,
       ...value,
     });
+  }
+  // Pasted clipboard image: staged by the Host into its app-owned directory and
+  // returned as an ordinary context observation; no workspace path is read.
+  async function stageContext(request, w) {
+    const authority = contextReadAuthority(w);
+    await recheck(w);
+    authority.verify();
+    const value = await contextIO.stage(
+      { id: w.id, path: w.path },
+      { mime: request.mime, bytes: request.bytes },
+      {
+        runtimeEpoch: host.epoch,
+        sender: currentScope()?.sender,
+        check: authority.verify,
+      },
+    );
+    authority.verify();
+    return validateContextObservation({
+      runtimeEpoch: host.epoch,
+      revision: authority.revision,
+      workspaceId: w.id,
+      workspacePath: w.path,
+      path: value.descriptor?.path ?? "pasted-unavailable.png",
+      ...value,
+    });
+  }
+  function releaseContext(request, w) {
+    const released = contextIO.release(request.capabilityId, {
+      runtimeEpoch: host.epoch,
+      sender: currentScope()?.sender,
+      check: checkLive,
+    });
+    return { workspaceId: w.id, released };
   }
   // Containment shared by the native pickers and drag-and-drop resolution. The
   // result is a convenience for the renderer only: attaching a file still goes
@@ -5697,6 +5752,8 @@ export function createWorkbenchService({
       return observeGit(request, w);
     if (request.type === "context.observe") return observeContext(request, w);
     if (request.type === "context.pick") return pickContextPaths(request, w);
+    if (request.type === "context.stage") return stageContext(request, w);
+    if (request.type === "context.release") return releaseContext(request, w);
     if (request.type === "context.resolve")
       return resolveContextPaths(request, w);
     if (request.type === "permission.policy.read")
