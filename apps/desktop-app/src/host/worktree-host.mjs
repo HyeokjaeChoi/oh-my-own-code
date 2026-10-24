@@ -1,25 +1,14 @@
 import { renameReplacing } from "../platform-paths.mjs";
 import { execFile } from "node:child_process";
 import { randomBytes, randomUUID } from "node:crypto";
-import {
-  lstat,
-  mkdir,
-  readFile,
-  realpath,
-  rm,
-  writeFile,
-} from "node:fs/promises";
-import {
-  basename,
-  dirname,
-  isAbsolute,
-  join,
-  relative,
-  resolve,
-} from "node:path";
+import { lstat, mkdir, readFile, realpath, writeFile } from "node:fs/promises";
+import { dirname, isAbsolute, join, relative } from "node:path";
+import { resolveGit } from "./workspace-checkpoint.mjs";
 
 // F-02/F-03: git worktree creation and physical deletion. Host-only; the
-// renderer never supplies a command, only validated names/ids/paths.
+// renderer never supplies a command or a path, only validated names/ids.
+// Delete is limited to app-created folders/worktrees directly under the
+// managed root and always goes to the OS trash (never a permanent delete).
 const fail = (code, extra = {}) =>
   Object.assign(new Error(code), { worktreeCode: code, ...extra });
 const NAME = /^[A-Za-z0-9][A-Za-z0-9._/-]{0,99}$/;
@@ -52,30 +41,63 @@ const HARDEN = [
 // or follow files outside the repository; such repos are refused outright.
 const UNSAFE_CONFIG =
   /^(filter\..+|include\..+|includeif\..+|core\.sshcommand|core\.gitproxy|diff\..+\.textconv|merge\..+\.driver)$/u;
+// Minimal environment: fixed PATH, no user git variables, no global/system config.
 const gitEnv = (cwd) => ({
-  ...process.env,
-  // No system/global config: only the repo's own (screened) config applies.
+  PATH:
+    process.platform === "win32"
+      ? (process.env.PATH ?? "")
+      : "/usr/bin:/bin:/usr/sbin:/sbin",
+  ...(process.platform === "win32" && {
+    SystemRoot: process.env.SystemRoot ?? "",
+  }),
   GIT_CONFIG_NOSYSTEM: "1",
   GIT_CONFIG_GLOBAL: NULL_DEVICE,
+  GIT_ATTR_NOSYSTEM: "1",
   GIT_TERMINAL_PROMPT: "0",
+  GIT_OPTIONAL_LOCKS: "0",
   LC_ALL: "C",
   // Never discover a repo in a parent of cwd (a plain folder inside someone else's repo).
   GIT_CEILING_DIRECTORIES: dirname(cwd),
 });
-const execGit = (cwd, args) =>
+const execGit = (bin, cwd, args) =>
   new Promise((done, reject) => {
     execFile(
-      "git",
+      bin,
       [...HARDEN, ...args],
-      { cwd, timeout: 30000, maxBuffer: 1 << 22, env: gitEnv(cwd) },
+      {
+        cwd,
+        timeout: 30000,
+        maxBuffer: 1 << 22,
+        env: gitEnv(cwd),
+        windowsHide: true,
+      },
       (error, stdout, stderr) =>
         error ? reject({ error, stderr }) : done(stdout),
     );
   });
 
-async function assertSafeRepoConfig(cwd) {
+// Maps git's stderr to a stable code the UI turns into a Korean message.
+export function mapGitError(stderr) {
+  const text = String(stderr);
+  if (/branch named .* already exists/iu.test(text)) return "BRANCH_EXISTS";
+  if (/already exists/iu.test(text)) return "PATH_EXISTS";
+  if (/not a valid branch name|invalid reference/iu.test(text))
+    return "INVALID_BRANCH";
+  if (/already (checked out|used by worktree)/iu.test(text))
+    return "BRANCH_IN_USE";
+  if (
+    /permission denied|operation not permitted|read-only file system/iu.test(
+      text,
+    )
+  )
+    return "PERMISSION_DENIED";
+  if (/not a git repository/iu.test(text)) return "NOT_GIT_REPO";
+  return "GIT_FAILED";
+}
+
+async function assertSafeRepoConfig(bin, cwd) {
   // Not a repository (or unreadable): the real command reports that itself.
-  const listing = await execGit(cwd, [
+  const listing = await execGit(bin, cwd, [
     "config",
     "--local",
     "-z",
@@ -87,10 +109,10 @@ async function assertSafeRepoConfig(cwd) {
   }
 }
 
-async function runGit(cwd, args) {
-  await assertSafeRepoConfig(cwd);
-  return execGit(cwd, args).catch(({ error, stderr }) => {
-    throw fail("GIT_FAILED", {
+async function runGit(bin, cwd, args) {
+  await assertSafeRepoConfig(bin, cwd);
+  return execGit(bin, cwd, args).catch(({ error, stderr }) => {
+    throw fail(mapGitError(stderr), {
       detail: String(stderr || error.message).slice(0, 400),
     });
   });
@@ -109,7 +131,30 @@ export function uuidv7(now = Date.now()) {
   return `${h.slice(0, 8)}-${h.slice(8, 12)}-${h.slice(12, 16)}-${h.slice(16, 20)}-${h.slice(20)}`;
 }
 
-export function createWorktreeHost({ documentsRoot, linksFile, git = runGit }) {
+// Local calendar date for default directory names: yyyy-mm-dd.
+export function localDate(date = new Date()) {
+  const two = (n) => String(n).padStart(2, "0");
+  return `${date.getFullYear()}-${two(date.getMonth() + 1)}-${two(date.getDate())}`;
+}
+
+// trash(path) moves a directory to the OS trash (shell.trashItem); gitBinary is
+// an absolute git path (default: resolved like the checkpoint store).
+export function createWorktreeHost({
+  documentsRoot,
+  linksFile,
+  trash,
+  gitBinary,
+  git: gitInput,
+}) {
+  let binary;
+  const git =
+    gitInput ??
+    (async (cwd, args) => {
+      binary ??= Promise.resolve(gitBinary ?? resolveGit());
+      const bin = await binary;
+      if (!bin) throw fail("GIT_MISSING");
+      return runGit(bin, cwd, args);
+    });
   const root = () => join(documentsRoot(), "OhMyOwnCode");
   async function links() {
     try {
@@ -136,7 +181,7 @@ export function createWorktreeHost({ documentsRoot, linksFile, git = runGit }) {
     return run;
   }
 
-  async function create({ repo, branch, base, dest }) {
+  async function create({ repo, branch, base }) {
     if (!validateRefName(branch)) throw fail("INVALID_BRANCH");
     if (!validateRefName(base) && base !== "HEAD") throw fail("INVALID_BASE");
     const top = await git(repo, ["rev-parse", "--show-toplevel"])
@@ -165,27 +210,20 @@ export function createWorktreeHost({ documentsRoot, linksFile, git = runGit }) {
       () => false,
     );
     if (exists) throw fail("BRANCH_EXISTS");
-    let target;
-    if (dest === undefined) {
-      await mkdir(root(), { recursive: true });
-      target = join(await realpath(root()), uuidv7());
-    } else {
-      if (typeof dest !== "string" || !isAbsolute(dest))
-        throw fail("INVALID_PATH");
-      target = resolve(dest);
-      if (
-        await lstat(target).then(
-          () => true,
-          () => false,
-        )
-      )
-        throw fail("PATH_EXISTS");
-      const parent = await realpath(dirname(target)).catch(() => {
-        throw fail("INVALID_PATH");
-      });
-      target = join(parent, basename(target));
-      if (target === top || inside(top, target)) throw fail("INVALID_PATH");
+    let managed;
+    try {
+      await mkdir(root(), { recursive: true, mode: 0o700 });
+      managed = await realpath(root());
+    } catch (error) {
+      throw fail(
+        ["EACCES", "EPERM", "EROFS"].includes(error?.code)
+          ? "PERMISSION_DENIED"
+          : "INVALID_PATH",
+      );
     }
+    // The only destination is a fresh child of the managed root, never inside the repo.
+    const target = join(managed, `${localDate()}-${uuidv7()}`);
+    if (target === top || inside(top, target)) throw fail("INVALID_PATH");
     await git(top, ["worktree", "add", "-b", branch, target, base]);
     const path = await realpath(target);
     await updateLinks((all) => ({ ...all, [path]: { parent: top, branch } }));
@@ -193,20 +231,26 @@ export function createWorktreeHost({ documentsRoot, linksFile, git = runGit }) {
   }
 
   // Classifies what physical delete would do and why it is or is not safe.
+  // `reasons` block the delete; `notes` are shown in the confirmation only.
   async function inspect({ path, ownership }) {
     const real = await realpath(path).catch(() => {
       throw fail("MISSING");
     });
-    if (
-      real !== path ||
-      (await lstat(real)).isSymbolicLink() ||
-      !(await lstat(real)).isDirectory()
-    )
+    const stat = await lstat(real);
+    if (real !== path || stat.isSymbolicLink() || !stat.isDirectory())
       throw fail("NOT_CANONICAL");
-    let linked = false;
-    let common;
+    // Only a direct child of the managed root (never the root, a nested project or the repo).
+    const managed = await realpath(root()).catch(() => undefined);
+    if (!managed || dirname(real) !== managed) throw fail("NOT_DELETABLE");
+    const hasDotGit = await lstat(join(real, ".git")).then(
+      () => true,
+      () => false,
+    );
+    let top;
+    let gitDir;
+    let commonDir;
     try {
-      const out = (
+      [top, gitDir, commonDir] = (
         await git(real, [
           "rev-parse",
           "--path-format=absolute",
@@ -215,20 +259,38 @@ export function createWorktreeHost({ documentsRoot, linksFile, git = runGit }) {
           "--git-common-dir",
         ])
       ).split("\n");
-      const [top, gitDir, commonDir] = out;
-      linked =
-        (await realpath(top)) === real &&
-        (await realpath(gitDir)) !== (await realpath(commonDir));
-      common = commonDir;
-    } catch {
-      // not a git checkout
+    } catch (error) {
+      // A folder with .git whose state cannot be read is never deleted blind.
+      if (hasDotGit) throw error;
     }
+    const checkout = Boolean(top) && (await realpath(top)) === real;
+    const linked =
+      checkout && (await realpath(gitDir)) !== (await realpath(commonDir));
+    let mainRepo;
     if (linked) {
-      const changed = (
+      // Only worktrees this app created (recorded at creation) are deletable.
+      mainRepo = dirname(await realpath(commonDir));
+      if ((await links())[real]?.parent !== mainRepo)
+        throw fail("NOT_DELETABLE");
+    } else if (ownership !== "managed") throw fail("NOT_DELETABLE");
+    const reasons = [];
+    const notes = [];
+    let changed = 0;
+    let branch = "";
+    if (checkout) {
+      changed = (
         await git(real, ["status", "--porcelain", "--untracked-files=all"])
       )
         .split("\n")
         .filter(Boolean).length;
+      if (changed) reasons.push(`커밋되지 않은 변경 ${changed}개`);
+      branch = (
+        await git(real, ["symbolic-ref", "--short", "-q", "HEAD"]).catch(
+          () => "",
+        )
+      ).trim();
+    }
+    if (linked) {
       // Directory-level ignored entries (node_modules counts once), so output stays small.
       const ignored = (
         await git(real, [
@@ -240,11 +302,6 @@ export function createWorktreeHost({ documentsRoot, linksFile, git = runGit }) {
       )
         .split("\n")
         .filter((l) => l.startsWith("!! ")).length;
-      const head = (
-        await git(real, ["symbolic-ref", "--short", "-q", "HEAD"]).catch(
-          () => "",
-        )
-      ).trim();
       const unique = Number(
         (
           await git(real, [
@@ -252,54 +309,57 @@ export function createWorktreeHost({ documentsRoot, linksFile, git = runGit }) {
             "--count",
             "HEAD",
             "--not",
-            ...(head ? [`--exclude=${head}`] : []),
+            ...(branch ? [`--exclude=${branch}`] : []),
             "--branches",
             "--remotes",
           ])
         ).trim(),
       );
-      const reasons = [];
-      if (changed) reasons.push("커밋되지 않은 변경이 있습니다");
       if (ignored)
-        reasons.push(`.env 등 무시된 파일 ${ignored}개가 함께 삭제됩니다`);
+        notes.push(
+          `.env 등 무시된 파일 ${ignored}개가 함께 휴지통으로 이동합니다`,
+        );
       if (unique > 0)
-        reasons.push(`다른 브랜치·원격에 없는 커밋 ${unique}개가 있습니다`);
-      return {
-        kind: "worktree",
-        path: real,
-        reasons,
-        mainRepo: dirname(await realpath(common)),
-        branch: head,
-      };
+        notes.push(`다른 브랜치·원격에 없는 커밋 ${unique}개가 있습니다`);
     }
-    if (
-      ownership === "managed" &&
-      inside(await realpath(root()).catch(() => root()), real)
-    )
-      return { kind: "managed", path: real, reasons: [] };
-    throw fail("NOT_DELETABLE");
+    return {
+      kind: linked ? "worktree" : "managed",
+      path: real,
+      reasons,
+      notes,
+      changed,
+      ...(linked && { mainRepo, branch }),
+    };
   }
 
-  async function remove({ path, ownership, force }) {
+  // Re-inspects, then moves the folder to the OS trash. Never a permanent
+  // delete, never `git worktree remove --force`.
+  async function remove({ path, ownership }) {
+    if (typeof trash !== "function") throw fail("TRASH_UNAVAILABLE");
     const info = await inspect({ path, ownership });
-    if (info.reasons.length && force !== true)
-      throw fail("UNSAFE", { reasons: info.reasons });
+    if (info.reasons.length) throw fail("UNSAFE", { reasons: info.reasons });
+    try {
+      await trash(info.path);
+    } catch {
+      throw fail("TRASH_FAILED");
+    }
+    const stillThere = await lstat(info.path).then(
+      () => true,
+      () => false,
+    );
+    if (stillThere) throw fail("TRASH_FAILED");
+    let pruned = true;
     if (info.kind === "worktree") {
-      await git(info.mainRepo, [
-        "worktree",
-        "remove",
-        ...(info.reasons.length ? ["--force"] : []),
-        info.path,
-      ]);
+      // The folder is already gone: a prune failure must not report the delete as failed.
+      await git(info.mainRepo, ["worktree", "prune"]).catch(() => {
+        pruned = false;
+      });
       await updateLinks((all) => {
         delete all[info.path];
         return all;
       });
-    } else {
-      // rm unlinks symlinks instead of following them.
-      await rm(info.path, { recursive: true });
     }
-    return info;
+    return { ...info, pruned };
   }
   return { create, inspect, remove, links };
 }

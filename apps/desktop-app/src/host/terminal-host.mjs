@@ -496,6 +496,12 @@ export function createTerminalHost({
       if (typeof root !== "string") throw fail("NOT_FOUND");
       return readProjectActions(root);
     },
+    // Open terminal tabs of any owner for a workspace (exited ones stay until closed).
+    openCount(workspaceId) {
+      return [...terminals.values()].filter(
+        (t) => t.workspaceId === workspaceId,
+      ).length;
+    },
     list(owner, workspaceId) {
       return [...terminals.values()]
         .filter((t) => t.owner === owner && t.workspaceId === workspaceId)

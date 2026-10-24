@@ -70,6 +70,8 @@ let loginPathPromise;
 const worktrees = createWorktreeHost({
   documentsRoot: () => namespace.documents,
   linksFile: () => join(namespace.metadata, "worktree-links.json"),
+  // Physical delete only ever moves the folder to the OS trash.
+  trash: (path) => shell.trashItem(path),
 });
 const terminals = createTerminalHost({
   resolveWorkspace: (id) => workbench?.terminalRoot(id),
@@ -498,16 +500,20 @@ function bindIpc() {
     info: (id) => workbench?.workspaceInfo(id),
     trusted: (id) => typeof workbench?.terminalRoot(id) === "string",
     confirmTrust: (path) => confirmWorkspaceTrust(path),
-    async confirmDelete({ kind, path, reasons, force }) {
+    activity: (id) => ({
+      ...(workbench?.workspaceActivity(id) ?? { sessions: 0, busy: true }),
+      terminals: terminals.openCount(id),
+    }),
+    async confirmDelete({ kind, path, changed, sessions, notes }) {
       const result = await dialog.showMessageBox(mainWindow, {
         type: "warning",
         title: "실제 삭제",
         message:
           kind === "worktree"
-            ? "이 워크트리 폴더를 디스크에서 삭제하시겠습니까?"
-            : "이 앱이 만든 폴더를 디스크에서 삭제하시겠습니까?",
-        detail: `${path}\n\n폴더와 안의 파일이 디스크에서 삭제되며 되돌릴 수 없습니다.${kind === "worktree" ? "\n브랜치는 삭제하지 않습니다." : ""}${force ? `\n\n강제 삭제 사유:\n${reasons.join("\n")}` : ""}\n\n목록 제거·대화 기록 삭제와는 별개 작업입니다.`,
-        buttons: ["취소", force ? "강제로 삭제" : "삭제"],
+            ? "이 워크트리 폴더를 휴지통으로 이동하시겠습니까?"
+            : "이 앱이 만든 폴더를 휴지통으로 이동하시겠습니까?",
+        detail: `${path}\n\n커밋되지 않은 변경: ${changed}개\n영향받는 세션: ${sessions}개 (작업 공간 등록과 대화 기록도 목록에서 사라집니다)${notes.length ? `\n\n${notes.join("\n")}` : ""}${kind === "worktree" ? "\n\n브랜치는 삭제하지 않습니다." : ""}\n\n폴더는 OS 휴지통으로 이동하며 영구 삭제하지 않습니다.`,
+        buttons: ["취소", "휴지통으로 이동"],
         defaultId: 0,
         cancelId: 0,
         noLink: true,

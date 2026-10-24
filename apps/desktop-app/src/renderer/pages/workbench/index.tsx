@@ -76,6 +76,27 @@ const states: Record<string, string> = {
   disconnected: "연결 끊김",
   unavailable: "사용 불가",
 };
+const WORKTREE_ERRORS: Record<string, string> = {
+  INVALID_BRANCH: "브랜치 이름이 올바르지 않습니다.",
+  INVALID_BASE: "기준 ref를 찾을 수 없습니다.",
+  BRANCH_EXISTS: "같은 이름의 브랜치가 이미 있습니다.",
+  BRANCH_IN_USE: "이 브랜치는 다른 워크트리에서 사용 중입니다.",
+  PATH_EXISTS: "대상 폴더가 이미 있습니다.",
+  PERMISSION_DENIED: "폴더를 만들 권한이 없습니다.",
+  INVALID_PATH: "만들 위치를 사용할 수 없습니다.",
+  NOT_GIT_REPO: "Git 저장소의 최상위 폴더가 아닙니다.",
+  UNSAFE_REPO_CONFIG: "저장소 설정이 안전하지 않아 거부했습니다.",
+  UNTRUSTED_WORKSPACE: "신뢰하지 않은 작업 공간입니다.",
+  GIT_MISSING: "Git을 찾을 수 없습니다.",
+  NOT_DELETABLE:
+    "이 앱이 만든 폴더·워크트리만 삭제할 수 있습니다. 가져온 폴더는 목록에서만 제거하세요.",
+  NOT_CANONICAL: "경로가 심볼릭 링크이거나 정규 경로가 아니어서 거부했습니다.",
+  MISSING: "폴더가 이미 없습니다. 목록에서 제거하세요.",
+  TRASH_FAILED: "휴지통으로 이동하지 못했습니다.",
+  TRASH_UNAVAILABLE: "휴지통을 사용할 수 없습니다.",
+  UNKNOWN_WORKSPACE: "작업 공간을 찾을 수 없습니다.",
+};
+
 export function Workbench() {
   const { actions, store } = useWindowWorkbench();
   const recovery = useWorkbenchSelector(selectors.recovery);
@@ -167,10 +188,9 @@ export function Workbench() {
   const [worktreeOpen, setWorktreeOpen] = useState(false);
   const [worktreeBranch, setWorktreeBranch] = useState("");
   const [worktreeBase, setWorktreeBase] = useState("HEAD");
-  const [worktreePath, setWorktreePath] = useState("");
   const [worktreeBusy, setWorktreeBusy] = useState(false);
   const [worktreeMessage, setWorktreeMessage] = useState("");
-  // Physical delete: reasons are shown first; force needs a second explicit click.
+  // Physical delete: blocking reasons (changes, running session, terminal) are listed; no override.
   const [deleteReasons, setDeleteReasons] = useState<string[] | null>(null);
   const [importOpen, setImportOpen] = useState(false);
   const [importPath, setImportPath] = useState("");
@@ -298,30 +318,33 @@ export function Workbench() {
       workspaceId: workspace.id,
       branch: worktreeBranch.trim(),
       base: worktreeBase.trim(),
-      ...(worktreePath.trim() ? { path: worktreePath.trim() } : {}),
     });
     if (!result.ok) {
-      setWorktreeMessage(`워크트리를 만들지 못했습니다 (${result.code})`);
+      setWorktreeMessage(
+        `워크트리를 만들지 못했습니다: ${WORKTREE_ERRORS[result.code] ?? `오류 (${result.code})`}`,
+      );
       return;
     }
     setWorktreeMessage("");
     setWorktreeOpen(false);
     setWorktreeBranch("");
-    setWorktreePath("");
-    // Typed-path import registers the new worktree without a dialog.
-    if (result.value.path)
+    // Typed-path import registers the new worktree after its native confirmation.
+    if (result.value.path) {
+      setWorktreeMessage(
+        `만든 위치: ${result.value.path} · 브랜치 ${result.value.branch ?? ""}`,
+      );
       void mutate({ type: "workspace.import", path: result.value.path }, true);
+    }
   };
-  const physicalDelete = async (force: boolean) => {
+  const physicalDelete = async () => {
     if (!workspace) return;
     const result = await worktreeCall({
       type: "worktree.delete",
       workspaceId: workspace.id,
-      ...(force ? { force: true } : {}),
     });
     if (result.ok) {
       setDeleteReasons(null);
-      setWorktreeMessage("");
+      setWorktreeMessage("폴더를 휴지통으로 이동했습니다.");
       void mutate(
         { type: "workspace.remove", workspaceId: workspace.id },
         true,
@@ -331,11 +354,9 @@ export function Workbench() {
     } else {
       setDeleteReasons(null);
       setWorktreeMessage(
-        result.code === "NOT_DELETABLE"
-          ? "가져온 폴더는 실제 삭제할 수 없습니다. 목록에서만 제거할 수 있습니다."
-          : result.code === "CANCELLED"
-            ? ""
-            : `실제 삭제하지 못했습니다 (${result.code})`,
+        result.code === "CANCELLED"
+          ? ""
+          : `실제 삭제하지 못했습니다: ${WORKTREE_ERRORS[result.code] ?? `오류 (${result.code})`}`,
       );
     }
   };
@@ -450,7 +471,7 @@ export function Workbench() {
                       item.status !== "idle",
                   ),
                 ),
-              onSelect: () => void physicalDelete(false),
+              onSelect: () => void physicalDelete(),
             },
             {
               label: "목록에서 제거 · 파일 유지",
@@ -495,21 +516,14 @@ export function Workbench() {
           role="alertdialog"
           aria-label="실제 삭제 경고"
         >
-          <p>삭제하면 되돌릴 수 없는 작업이 있습니다.</p>
+          <p>아래 이유로 실제 삭제할 수 없습니다. 정리한 뒤 다시 시도하세요.</p>
           <ul>
             {deleteReasons.map((reason) => (
               <li key={reason}>{reason}</li>
             ))}
           </ul>
           <div className={styles.formActions}>
-            <Button
-              intent="primary"
-              disabled={worktreeBusy}
-              onClick={() => void physicalDelete(true)}
-            >
-              위험을 알고 강제로 삭제
-            </Button>
-            <Button onClick={() => setDeleteReasons(null)}>취소</Button>
+            <Button onClick={() => setDeleteReasons(null)}>닫기</Button>
           </div>
         </div>
       )}
@@ -540,15 +554,9 @@ export function Workbench() {
               onChange={(event) => setWorktreeBase(event.target.value)}
             />
           </label>
-          <label>
-            위치 (선택, 절대 경로)
-            <Input
-              value={worktreePath}
-              maxLength={1024}
-              onChange={(event) => setWorktreePath(event.target.value)}
-              placeholder="비우면 Documents/OhMyOwnCode 아래 자동 생성"
-            />
-          </label>
+          <p className={styles.muted}>
+            Documents/OhMyOwnCode 아래에 날짜-ID 이름의 폴더로 만들어집니다.
+          </p>
           <div className={styles.formActions}>
             <Button
               intent="primary"
@@ -1111,6 +1119,24 @@ export function Workbench() {
                   ? "워크트리"
                   : "폴더"}
             </dd>
+            {workspace?.origin && (
+              <>
+                <dt>원본 저장소</dt>
+                <dd>{workspace.origin}</dd>
+              </>
+            )}
+            {workspace?.branch && (
+              <>
+                <dt>브랜치</dt>
+                <dd>{workspace.branch}</dd>
+              </>
+            )}
+            {workspace?.writable !== undefined && (
+              <>
+                <dt>쓰기</dt>
+                <dd>{workspace.writable ? "가능" : "읽기 전용"}</dd>
+              </>
+            )}
             <dt>신뢰</dt>
             <dd>{workspace?.trusted ? "확인됨" : "세션 생성 시 확인"}</dd>
           </dl>

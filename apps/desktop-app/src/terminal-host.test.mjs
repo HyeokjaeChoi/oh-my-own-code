@@ -102,6 +102,18 @@ test("terminal spawns the host shell in a pty with a safe env", () => {
   assert.equal(t.status, "running");
 });
 
+test("openCount counts every open terminal tab of a workspace, exited ones included", () => {
+  const { host, pty } = fixture();
+  assert.equal(host.openCount("w1"), 0);
+  const a = host.start("o", { workspaceId: "w1" });
+  host.start("other-owner", { workspaceId: "w1" });
+  assert.equal(host.openCount("w1"), 2);
+  assert.equal(host.openCount("w2"), 0);
+  pty.spawned[0].exit(0);
+  assert.equal(host.openCount("w1"), 2);
+  host.close("o", a.terminalId);
+});
+
 test("terminal captures output, input, resize and exit code", async () => {
   const { host, pty } = fixture();
   const t = host.start("o", { workspaceId: "w1" });
