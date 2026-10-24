@@ -2255,6 +2255,9 @@ export type State = {
   snapshot: WorkbenchSnapshot | null;
   lists: Pick<WorkbenchSnapshot, "workspaces" | "sessions">;
   connection: string;
+  // Renderer-local: the snapshot after a lost connection was re-read; events
+  // between the last message seen before the loss and this snapshot are unknown.
+  reconnectGap?: { sessionId: string; afterMessageId: string } | undefined;
   error: string;
   // Operation type behind `error`, so the UI can show it near where the user acted.
   errorOp?: string | undefined;
@@ -7746,6 +7749,7 @@ function reduceWorkbench(state: State, event: Event): State {
               : state.agentFiles,
         selection,
         snapshot: next,
+        reconnectGap: reconnectGapOf(state, next, changed),
         // Snapshot observation retires display only, never operation evidence.
         ...(retireNotice || (state.interruptNotice && selectionChanged)
           ? { notice: "", interruptNotice: null }
@@ -9800,6 +9804,24 @@ export function transition(state: State, event: Event): State {
     extensionsGeneration: state.extensionsGeneration + 1,
   };
 }
+function reconnectGapOf(
+  state: State,
+  next: WorkbenchSnapshot,
+  epochChanged: boolean,
+): State["reconnectGap"] {
+  const sessionId = next.selectedSessionId;
+  const prev = state.reconnectGap;
+  if (!sessionId || epochChanged) return undefined;
+  if (next.state === "connected" && state.connection === "disconnected") {
+    const last = state.snapshot?.messages.at(-1);
+    if (last && state.snapshot?.selectedSessionId === sessionId)
+      return { sessionId, afterMessageId: last.id };
+  }
+  return prev?.sessionId === sessionId &&
+    next.messages.some((m) => m.id === prev.afterMessageId)
+    ? prev
+    : undefined;
+}
 export function createWorkbenchStore(wide = true) {
   const store = createStore<State>(() => ({
     conversationContext: { generation: 0, drafts: {}, error: "", notice: "" },
@@ -10064,6 +10086,7 @@ export const selectors = {
   selection: (s: State) => s.selection,
   lists: (s: State) => s.lists,
   snapshot: (s: State) => s.snapshot,
+  reconnectGap: (s: State) => s.reconnectGap,
   catalog: (s: State) => s.catalog,
   configurationNotice: (s: State) => s.configurationNotice,
   configurationDraft: (kind: ConfigurationDraftKind) => (s: State) => {

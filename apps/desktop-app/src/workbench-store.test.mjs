@@ -1551,6 +1551,25 @@ test("snapshot projection and health commit atomically; stale revision/generatio
   assert.equal(store.getState().connection, "disconnected");
   assert.equal(store.getState().snapshot.revision, 9);
 });
+test("reconnect after a lost connection marks a gap after the last seen message, renderer-local", () => {
+  const store = createWorkbenchStore();
+  const msgs = [{ id: "m1", role: "user", text: "x", tools: [] }];
+  seed(store, snapshot(1, "a", { messages: msgs }));
+  assert.equal(store.getState().reconnectGap, undefined);
+  seed(store, snapshot(2, "a", { state: "disconnected", messages: msgs }));
+  assert.equal(store.getState().reconnectGap, undefined);
+  const more = [...msgs, { id: "m2", role: "assistant", text: "y", tools: [] }];
+  seed(store, snapshot(3, "a", { messages: more }));
+  assert.deepEqual(store.getState().reconnectGap, {
+    sessionId: "a",
+    afterMessageId: "m1",
+  });
+  seed(store, snapshot(4, "a", { messages: more }));
+  assert.equal(store.getState().reconnectGap?.afterMessageId, "m1");
+  store.dispatch({ type: "select", workspaceId: "w", sessionId: "b" });
+  seed(store, snapshot(5, "b", { messages: [] }));
+  assert.equal(store.getState().reconnectGap, undefined);
+});
 test("a new epoch is established by bootstrap only and retired epochs cannot re-enter", () => {
   const store = createWorkbenchStore();
   seed(store, snapshot(10));
