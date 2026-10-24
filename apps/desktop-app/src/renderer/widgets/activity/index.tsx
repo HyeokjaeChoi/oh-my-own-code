@@ -51,6 +51,9 @@ export function ActivityPanel({
     actions.diagnostics(false);
     return () => actions.closeDiagnostics();
   }, [actions]);
+  const shown = (data?.events ?? [])
+    .filter((event) => activityMatches(filter, event))
+    .reverse();
   return (
     <section
       className={`${styles.panel} activity-panel`}
@@ -108,82 +111,81 @@ export function ActivityPanel({
             <p className={styles.muted}>아직 활동 기록이 없습니다.</p>
           ) : (
             <ol className={styles.events}>
-              {data.events
-                .filter((event) => activityMatches(filter, event))
-                .reverse()
-                .map((event) => {
-                  const Icon = statusIcons[event.status];
-                  return (
-                    <li key={event.id}>
-                      <details className={styles.details}>
-                        <summary>
-                          <Icon
-                            size={14}
-                            aria-hidden="true"
-                            className={styles.icon}
-                            data-status={event.status}
-                          />
-                          <strong>
-                            {operationLabels[event.operation] ?? "런타임 작업"}
-                          </strong>
-                          {event.status !== "ok" && (
-                            <span className={styles.state}>
-                              {statusLabels[event.status]}
-                            </span>
+              {shown.length === 0 && (
+                <li className={styles.muted}>
+                  이 종류에 해당하는 활동이 없습니다.
+                </li>
+              )}
+              {shown.map((event) => {
+                const Icon = statusIcons[event.status];
+                return (
+                  <li key={event.id}>
+                    <details className={styles.details}>
+                      <summary>
+                        <Icon
+                          size={14}
+                          aria-hidden="true"
+                          className={styles.icon}
+                          data-status={event.status}
+                        />
+                        <strong>
+                          {operationLabels[event.operation] ?? "런타임 작업"}
+                        </strong>
+                        {event.status !== "ok" && (
+                          <span className={styles.state}>
+                            {statusLabels[event.status]}
+                          </span>
+                        )}
+                        <time
+                          dateTime={new Date(event.timestamp).toISOString()}
+                          title={new Date(event.timestamp).toLocaleString(
+                            "ko-KR",
                           )}
-                          <time
-                            dateTime={new Date(event.timestamp).toISOString()}
-                            title={new Date(event.timestamp).toLocaleString(
-                              "ko-KR",
-                            )}
-                          >
-                            {relativeTime(event.timestamp)}
-                          </time>
-                        </summary>
-                        <dl>
-                          <dt>소요 시간</dt>
-                          <dd>{Math.round(event.durationMs)} ms</dd>
-                          <dt>작업</dt>
-                          <dd>{event.operation}</dd>
-                          <dt>기록 ID</dt>
-                          <dd>{event.id}</dd>
-                          {event.workspaceId && (
-                            <>
-                              <dt>작업 공간 ID</dt>
-                              <dd>{event.workspaceId}</dd>
-                            </>
-                          )}
-                          {event.sessionId && (
-                            <>
-                              <dt>세션 ID</dt>
-                              <dd>{event.sessionId}</dd>
-                            </>
-                          )}
-                          {event.workspaceId && event.sessionId && (
-                            <Button
-                              size="compact"
-                              intent="quiet"
-                              onClick={() =>
-                                actions.select(
-                                  event.workspaceId!,
-                                  event.sessionId!,
-                                )
-                              }
-                            >
-                              이 세션으로 이동
-                            </Button>
-                          )}
-                          {event.code && (
-                            <>
-                              <dt>오류 코드</dt>
-                              <dd>{event.code}</dd>
-                            </>
-                          )}
-                        </dl>
-                      </details>
-                    </li>
-                  );
-                })}
+                        >
+                          {relativeTime(event.timestamp)}
+                        </time>
+                      </summary>
+                      <dl>
+                        <dt>소요 시간</dt>
+                        <dd>{Math.round(event.durationMs)} ms</dd>
+                        <dt>작업</dt>
+                        <dd>{event.operation}</dd>
+                        <dt>기록 ID</dt>
+                        <dd>{event.id}</dd>
+                        {event.workspaceId && (
+                          <>
+                            <dt>작업 공간 ID</dt>
+                            <dd>{event.workspaceId}</dd>
+                          </>
+                        )}
+                        {event.sessionId && (
+                          <>
+                            <dt>세션 ID</dt>
+                            <dd>{event.sessionId}</dd>
+                          </>
+                        )}
+                        {event.code && (
+                          <>
+                            <dt>오류 코드</dt>
+                            <dd>{event.code}</dd>
+                          </>
+                        )}
+                      </dl>
+                      {event.workspaceId && event.sessionId && (
+                        <Button
+                          size="compact"
+                          intent="quiet"
+                          onClick={() =>
+                            actions.select(event.workspaceId!, event.sessionId!)
+                          }
+                        >
+                          이 세션으로 이동
+                        </Button>
+                      )}
+                    </details>
+                  </li>
+                );
+              })}
             </ol>
           )}
           <details className={styles.more}>

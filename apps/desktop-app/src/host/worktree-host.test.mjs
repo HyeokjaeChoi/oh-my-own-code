@@ -773,3 +773,57 @@ test("worktree IPC: closed shapes (no path/force), blockers, and a re-check afte
 function gitPath() {
   return execFileSync("/usr/bin/which", ["git"], { encoding: "utf8" }).trim();
 }
+
+test("refuses a filter written to config.worktree", async () => {
+  const f = fixture();
+  try {
+    g(f.repo, "config", "extensions.worktreeConfig", "true");
+    g(f.repo, "config", "--worktree", "filter.x.clean", "touch /tmp/never");
+    await fails(
+      f.host.create({ repo: f.repo, branch: "wt-cfg", base: "main" }),
+      "UNSAFE_REPO_CONFIG",
+    );
+  } finally {
+    f.done();
+  }
+});
+
+test("worktrees made from a linked worktree record the main repo and stay deletable", async () => {
+  const f = fixture();
+  try {
+    const first = await f.host.create({
+      repo: f.repo,
+      branch: "one",
+      base: "main",
+    });
+    const second = await f.host.create({
+      repo: first.path,
+      branch: "two",
+      base: "main",
+    });
+    assert.equal((await f.host.links())[second.path].parent, f.repo);
+    await f.host.remove({ path: second.path, ownership: "managed" });
+    assert.deepEqual(f.trashed, [second.path]);
+  } finally {
+    f.done();
+  }
+});
+
+test("a managed main checkout with linked worktrees is not deletable", async () => {
+  const f = fixture();
+  try {
+    const root = join(realpathSync(f.documents), "OhMyOwnCode");
+    const main = join(root, "main-clone");
+    mkdirSync(root, { recursive: true });
+    g(f.dir, "clone", "-q", f.repo, main);
+    g(main, "worktree", "add", "-q", "-b", "side", join(f.dir, "side"));
+    await fails(
+      f.host.remove({ path: main, ownership: "managed" }),
+      "HAS_LINKED_WORKTREES",
+    );
+    assert.ok(existsSync(main));
+    assert.equal(f.trashed.length, 0);
+  } finally {
+    f.done();
+  }
+});

@@ -40,7 +40,7 @@ const HARDEN = [
 // Repository config keys that make git execute a program on checkout/diff/merge
 // or follow files outside the repository; such repos are refused outright.
 const UNSAFE_CONFIG =
-  /^(filter\..+|include\..+|includeif\..+|core\.sshcommand|core\.gitproxy|diff\..+\.textconv|merge\..+\.driver)$/u;
+  /^(filter\..+|include\..+|includeif\..+|core\.sshcommand|core\.gitproxy|diff\..+\.textconv|merge\..+\.driver|core\.worktree)$/u;
 // Minimal environment: fixed PATH, no user git variables, no global/system config.
 const gitEnv = (cwd) => ({
   PATH:
@@ -97,9 +97,10 @@ export function mapGitError(stderr) {
 
 async function assertSafeRepoConfig(bin, cwd) {
   // Not a repository (or unreadable): the real command reports that itself.
+  // No --local: also covers config.worktree (extensions.worktreeConfig). System/global are nulled by the env.
   const listing = await execGit(bin, cwd, [
     "config",
-    "--local",
+    "--no-includes",
     "-z",
     "--list",
   ]).catch(() => "");
@@ -224,9 +225,24 @@ export function createWorktreeHost({
     // The only destination is a fresh child of the managed root, never inside the repo.
     const target = join(managed, `${localDate()}-${uuidv7()}`);
     if (target === top || inside(top, target)) throw fail("INVALID_PATH");
+    // Delete compares against the main repo, so record it even when `top` is itself a linked worktree.
+    const main = dirname(
+      await realpath(
+        (
+          await git(top, [
+            "rev-parse",
+            "--path-format=absolute",
+            "--git-common-dir",
+          ])
+        ).trim(),
+      ),
+    );
     await git(top, ["worktree", "add", "-b", branch, target, base]);
     const path = await realpath(target);
-    await updateLinks((all) => ({ ...all, [path]: { parent: top, branch } }));
+    await updateLinks((all) => ({
+      ...all,
+      [path]: { parent: main, branch },
+    }));
     return { path, parent: top, branch };
   }
 
@@ -272,14 +288,28 @@ export function createWorktreeHost({
       mainRepo = dirname(await realpath(commonDir));
       if ((await links())[real]?.parent !== mainRepo)
         throw fail("NOT_DELETABLE");
-    } else if (ownership !== "managed") throw fail("NOT_DELETABLE");
+    } else {
+      if (ownership !== "managed") throw fail("NOT_DELETABLE");
+      // Trashing a main checkout would orphan the worktrees linked to it.
+      if (checkout) {
+        const listed = (await git(real, ["worktree", "list", "--porcelain"]))
+          .split("\n")
+          .filter((l) => l.startsWith("worktree ")).length;
+        if (listed > 1) throw fail("HAS_LINKED_WORKTREES");
+      }
+    }
     const reasons = [];
     const notes = [];
     let changed = 0;
     let branch = "";
     if (checkout) {
       changed = (
-        await git(real, ["status", "--porcelain", "--untracked-files=all"])
+        await git(real, [
+          "status",
+          "--porcelain",
+          "--ignore-submodules=all",
+          "--untracked-files=all",
+        ])
       )
         .split("\n")
         .filter(Boolean).length;
@@ -296,6 +326,7 @@ export function createWorktreeHost({
         await git(real, [
           "status",
           "--porcelain",
+          "--ignore-submodules=all",
           "--ignored",
           "--untracked-files=normal",
         ])
@@ -351,6 +382,8 @@ export function createWorktreeHost({
     let pruned = true;
     if (info.kind === "worktree") {
       // The folder is already gone: a prune failure must not report the delete as failed.
+      // `prune` is repo-global: it also drops admin entries of any other worktree whose folder is
+      // missing (locked ones are kept). No safe per-entry prune exists. See backlog-status.md.
       await git(info.mainRepo, ["worktree", "prune"]).catch(() => {
         pruned = false;
       });

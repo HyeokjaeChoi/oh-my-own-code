@@ -90,6 +90,8 @@ const WORKTREE_ERRORS: Record<string, string> = {
   GIT_MISSING: "Git을 찾을 수 없습니다.",
   NOT_DELETABLE:
     "이 앱이 만든 폴더·워크트리만 삭제할 수 있습니다. 가져온 폴더는 목록에서만 제거하세요.",
+  HAS_LINKED_WORKTREES:
+    "이 폴더에서 만든 워크트리가 남아 있어 삭제할 수 없습니다. 워크트리를 먼저 삭제하세요.",
   NOT_CANONICAL: "경로가 심볼릭 링크이거나 정규 경로가 아니어서 거부했습니다.",
   MISSING: "폴더가 이미 없습니다. 목록에서 제거하세요.",
   TRASH_FAILED: "휴지통으로 이동하지 못했습니다.",

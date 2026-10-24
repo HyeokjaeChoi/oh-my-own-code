@@ -353,6 +353,7 @@ const nativeTurn = (extra) => ({
   agent: "build",
   model: { providerID: "p", id: "m" },
   content: [],
+  time: { created: 1, completed: 2 },
   ...extra,
 });
 test("usage projects tokens and cost from the native assistant message", () => {
@@ -386,6 +387,7 @@ test("usage missing or invalid is absent, never zero", () => {
   for (const bad of [-1, 1.5, NaN, Infinity, "3"])
     assert.equal(
       projectUsage({
+        time: { completed: 2 },
         tokens: {
           input: bad,
           output: 1,
@@ -396,16 +398,30 @@ test("usage missing or invalid is absent, never zero", () => {
       undefined,
     );
   assert.equal(
-    projectUsage({ tokens: { input: 1, output: 1, reasoning: 0 } }),
+    projectUsage({
+      time: { completed: 2 },
+      tokens: { input: 1, output: 1, reasoning: 0 },
+    }),
     undefined,
   );
   const noCost = projectUsage({
+    time: { completed: 2 },
     tokens: { input: 1, output: 1, reasoning: 0, cache: { read: 0, write: 0 } },
     cost: -2,
   });
   assert.ok(noCost && !("cost" in noCost));
   assert.equal(validUsage({ ...noCost, extra: 1 }), false);
   assert.equal(formatUsage(undefined), "확인 불가");
+});
+test("in-flight assistant messages project no usage", () => {
+  const tokens = {
+    input: 1,
+    output: 1,
+    reasoning: 0,
+    cache: { read: 0, write: 0 },
+  };
+  assert.equal(projectUsage({ tokens, time: { created: 1 } }), undefined);
+  assert.ok(projectUsage({ tokens, time: { created: 1, completed: 2 } }));
 });
 test("usage sum counts unknown turns separately", () => {
   const u = {

@@ -512,7 +512,7 @@ function bindIpc() {
           kind === "worktree"
             ? "이 워크트리 폴더를 휴지통으로 이동하시겠습니까?"
             : "이 앱이 만든 폴더를 휴지통으로 이동하시겠습니까?",
-        detail: `${path}\n\n커밋되지 않은 변경: ${changed}개\n영향받는 세션: ${sessions}개 (작업 공간 등록과 대화 기록도 목록에서 사라집니다)${notes.length ? `\n\n${notes.join("\n")}` : ""}${kind === "worktree" ? "\n\n브랜치는 삭제하지 않습니다." : ""}\n\n폴더는 OS 휴지통으로 이동하며 영구 삭제하지 않습니다.`,
+        detail: `${path}\n\n커밋되지 않은 변경: ${changed}개\n열려 있는 세션: ${sessions}개 (폴더가 휴지통으로 이동한 뒤 앱이 목록에서 제거합니다)${notes.length ? `\n\n${notes.join("\n")}` : ""}${kind === "worktree" ? "\n\n브랜치는 삭제하지 않습니다." : ""}\n\n폴더는 OS 휴지통으로 이동하며 영구 삭제하지 않습니다.`,
         buttons: ["취소", "휴지통으로 이동"],
         defaultId: 0,
         cancelId: 0,
