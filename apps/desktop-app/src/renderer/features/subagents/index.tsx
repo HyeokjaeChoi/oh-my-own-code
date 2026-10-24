@@ -8,6 +8,7 @@ import {
   DEFAULT_CAP,
   briefTitle,
   cancelAll,
+  childMode,
   deriveChildTree,
   drainQueuePerParent,
   isActive,
@@ -191,11 +192,12 @@ export function SubagentPanel({
     // The child must never be broader than its parent: apply the parent's mode
     // before the brief; an unknown parent mode or a failed set sends nothing.
     const state = store.getState();
-    // A reviewer asks for the narrowest mode (read_plan), never a broader one.
-    const mode =
-      item.mode ??
+    // A reviewer asks for read_plan, but never a broader mode than its parent (ask stays ask).
+    const mode = childMode(
+      item.mode,
       state.snapshot?.sessions.find((x) => x.id === item.parentId)
-        ?.permissionMode;
+        ?.permissionMode,
+    );
     if (!mode) return false;
     const own = state.snapshot?.sessions.find(
       (x) => x.id === child,

@@ -9,6 +9,7 @@ export {
   drainQueue,
   drainQueuePerParent,
   cancelAll,
+  childMode,
   parseSubagentResult,
 } from "./index.mjs";
 export type {

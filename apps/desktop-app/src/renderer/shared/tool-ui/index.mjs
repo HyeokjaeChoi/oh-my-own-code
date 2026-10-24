@@ -114,14 +114,15 @@ const BUILDERS = {
       replaceAll: false,
     };
   },
-  shell(i, output) {
+  shell(i, output, _status, exit) {
     const command = str(i.command);
     if (!command) return null;
-    const exit = /(?:exit(?: code)?|exited with)[:= ]+(-?\d+)/i.exec(output);
     return {
       command,
       description: str(i.description),
-      exitCode: exit ? Number(exit[1]) : null,
+      // Only the runtime's structured exit status; never parsed from output text.
+      exitCode:
+        Number.isInteger(exit) && exit >= 0 && exit <= 255 ? exit : null,
       output,
     };
   },
@@ -189,7 +190,7 @@ export function deriveToolView(tool) {
   const input = parse(typeof tool?.input === "string" ? tool.input : "");
   const output = typeof tool?.output === "string" ? tool.output : "";
   if (!build || !input) return { kind: "generic" };
-  const data = build(input, output, tool.status);
+  const data = build(input, output, tool.status, tool.exit);
   return data ? { kind: KIND[name], name, ...data } : { kind: "generic" };
 }
 

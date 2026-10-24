@@ -225,6 +225,7 @@ function ToolDetail({
     input,
     output,
     status: rawState,
+    ...(typeof args.exit === "number" && { exit: args.exit }),
   });
   const summary = toolSummary(view, toolName, ctx.workspaceRoot);
   const status = labels[state] ?? "상태 확인 불가";

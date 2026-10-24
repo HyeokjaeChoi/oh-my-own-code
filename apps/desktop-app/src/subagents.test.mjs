@@ -9,7 +9,10 @@ import {
   parseSubagentResult,
   DEFAULT_CAP,
 } from "./renderer/shared/subagents/index.mjs";
-import { drainQueuePerParent } from "./renderer/shared/subagents/index.mjs";
+import {
+  childMode,
+  drainQueuePerParent,
+} from "./renderer/shared/subagents/index.mjs";
 
 const s = (id, status, extra = {}) => ({
   id,
@@ -148,4 +151,13 @@ test("drainQueuePerParent counts running children per parent", () => {
     out.rest.map((x) => x.id),
     ["3"],
   );
+});
+
+test("child mode is never broader than the parent", () => {
+  assert.equal(childMode("read_plan", "ask"), "ask");
+  assert.equal(childMode("read_plan", "scoped_edit"), "read_plan");
+  assert.equal(childMode("read_plan", "read_plan"), "read_plan");
+  assert.equal(childMode(undefined, "scoped_edit"), "scoped_edit");
+  assert.equal(childMode("read_plan", undefined), undefined);
+  assert.equal(childMode(undefined, undefined), undefined);
 });

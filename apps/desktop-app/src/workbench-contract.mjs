@@ -274,6 +274,8 @@ export function validateRequest(value) {
       // subclass); main re-checks the magic bytes against `mime`.
       if (
         Object.getPrototypeOf(entry) !== Uint8Array.prototype ||
+        entry.byteOffset !== 0 ||
+        entry.byteLength !== entry.buffer.byteLength ||
         entry.byteLength < 1 ||
         entry.byteLength > CONTEXT_LIMITS.fileBytes
       )
@@ -908,14 +910,16 @@ export function validateSnapshot(value) {
         m.tools.length <= 40,
     );
     for (const t of m.tools) {
-      requiredObject(t, ["id", "name", "status", "input", "output"]);
+      requiredObject(t, ["id", "name", "status", "input", "output"], ["exit"]);
       needDTO(
         boundedText(t.id, 256) &&
           t.id.length > 0 &&
           boundedText(t.name, 128) &&
           ["pending", "running", "completed", "error"].includes(t.status) &&
           boundedText(t.input, 8000) &&
-          boundedText(t.output, 8000),
+          boundedText(t.output, 8000) &&
+          (!Object.hasOwn(t, "exit") ||
+            (Number.isInteger(t.exit) && t.exit >= 0 && t.exit <= 255)),
       );
     }
   }

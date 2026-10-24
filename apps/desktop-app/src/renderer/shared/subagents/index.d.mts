@@ -65,3 +65,7 @@ export function cancelAll(
 export function parseSubagentResult(
   output: string,
 ): { sessionId: string; state: string; text: string } | null;
+export function childMode(
+  requested: "read_plan" | undefined,
+  parentMode: "ask" | "scoped_edit" | "read_plan" | undefined,
+): "ask" | "scoped_edit" | "read_plan" | undefined;

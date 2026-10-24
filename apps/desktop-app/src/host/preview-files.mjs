@@ -1,5 +1,6 @@
 import { randomBytes } from "node:crypto";
-import { readFile, realpath, stat } from "node:fs/promises";
+import { constants } from "node:fs";
+import { open, realpath, stat } from "node:fs/promises";
 import { extname, isAbsolute, relative, resolve } from "node:path";
 import {
   PREVIEW_LIMITS,
@@ -32,10 +33,9 @@ const ASSETS = {
   ".woff": "font/woff",
   ".woff2": "font/woff2",
 };
-const LOCAL = "http://localhost:* http://127.0.0.1:*";
-// Scripts only from the preview origin (no inline); no plugins; network limited to loopback
-// (webRequest enforces the same allowlist independently of this header).
-const HTML_CSP = `default-src 'self' ${LOCAL}; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: ${LOCAL}; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'`;
+// Scripts only from the preview origin (no inline); no plugins; no network beyond the preview
+// origin (file mode never reaches loopback; webRequest enforces the same independently).
+const HTML_CSP = `default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'`;
 const STATIC_CSP =
   "default-src 'none'; style-src 'unsafe-inline'; img-src 'self' data:";
 const escapeHtml = (text) =>
@@ -64,7 +64,10 @@ export async function resolvePreviewFile(
   )
     throw fail("PATH_DENIED");
   const segments = relPath.split("/").filter((s) => s !== "" && s !== ".");
-  if (!segments.length || segments.some((s) => s === ".." || s === ".git"))
+  if (
+    !segments.length ||
+    segments.some((s) => s === ".." || s.toLowerCase() === ".git")
+  )
     throw fail("PATH_DENIED");
   const ext = extname(relPath).toLowerCase();
   const type = KINDS[ext]?.[1] ?? (assets ? ASSETS[ext] : undefined);
@@ -80,9 +83,39 @@ export async function resolvePreviewFile(
     throw err?.previewCode ? err : fail("NOT_FOUND");
   }
   if (!st.isFile()) throw fail("NOT_FOUND");
+  if (st.nlink !== 1) throw fail("PATH_DENIED"); // hardlink may alias a file outside the workspace
   if (st.size > (ext === ".pdf" ? PDF_BYTES : PREVIEW_LIMITS.fileBytes))
     throw fail("TOO_LARGE");
-  return { real, ext, type };
+  return { real, ext, type, st };
+}
+
+// Opens without following links and re-checks the opened inode against the resolved one
+// (closes swap/hardlink races between resolve and read).
+async function readChecked({ real, ext, st }) {
+  const max = ext === ".pdf" ? PDF_BYTES : PREVIEW_LIMITS.fileBytes;
+  let handle;
+  try {
+    handle = await open(real, constants.O_RDONLY | constants.O_NOFOLLOW);
+  } catch {
+    throw fail("PATH_DENIED");
+  }
+  try {
+    const info = await handle.stat();
+    if (
+      !info.isFile() ||
+      info.nlink !== 1 ||
+      info.ino !== st.ino ||
+      info.dev !== st.dev ||
+      info.size > max
+    )
+      throw fail("PATH_DENIED");
+    const bytes = Buffer.alloc(info.size);
+    const { bytesRead } = await handle.read(bytes, 0, info.size, 0);
+    if (bytesRead !== info.size) throw fail("PATH_DENIED");
+    return bytes;
+  } finally {
+    await handle.close();
+  }
 }
 
 // Serves workspace files to the isolated preview session under `omoc-preview://<token>/<path>`.
@@ -124,7 +157,7 @@ export function createPreviewFiles({ resolveWorkspace }) {
       try {
         const rel = decodeURIComponent(u.pathname.slice(1));
         const file = await resolvePreviewFile(root, rel, { assets: true });
-        const bytes = await readFile(file.real);
+        const bytes = await readChecked(file);
         const kind = KINDS[file.ext]?.[0];
         if (kind === "markdown")
           return respond(

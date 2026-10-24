@@ -2761,6 +2761,40 @@ test("a failed assistant turn projects only its numeric HTTP status", () => {
   assert.equal("failure" in plain, false);
   assert.equal("failure" in odd, false);
 });
+test("bash tool exit comes only from structured metadata, bounded, else absent", () => {
+  const part = (id, metadata, output = "exit code: 0") => ({
+    type: "tool",
+    id,
+    name: "bash",
+    state: {
+      status: "completed",
+      input: { command: "npm test" },
+      content: [{ type: "text", text: output }],
+      ...(metadata !== undefined && { metadata }),
+    },
+  });
+  const [m] = projectMessages([
+    {
+      id: "a",
+      type: "assistant",
+      time: { created: 1 },
+      content: [
+        part("t1", { exit: 0 }),
+        part("t2", { exit: 3 }),
+        part("t3", undefined),
+        part("t4", { exit: "0" }),
+        part("t5", { exit: -1 }),
+        part("t6", { exit: 256 }),
+        part("t7", { exit: 1.5 }),
+      ],
+    },
+  ]);
+  assert.deepEqual(
+    m.tools.map((t) => t.exit),
+    [0, 3, undefined, undefined, undefined, undefined, undefined],
+  );
+  assert.equal("exit" in m.tools[2], false);
+});
 test("snapshot sessions carry Native's last activity time as updatedAt", async (t) => {
   const f = await fixture(t);
   const original = f.client.session.get;
