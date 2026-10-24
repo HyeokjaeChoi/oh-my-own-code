@@ -6362,6 +6362,28 @@ export function createWorkbenchService({
       const w = committed.workspaces.get(id);
       return w && { path: w.path, ownership: w.ownership ?? "imported" };
     },
+    // Physical-delete blockers, read fresh each call: sessions in the workspace and
+    // whether any is running (same predicate as workspace.remove's BUSY check).
+    workspaceActivity(id) {
+      const w = committed.workspaces.get(id);
+      const sessions = [...committed.sessions.values()].filter(
+        (item) => item.workspaceId === id,
+      );
+      return {
+        sessions: sessions.length,
+        busy: Boolean(
+          !w ||
+            w.lock ||
+            sessions.some(
+              (item) =>
+                item.lock ||
+                (nativeProjections.get(item.id)?.status ?? item.status) !==
+                  "idle" ||
+                item.unknown,
+            ),
+        ),
+      };
+    },
     closeSender(sender) {
       contextIO.closeSender(sender);
       gitReader?.closeSender(sender);

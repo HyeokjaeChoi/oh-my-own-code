@@ -214,6 +214,7 @@ async function fixture(
     probeWorkspace: async (path) => ({
       branch: "main",
       writable: path !== "x",
+      ...(path.endsWith("typed") && { kind: "worktree", origin: "/repo" }),
     }),
     confirmTrust: async () => state.trust,
     confirmImport: async (path) => {
@@ -481,6 +482,9 @@ test("typed-path import uses the picker's validation and publishes workspace met
   const w = imported.value.workspaces.find((x) => x.path.endsWith("typed"));
   assert.equal(w.branch, "main");
   assert.equal(w.writable, true);
+  // Linked-worktree kind and origin repository are published read-only.
+  assert.equal(w.kind, "worktree");
+  assert.equal(w.origin, "/repo");
 });
 test("typed-path import rejects bad paths with one non-leaking code and imports resolved real paths once", async (t) => {
   const f = await fixture(t);
@@ -876,6 +880,26 @@ test("normal initial policy, real inbox receipt, transcript and duplicate finger
     "A tool operation failed.",
   );
   assert.equal(snap.value.sessions[0].status, "running");
+});
+test("workspaceActivity reports sessions and fails closed when a session is not idle", async (t) => {
+  const f = await fixture(t);
+  const idle = f.service.workspaceActivity(f.ids.workspaceId);
+  assert.equal(idle.sessions >= 1, true);
+  assert.equal(idle.busy, false);
+  const catalog = await f.service.handle({ type: "catalog.list", ...f.ids });
+  assert.equal(
+    (
+      await f.send({
+        agent: "build",
+        model: catalog.value.models.entries[0].id,
+      })
+    ).value.status,
+    "accepted",
+  );
+  await f.service.handle({ type: "snapshot", ...f.ids });
+  assert.equal(f.service.workspaceActivity(f.ids.workspaceId).busy, true);
+  assert.ok(f.service.workspaceInfo(f.ids.workspaceId).path);
+  assert.equal(f.service.workspaceActivity("missing").busy, true);
 });
 test("untrusted import is deduplicated without SDK activation; native trust precedes creation", async (t) => {
   const f = await fixture(t);

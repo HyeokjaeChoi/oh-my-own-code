@@ -2564,9 +2564,10 @@ function validProjection(next: WorkbenchSnapshot): boolean {
         w,
         ["id", "name", "path", "kind", "trusted", "trustRevision", "temporary"],
         // Read-only probe metadata the host contract already allows.
-        ["branch", "writable"],
+        ["branch", "writable", "origin"],
       ) ||
       (Object.hasOwn(w, "branch") && typeof w.branch !== "string") ||
+      (Object.hasOwn(w, "origin") && typeof w.origin !== "string") ||
       (Object.hasOwn(w, "writable") && typeof w.writable !== "boolean") ||
       !wireId(w.id, 256) ||
       workspaces.has(w.id) ||

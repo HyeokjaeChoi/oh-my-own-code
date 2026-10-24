@@ -157,6 +157,8 @@ export interface WorkbenchWorkspace {
   /** Read-only display metadata; absent for non-git folders or when unprobed. */
   branch?: string;
   writable?: boolean;
+  /** Linked worktree only: absolute path of the repository it belongs to. */
+  origin?: string;
 }
 export interface WorkbenchSession {
   id: string;
@@ -1127,10 +1129,9 @@ export type WorktreeRequest =
       workspaceId: string;
       branch: string;
       base: string;
-      path?: string;
     }
   | { type: "worktree.inspect"; workspaceId: string }
-  | { type: "worktree.delete"; workspaceId: string; force?: boolean };
+  | { type: "worktree.delete"; workspaceId: string };
 export type WorktreeResult =
   | {
       ok: true;

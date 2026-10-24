@@ -744,10 +744,11 @@ export function validateSnapshot(value) {
     requiredObject(
       w,
       ["id", "name", "path", "kind", "trusted", "trustRevision", "temporary"],
-      ["branch", "writable"],
+      ["branch", "writable", "origin"],
     );
     needDTO(
       (w.branch === undefined || boundedText(w.branch, 256)) &&
+        (w.origin === undefined || boundedText(w.origin, 4096)) &&
         (w.writable === undefined || typeof w.writable === "boolean") &&
         resourceId(w.id) &&
         boundedText(w.name, 256) &&
